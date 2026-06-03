@@ -42,7 +42,8 @@ export default function HeroVideo() {
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, rect.width, rect.height);
 
       const imgRatio = img.naturalWidth / img.naturalHeight;
       const canvasRatio = rect.width / rect.height;
@@ -203,10 +204,10 @@ export default function HeroVideo() {
           </div>
 
           {/* Canvas */}
-          <div className="relative flex-1 min-w-0">
+          <div className="relative flex-1 min-w-0 bg-white">
             <canvas
               ref={canvasRef}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full bg-white"
             />
           </div>
 
