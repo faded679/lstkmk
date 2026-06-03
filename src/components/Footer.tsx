@@ -91,6 +91,7 @@ export default function Footer() {
 
         <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-slate-400">
           <span>&copy; {new Date().getFullYear()} МАКСТИЛ. Все права защищены.</span>
+          <span>Разработка: <a href="https://vvcode.ru" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">VVCode</a></span>
           <div className="flex gap-4">
             <a href="/privacy" className="hover:text-slate-300 transition-colors">
               Политика конфиденциальности
