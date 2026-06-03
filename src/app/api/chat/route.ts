@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверяем наличие API ключа
-    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
+    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY || "sk-2xzqcmMtDZn1gt_w8zwZNw";
     if (!apiKey) {
       // Fallback: имитируем умный ответ если нет ключа
       return NextResponse.json({
