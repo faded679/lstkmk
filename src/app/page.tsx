@@ -31,7 +31,7 @@ const organizationSchema = {
   },
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+7-000-000-00-00",
+    telephone: "+7-800-100-91-51",
     contactType: "sales",
     availableLanguage: ["Russian"],
   },
@@ -44,10 +44,10 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "МАКСТИЛ",
-  image: "https://lstkmk.ru/logo.png",
+  image: "https://lstkmk.ru/photo_2026-06-01_19-06-27%20(2).jpg",
   "@id": "https://lstkmk.ru",
   url: "https://lstkmk.ru",
-  telephone: "+7-000-000-00-00",
+  telephone: "+7-800-100-91-51",
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",
@@ -66,6 +66,34 @@ const localBusinessSchema = {
     dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     opens: "09:00",
     closes: "18:00",
+  },
+  email: "info@lstkmk.ru",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Строительные услуги",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Проектирование ЛСТК",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Производство металлоконструкций",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Монтаж быстровозводимых зданий",
+        },
+      },
+    ],
   },
 };
 
