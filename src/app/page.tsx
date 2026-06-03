@@ -35,7 +35,9 @@ const organizationSchema = {
     contactType: "sales",
     availableLanguage: ["Russian"],
   },
-  sameAs: [],
+  sameAs: [
+    "https://vk.ru/mcsteel31",
+  ],
 };
 
 const localBusinessSchema = {
