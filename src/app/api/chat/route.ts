@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "deepseek-chat",  // или "gpt-4" если доступно
+        model: "deepseek-ai/deepseek-v3.2-maas",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: message },
