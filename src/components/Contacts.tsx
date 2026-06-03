@@ -12,6 +12,13 @@ import {
   CheckCircle,
 } from "@phosphor-icons/react";
 
+// Иконка VK (Phosphor нет, делаем SVG)
+const VkIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.523-2.049-1.714-1.033-1.033-1.49-1.171-1.744-1.171-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4 8.492 4 8.076c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.779.677.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.049.17.475-.085.72-.576.72z"/>
+  </svg>
+);
+
 const faqResponses: Record<string, string> = {
   цена: "Стоимость зависит от типа здания, площади и утепления. Ориентировочно: от 7 000 руб/м² для холодного ангара до 15 000 руб/м² для утеплённого производственного здания. Воспользуйтесь калькулятором выше или задайте уточняющий вопрос.",
   срок: "Средний срок строительства — 30-75 дней в зависимости от площади и сложности. Проектирование — от 10 дней, производство каркаса — от 15 дней, монтаж — от 14 дней.",
@@ -119,6 +126,28 @@ export default function Contacts() {
                 </div>
               </div>
             ))}
+
+            {/* Карточка VK отдельно */}
+            <div className="bg-gradient-to-br from-[#0077FF]/10 to-[#0077FF]/5 rounded-xl p-5 border border-[#0077FF]/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#0077FF] text-white">
+                  <VkIcon />
+                </div>
+                <div>
+                  <div className="text-xs text-muted">Социальная сеть</div>
+                  <div className="text-sm font-semibold text-foreground">Мы во ВКонтакте</div>
+                </div>
+              </div>
+              <p className="text-xs text-muted mb-3">Актуальные новости, фото объектов, ответы на вопросы</p>
+              <a 
+                href="https://vk.ru/mcsteel31" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 items-center px-4 text-sm font-medium text-white bg-[#0077FF] rounded-lg hover:bg-[#0077FF]/90 transition-colors"
+              >
+                Перейти в VK
+              </a>
+            </div>
           </motion.div>
 
           {/* Col 2 — Request form */}
