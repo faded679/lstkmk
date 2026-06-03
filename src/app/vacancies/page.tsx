@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, MapPin, Money, Clock, Briefcase } from "@phosphor-icons/react";
+import { ArrowLeft, MapPin, Money, Clock } from "@phosphor-icons/react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
+import VacancyModal from "@/components/VacancyModal";
 
 const vacancies = [
   {
@@ -106,6 +108,13 @@ const vacancies = [
 
 export default function VacanciesPage() {
   const reduce = useReducedMotion();
+  const [selectedVacancy, setSelectedVacancy] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleApply = (title: string) => {
+    setSelectedVacancy(title);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -193,15 +202,24 @@ export default function VacanciesPage() {
                 </ul>
               </div>
 
-              <a
-                href={`mailto:maxsteel31@bk.ru?subject=Отклик: ${vacancy.title}`}
+              <button
+                onClick={() => handleApply(vacancy.title)}
                 className="inline-flex h-9 items-center px-5 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
               >
                 Откликнуться
-              </a>
+              </button>
             </motion.div>
           ))}
         </div>
+
+        <VacancyModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedVacancy(null);
+          }}
+          vacancyTitle={selectedVacancy || ""}
+        />
 
         <div className="mt-12 p-6 rounded-lg bg-slate-50 border border-border">
           <p className="text-sm text-muted leading-relaxed">

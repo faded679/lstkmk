@@ -3,25 +3,42 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { List, X, Phone } from "@phosphor-icons/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { label: "О компании", href: "#about" },
-  { label: "Проекты", href: "#projects" },
-  { label: "Калькулятор", href: "#calculator" },
-  { label: "Статьи", href: "/articles" },
-  { label: "Вакансии", href: "/vacancies" },
-  { label: "Контакты", href: "#contacts" },
+  { label: "О компании", href: "/#about", isAnchor: true },
+  { label: "Проекты", href: "/#projects", isAnchor: true },
+  { label: "Калькулятор", href: "/#calculator", isAnchor: true },
+  { label: "Статьи", href: "/articles", isAnchor: false },
+  { label: "Вакансии", href: "/vacancies", isAnchor: false },
+  { label: "Контакты", href: "/#contacts", isAnchor: true },
 ];
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Обработчик клика по якорной ссылке
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === "/" && href.startsWith("/#")) {
+      // Уже на главной — просто скроллим
+      e.preventDefault();
+      const targetId = href.replace("/#", "");
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    // Если не на главной — Link сам перейдёт на главную с хэшем
+  };
 
   return (
     <>
@@ -41,15 +58,26 @@ export default function Navigation() {
           </a>
 
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.isAnchor ? (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleAnchorClick(e, link.href)}
+                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
@@ -60,12 +88,13 @@ export default function Navigation() {
               <Phone size={18} weight="bold" />
               +7 (800) 100-91-51
             </a>
-            <a
-              href="#calculator"
+            <Link
+              href="/#calculator"
+              onClick={(e) => handleAnchorClick(e, "/#calculator")}
               className="inline-flex h-10 items-center px-5 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
             >
               Рассчитать стоимость
-            </a>
+            </Link>
           </div>
 
           <button
@@ -89,14 +118,19 @@ export default function Navigation() {
           >
             <div className="flex flex-col gap-1 p-6">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={(e) => {
+                    setMobileOpen(false);
+                    if (link.isAnchor) {
+                      handleAnchorClick(e, link.href);
+                    }
+                  }}
                   className="py-3 text-lg font-medium text-foreground/80 hover:text-accent-blue border-b border-border/50 transition-colors"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <a
                 href="tel:+78001009151"
@@ -105,13 +139,16 @@ export default function Navigation() {
                 <Phone size={20} weight="bold" />
                 +7 (800) 100-91-51
               </a>
-              <a
-                href="#calculator"
-                onClick={() => setMobileOpen(false)}
+              <Link
+                href="/#calculator"
+                onClick={(e) => {
+                  setMobileOpen(false);
+                  handleAnchorClick(e, "/#calculator");
+                }}
                 className="mt-4 inline-flex h-12 items-center justify-center px-6 text-base font-medium text-white bg-accent-blue rounded-lg"
               >
                 Рассчитать стоимость
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

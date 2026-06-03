@@ -11,7 +11,7 @@ const articles = [
     title: "ЛСТК или горячекатаный прокат: что выбрать для склада?",
     excerpt:
       "Сравниваем два подхода к строительству складских помещений — лёгкие стальные конструкции и традиционный горячекатаный каркас. Плюсы, минусы и когда какой вариант выгоднее.",
-    image: "/articles/lstk-profil.jpg",
+    image: "/articles/lstk-vs-goryachekatanyj-prokat.jpg",
     date: "28 мая 2026",
     readTime: "7 мин",
     category: "Технологии",
@@ -22,7 +22,7 @@ const articles = [
     title: "Как подготовить площадку под быстровозводимое здание",
     excerpt:
       "Пошаговая инструкция: от геологических изысканий до устройства фундамента. Какие ошибки допускают заказчики и как их избежать.",
-    image: "/articles/geolog-izyskaniya.jpg",
+    image: "/articles/stroitelnaya%20ploshadka.jpg",
     date: "15 мая 2026",
     readTime: "5 мин",
     category: "Строительство",
@@ -33,7 +33,7 @@ const articles = [
     title: "Сэндвич-панели: обзор материалов и толщин",
     excerpt:
       "Разбираем типы наполнителей (минвата, ПИР, пенополистирол), рекомендованные толщины для разных регионов и климатических зон.",
-    image: "/articles/sendvich-paneli-sklad.jpg",
+    image: "/articles/sandwich.jpg",
     date: "2 мая 2026",
     readTime: "6 мин",
     category: "Материалы",
@@ -44,7 +44,7 @@ const articles = [
     title: "Вентиляция в производственных зданиях из металлоконструкций",
     excerpt:
       "Как правильно организовать воздухообмен в цехах и складах. Нормы СНиП, типы систем и практические решения.",
-    image: "/articles/ventilyaciya-ceh.jpg",
+    image: "/articles/ventilators.jpg",
     date: "18 апреля 2026",
     readTime: "8 мин",
     category: "Инженерия",
@@ -55,7 +55,7 @@ const articles = [
     title: "5 причин выбрать ЛСТК для промышленного строительства",
     excerpt:
       "Почему лёгкие стальные тонкостенные конструкции выигрывают у традиционных материалов: скорость, экономия, надёжность и экологичность.",
-    image: "/articles/lstk-preimushchestva.jpg",
+    image: "/articles/5%20variants%20to%20use%20lstk.jpg",
     date: "5 апреля 2026",
     readTime: "8 мин",
     category: "Технологии",
@@ -66,7 +66,7 @@ const articles = [
     title: "Антикоррозийная защита металлоконструкций: методы и сроки",
     excerpt:
       "Горячее цинкование, порошковая окраска, грунт-эмали — сравниваем стоимость, долговечность и применимость для разных условий эксплуатации.",
-    image: "/articles/ocinkovannyj-profil.jpg",
+    image: "/articles/anticorossion%20def.jpg",
     date: "20 марта 2026",
     readTime: "6 мин",
     category: "Технологии",
