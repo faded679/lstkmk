@@ -21,57 +21,35 @@ export default function VacancyModal({ isOpen, onClose, vacancyTitle }: VacancyM
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Отправка данных
-    try {
-      const response = await fetch("/api/vacancy", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          vacancy: vacancyTitle,
-          date: new Date().toISOString(),
-        }),
-      });
-
-      if (response.ok) {
-        setIsSuccess(true);
-        setTimeout(() => {
-          setIsSuccess(false);
-          setFormData({ name: "", phone: "", email: "", experience: "", message: "" });
-          onClose();
-        }, 3000);
-      } else {
-        // Fallback: отправка через mailto
-        const subject = `Отклик на вакансию: ${vacancyTitle}`;
-        const body = `Имя: ${formData.name}
+    // Формируем письмо
+    const subject = `Отклик на вакансию: ${vacancyTitle}`;
+    const body = `Имя: ${formData.name}
 Телефон: ${formData.phone}
 Email: ${formData.email}
-Опыт работы: ${formData.experience}
+Опыт работы: ${formData.experience || "Не указан"}
 
 Сообщение:
-${formData.message}`;
-        window.location.href = `mailto:maxsteel31@bk.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        onClose();
-      }
-    } catch {
-      // Fallback на mailto при ошибке
-      const subject = `Отклик на вакансию: ${vacancyTitle}`;
-      const body = `Имя: ${formData.name}
-Телефон: ${formData.phone}
-Email: ${formData.email}
-Опыт работы: ${formData.experience}
+${formData.message || "Нет"}`;
 
-Сообщение:
-${formData.message}`;
+    // Показываем успех
+    setIsSuccess(true);
+
+    // Открываем почтовый клиент через 500мс
+    setTimeout(() => {
       window.location.href = `mailto:maxsteel31@bk.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      onClose();
-    } finally {
+    }, 500);
+
+    // Закрываем через 3 сек
+    setTimeout(() => {
+      setIsSuccess(false);
       setIsSubmitting(false);
-    }
+      setFormData({ name: "", phone: "", email: "", experience: "", message: "" });
+      onClose();
+    }, 3000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
