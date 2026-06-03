@@ -2,15 +2,15 @@ module.exports = {
   apps: [{
     name: 'lstkmk',
     cwd: '/var/www/lstkmk.ru',
-    script: 'node_modules/next/dist/bin/next',
-    args: 'start -p 3000',
+    script: '.next/standalone/server.js',
     instances: 1,
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3001,
+      HOSTNAME: '0.0.0.0'
     },
     // Логи
     log_file: '/var/log/pm2/lstkmk.log',
