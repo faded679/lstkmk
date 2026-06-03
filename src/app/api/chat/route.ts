@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверяем наличие API ключа
-    const apiKey = process.env.DEEPSEEK_API_KEY;
+    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
     if (!apiKey) {
       // Fallback: имитируем умный ответ если нет ключа
       return NextResponse.json({
@@ -75,8 +75,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Запрос к DeepSeek API
-    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    // Запрос к BlackRoute API (OpenAI-compatible)
+    const response = await fetch("https://open.blackroute.space/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
