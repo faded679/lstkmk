@@ -22,7 +22,7 @@ const articles = [
     title: "Как подготовить площадку под быстровозводимое здание",
     excerpt:
       "Пошаговая инструкция: от геологических изысканий до устройства фундамента. Какие ошибки допускают заказчики и как их избежать.",
-    image: "/articles/stroitelnaya%20ploshadka.jpg",
+    image: "/articles/stroitelnaya-ploshadka.jpg",
     date: "15 мая 2026",
     readTime: "5 мин",
     category: "Строительство",
@@ -55,7 +55,7 @@ const articles = [
     title: "5 причин выбрать ЛСТК для промышленного строительства",
     excerpt:
       "Почему лёгкие стальные тонкостенные конструкции выигрывают у традиционных материалов: скорость, экономия, надёжность и экологичность.",
-    image: "/articles/5%20variants%20to%20use%20lstk.jpg",
+    image: "/articles/5-variants-lstk.jpg",
     date: "5 апреля 2026",
     readTime: "8 мин",
     category: "Технологии",
@@ -66,7 +66,7 @@ const articles = [
     title: "Антикоррозийная защита металлоконструкций: методы и сроки",
     excerpt:
       "Горячее цинкование, порошковая окраска, грунт-эмали — сравниваем стоимость, долговечность и применимость для разных условий эксплуатации.",
-    image: "/articles/anticorossion%20def.jpg",
+    image: "/articles/anticorossion-def.jpg",
     date: "20 марта 2026",
     readTime: "6 мин",
     category: "Технологии",
