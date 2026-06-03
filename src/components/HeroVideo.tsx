@@ -160,9 +160,9 @@ export default function HeroVideo() {
       className="relative bg-white"
       style={{ height: "400vh" }}
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col">
+      <div className="sticky top-0 h-screen w-full flex flex-col bg-white">
         {/* Centred heading */}
-        <div className="pt-24 pb-4 px-6 lg:px-10 text-center">
+        <div className="pt-24 pb-4 px-6 lg:px-10 text-center bg-white">
           <p className="text-sm font-mono uppercase tracking-[0.18em] text-accent-orange mb-3">
             От фундамента до готового здания
           </p>
@@ -189,9 +189,9 @@ export default function HeroVideo() {
         </div>
 
         {/* Canvas + side labels */}
-        <div className="flex-1 relative min-h-0 flex items-stretch">
+        <div className="flex-1 relative min-h-0 flex items-stretch bg-white">
           {/* Left labels */}
-          <div className="hidden lg:flex flex-col justify-around items-end w-36 xl:w-44 pr-4 py-4 select-none">
+          <div className="hidden lg:flex flex-col justify-around items-end w-36 xl:w-44 pr-4 py-4 select-none bg-white">
             {["Проектирование", "Производство", "Монтаж"].map((label, i) => (
               <span
                 key={label}
@@ -212,7 +212,7 @@ export default function HeroVideo() {
           </div>
 
           {/* Right labels */}
-          <div className="hidden lg:flex flex-col justify-around items-start w-36 xl:w-44 pl-4 py-4 select-none">
+          <div className="hidden lg:flex flex-col justify-around items-start w-36 xl:w-44 pl-4 py-4 select-none bg-white">
             {["Под ключ", "45 дней", "14 лет опыта"].map((label, i) => (
               <span
                 key={label}
