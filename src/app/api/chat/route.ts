@@ -80,16 +80,14 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        "Authorization": `Bearer sk-2xzqcmMtDZn1gt_w8zwZNw`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v3.2-maas",
+        model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: message },
         ],
-        temperature: 0.7,
-        max_tokens: 1000,
       }),
     });
 
