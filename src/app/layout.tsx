@@ -56,9 +56,9 @@ export const metadata: Metadata = {
       "Проектирование, производство и монтаж быстровозводимых зданий из металлоконструкций. 14 лет опыта. Гарантия 5 лет.",
     images: [
       {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
+        url: "https://lstkmk.ru/photo_2026-06-01_19-06-27%20(2).jpg",
+        width: 600,
+        height: 400,
         alt: "МАКСТИЛ — Быстровозводимые металлоконструкции",
       },
     ],
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     title: "МАКСТИЛ — Быстровозводимые металлоконструкции",
     description:
       "Проектирование, производство и монтаж быстровозводимых зданий из металлоконструкций. 14 лет опыта.",
-    images: ["/og-image.jpg"],
+    images: ["https://lstkmk.ru/photo_2026-06-01_19-06-27%20(2).jpg"],
   },
   alternates: {
     canonical: "https://lstkmk.ru",
