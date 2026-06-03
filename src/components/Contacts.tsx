@@ -19,21 +19,25 @@ const VkIcon = () => (
   </svg>
 );
 
-const faqResponses: Record<string, string> = {
-  цена: "Стоимость зависит от типа здания, площади и утепления. Ориентировочно: от 7 000 руб/м² для холодного ангара до 15 000 руб/м² для утеплённого производственного здания. Воспользуйтесь калькулятором выше или задайте уточняющий вопрос.",
-  срок: "Средний срок строительства — 30-75 дней в зависимости от площади и сложности. Проектирование — от 10 дней, производство каркаса — от 15 дней, монтаж — от 14 дней.",
-  гарантия: "Мы даём гарантию 5 лет на металлоконструкции и 3 года на монтажные работы. Все материалы сертифицированы, сварочные швы проходят контроль качества.",
-  доставка: "Доставляем металлоконструкции по всей России. Стоимость доставки зависит от расстояния и объёма. При заказе от 500 м² — доставка бесплатно.",
-  утепление: "Предлагаем сэндвич-панели 80мм (лёгкое утепление) и 150мм (полное утепление). Для отапливаемых зданий рекомендуем 150мм — это обеспечит энергоэффективность.",
-  фундамент: "Проектируем и строим фундаменты под ключ: ленточные, столбчатые, свайные. Тип фундамента подбирается по результатам геологических изысканий.",
-};
-
-function getAiResponse(message: string): string {
-  const lower = message.toLowerCase();
-  for (const [key, response] of Object.entries(faqResponses)) {
-    if (lower.includes(key)) return response;
+// AI Chat API интеграция
+async function getAIResponse(message: string): Promise<string> {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+    
+    if (!response.ok) {
+      throw new Error("API error");
+    }
+    
+    const data = await response.json();
+    return data.reply;
+  } catch {
+    // Fallback при ошибке API
+    return "Извините, произошла ошибка соединения. Пожалуйста, позвоните нам: +7 (800) 100-91-51 — инженер ответит на все вопросы.";
   }
-  return "Спасибо за вопрос! Наш инженер свяжется с вами для подробной консультации. Или позвоните: +7 (800) 100-91-51 (бесплатно по России).";
 }
 
 interface Message {
@@ -60,16 +64,16 @@ export default function Contacts() {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages, typing]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const trimmed = input.trim();
     if (!trimmed) return;
     setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
     setInput("");
     setTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { role: "assistant", text: getAiResponse(trimmed) }]);
-      setTyping(false);
-    }, 800);
+    
+    const reply = await getAIResponse(trimmed);
+    setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
+    setTyping(false);
   };
 
   const submitForm = (e: React.FormEvent) => {
