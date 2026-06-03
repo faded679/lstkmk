@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "МАКСТИЛ — Быстровозводимые металлоконструкции | Ангары, склады, цеха",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   description:
     "Проектирование, производство и монтаж быстровозводимых зданий из металлоконструкций ЛСТК. Ангары, склады, производственные цеха, СТО, сельхозздания под ключ. 14 лет опыта. Гарантия 5 лет.",
   keywords: [
