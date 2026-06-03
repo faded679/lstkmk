@@ -92,6 +92,13 @@ export default function RootLayout({
       lang="ru"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
+      <head>
+        {/* Preload первого кадра HeroVideo */}
+        <link rel="preload" href="/frames/frame_001.webp?v=2" as="image" type="image/webp" fetchPriority="high" />
+        {/* Preload критических шрифтов */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         {children}
         {/* Яндекс.Метрика */}

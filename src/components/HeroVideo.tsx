@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -67,19 +67,31 @@ export default function HeroVideo() {
         let loaded = 0;
         const images: HTMLImageElement[] = [];
 
-        frameUrls.forEach((url, i) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = img.onerror = () => {
-            loaded++;
-            images[i] = img;
-            if (loaded === 1) drawFrame(0);
-            if (loaded === frameUrls.length) {
-              imagesRef.current = images;
-              resolve();
-            }
-          };
-        });
+        // Загружаем первый кадр с приоритетом
+        const firstImg = new Image();
+        firstImg.fetchPriority = "high";
+        firstImg.src = frameUrls[0];
+        firstImg.onload = firstImg.onerror = () => {
+          images[0] = firstImg;
+          drawFrame(0);
+          loaded++;
+          
+          // Остальные кадры грузим с задержкой
+          setTimeout(() => {
+            frameUrls.slice(1).forEach((url, idx) => {
+              const img = new Image();
+              img.src = url;
+              img.onload = img.onerror = () => {
+                loaded++;
+                images[idx + 1] = img;
+                if (loaded === frameUrls.length) {
+                  imagesRef.current = images;
+                  resolve();
+                }
+              };
+            });
+          }, 100);
+        };
       });
 
     let gsapCtx: gsap.Context;
