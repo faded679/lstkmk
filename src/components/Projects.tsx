@@ -138,16 +138,16 @@ export default function Projects() {
             {projects.map((project, i) => (
               <motion.article
                 key={project.title}
-                initial={reduce ? false : { opacity: 0, y: 24 }}
+                initial={reduce ? false : { opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ once: true, amount: 0 }}
                 transition={{
-                  duration: 0.6,
-                  delay: i * 0.08,
+                  duration: 0.5,
+                  delay: i * 0.06,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 onClick={() => setSelected(project)}
-                className="group rounded-xl border border-border bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
+                className="group rounded-xl border border-border bg-white md:hover:shadow-xl md:hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
               >
                 <div className="h-52 overflow-hidden relative">
                   <img
