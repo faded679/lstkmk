@@ -10,7 +10,9 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: 3001,
-      HOSTNAME: '0.0.0.0'
+      HOSTNAME: '0.0.0.0',
+      TELEGRAM_BOT_TOKEN: '8612647167:AAGsVai3AX8oQb5HbT1tUNZIwD24algWQtc',
+      TELEGRAM_CHAT_ID: '918858687'
     },
     // Логи
     log_file: '/var/log/pm2/lstkmk.log',
