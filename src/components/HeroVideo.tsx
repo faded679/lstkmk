@@ -87,17 +87,14 @@ export default function HeroVideo() {
         loadRange(0, EAGER_COUNT, () => {
           imagesRef.current = images;
           drawFrame(0);
-          eagerLoaded = EAGER_COUNT;
           resolve();
 
           // Остальные грузим лениво после первого скролла
-          const loadRest = () => {
+          window.addEventListener("scroll", () => {
             loadRange(EAGER_COUNT, frameUrls.length, () => {
               imagesRef.current = images;
             });
-            window.removeEventListener("scroll", loadRest, { capture: true });
-          };
-          window.addEventListener("scroll", loadRest, { passive: true, capture: true, once: true });
+          }, { passive: true, once: true });
         });
       });
 
