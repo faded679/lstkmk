@@ -77,7 +77,7 @@ const articles = [
     title: "Что такое ЛСТК: полный разбор технологии",
     excerpt:
       "ЛСТК — лёгкие стальные тонкостенные конструкции. Простым языком о том, из чего состоит технология, где применяется и чем отличается от кирпича, бетона и дерева.",
-    image: "/articles/lstk-vs-goryachekatanyj-prokat.jpg",
+    image: "/articles/chto-takoe-lstk.jpg",
     date: "4 июня 2026",
     readTime: "7 мин",
     category: "Технологии",
@@ -88,7 +88,7 @@ const articles = [
     title: "Фундамент под быстровозводимое здание: как выбрать и не ошибиться",
     excerpt:
       "Свайный, ленточный, плита — разбираем типы фундаментов под металлокаркас, критерии выбора по грунту и типичные ошибки, которые стоят дороже всего.",
-    image: "/articles/stroitelnaya-ploshadka.jpg",
+    image: "/articles/fundament-pod-bystrovozvodimoe-zdanie.jpg",
     date: "4 июня 2026",
     readTime: "8 мин",
     category: "Строительство",
@@ -99,7 +99,7 @@ const articles = [
     title: "Сроки строительства ангара: реальные цифры по этапам",
     excerpt:
       "Сколько времени занимает каждый этап — проектирование, производство, фундамент, монтаж. Что замедляет стройку и как сократить общий срок без потери качества.",
-    image: "/articles/5-variants-lstk.jpg",
+    image: "/articles/sroki-stroitelstva-angara.jpg",
     date: "4 июня 2026",
     readTime: "6 мин",
     category: "Строительство",
@@ -110,7 +110,7 @@ const articles = [
     title: "Как выбрать подрядчика для строительства из металлоконструкций",
     excerpt:
       "Чеклист для заказчика: как проверить юрлицо, оценить опыт, что спросить у менеджера и какие пункты договора нельзя игнорировать.",
-    image: "/articles/anticorossion-def.jpg",
+    image: "/articles/kak-vybrat-podryadchika-metallokonstrukcii.jpg",
     date: "4 июня 2026",
     readTime: "7 мин",
     category: "Советы заказчику",
