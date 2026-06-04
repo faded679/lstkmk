@@ -35,8 +35,10 @@ jobs:
           git pull origin main
           npm ci
           npm run build
-          # Копируем статику для standalone режима
+          # Копируем статику для standalone режима (удаляем старую чтобы не было стейл чанков)
+          rm -rf .next/standalone/.next/static
           cp -r .next/static .next/standalone/.next/static
+          rm -rf .next/standalone/public
           cp -r public .next/standalone/public
           # Проверяем и создаем папку для логов
           mkdir -p /var/log/pm2
