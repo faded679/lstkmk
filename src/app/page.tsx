@@ -11,7 +11,6 @@ import Calculator from "@/components/Calculator";
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
-import Script from "next/script";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -115,22 +114,15 @@ const websiteSchema = {
 export default function Home() {
   return (
     <>
-      <Script
-        id="schema-organization"
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationSchema),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
-      <Script
-        id="schema-localbusiness"
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(localBusinessSchema),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
-      <Script
-        id="schema-website"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />

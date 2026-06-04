@@ -64,34 +64,41 @@ export default function HeroVideo() {
 
     const loadImages = (): Promise<void> =>
       new Promise((resolve) => {
-        let loaded = 0;
-        const images: HTMLImageElement[] = [];
+        const images: HTMLImageElement[] = new Array(frameUrls.length);
+        const EAGER_COUNT = 5;
 
-        // Загружаем первый кадр с приоритетом
-        const firstImg = new Image();
-        firstImg.fetchPriority = "high";
-        firstImg.src = frameUrls[0];
-        firstImg.onload = firstImg.onerror = () => {
-          images[0] = firstImg;
-          drawFrame(0);
-          loaded++;
-          
-          // Остальные кадры грузим с задержкой
-          setTimeout(() => {
-            frameUrls.slice(1).forEach((url, idx) => {
-              const img = new Image();
-              img.src = url;
-              img.onload = img.onerror = () => {
-                loaded++;
-                images[idx + 1] = img;
-                if (loaded === frameUrls.length) {
-                  imagesRef.current = images;
-                  resolve();
-                }
-              };
-            });
-          }, 100);
+        const loadRange = (start: number, end: number, onAllDone?: () => void) => {
+          let count = 0;
+          const total = end - start;
+          for (let i = start; i < end; i++) {
+            const img = new Image();
+            if (i === 0) img.fetchPriority = "high";
+            img.src = frameUrls[i];
+            const idx = i;
+            img.onload = img.onerror = () => {
+              images[idx] = img;
+              count++;
+              if (count === total && onAllDone) onAllDone();
+            };
+          }
         };
+
+        // Грузим первые EAGER_COUNT кадров — сразу показываем
+        loadRange(0, EAGER_COUNT, () => {
+          imagesRef.current = images;
+          drawFrame(0);
+          eagerLoaded = EAGER_COUNT;
+          resolve();
+
+          // Остальные грузим лениво после первого скролла
+          const loadRest = () => {
+            loadRange(EAGER_COUNT, frameUrls.length, () => {
+              imagesRef.current = images;
+            });
+            window.removeEventListener("scroll", loadRest, { capture: true });
+          };
+          window.addEventListener("scroll", loadRest, { passive: true, capture: true, once: true });
+        });
       });
 
     let gsapCtx: gsap.Context;
