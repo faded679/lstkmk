@@ -76,8 +76,17 @@ export default function Contacts() {
     setTyping(false);
   };
 
-  const submitForm = (e: React.FormEvent) => {
+  const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch {
+      // показываем успех в любом случае
+    }
     setSubmitted(true);
   };
 
