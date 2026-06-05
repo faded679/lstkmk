@@ -165,7 +165,7 @@ const articles = [
     title: "Монтаж металлоконструкций: 10 типичных ошибок и способы их избежать",
     excerpt:
       "Технология монтажа металлоконструкций: типичные ошибки при монтаже колонн и ферм, контроль качества, приёмка металлоконструкций. Практические советы по монтажу металлического каркаса и ангаров.",
-    image: "/articles/montazh-metallokonstrukcij-oshibki.jpg",
+    image: "/articles/montazh-metallokonstrukcij-hero.jpg",
     date: "5 июня 2026",
     readTime: "12 мин",
     category: "Строительство",

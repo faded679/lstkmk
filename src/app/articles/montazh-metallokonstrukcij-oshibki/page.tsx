@@ -59,6 +59,13 @@ export default function ArticlePage() {
           </header>
 
           <div className="prose prose-lg max-w-none">
+            <div className="relative h-64 md:h-80 rounded-xl overflow-hidden mb-8">
+              <img
+                src="/articles/montazh-metallokonstrukcij-hero.jpg"
+                alt="Монтаж металлоконструкций — строительство склада из стального каркаса"
+                className="w-full h-full object-cover"
+              />
+            </div>
             <p className="text-xl text-muted leading-relaxed mb-8">
               <strong>Монтаж металлоконструкций</strong> — ключевой этап строительства быстровозводимых зданий. За 14 лет мы собрали сотни ангаров и промышленных объектов, наступив на все возможные грабли. В этой статье разбираем технологию монтажа металлического каркаса, типичные ошибки при монтаже колонн и ферм, способы контроля качества без дорогого оборудования и лайфхаки для приёмки металлоконструкций.
             </p>
@@ -96,6 +103,13 @@ export default function ArticlePage() {
             <p className="text-muted leading-relaxed mb-6">
               Даже опытные бригады допускают ошибки при монтаже металлического каркаса здания. Разбираем самые частые проблемы и способы их предотвращения.
             </p>
+            <div className="relative h-48 rounded-xl overflow-hidden my-6">
+              <img
+                src="/articles/montazh-oshibka-perekos.jpg"
+                alt="Ошибка при монтаже — перекос металлической колонны"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
             <h3 className="text-xl font-semibold text-foreground mt-8 mb-3">
               Ошибка №1: «Сначала соберём всё, потом выставим»
@@ -132,7 +146,13 @@ export default function ArticlePage() {
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">
               Контроль качества монтажа металлоконструкций без дорогого оборудования
             </h2>
-
+            <div className="relative h-48 rounded-xl overflow-hidden my-6">
+              <img
+                src="/articles/montazh-proverka-urovne.jpg"
+                alt="Инженер проверяет вертикаль колонны строительным уровнем"
+                className="w-full h-full object-cover"
+              />
+            </div>
             <p className="text-muted leading-relaxed mb-6">
               Не на каждом объекте есть тахеометр. Но точность можно получить и с базовыми инструментами:
             </p>
@@ -156,6 +176,13 @@ export default function ArticlePage() {
                   Шланговый уровень (гидроуровень) дешёв и точен. Используем для выверки обвязки и ростверков — точность до миллиметра на десятки метров.
                 </p>
               </div>
+            </div>
+            <div className="relative h-48 rounded-xl overflow-hidden my-6">
+              <img
+                src="/articles/montazh-bolty-soedinenie.jpg"
+                alt="Болтовое соединение стальных балок металлокаркаса"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">
@@ -199,7 +226,13 @@ export default function ArticlePage() {
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">
               Приёмка металлоконструкций: чеклист для заказчика
             </h2>
-
+            <div className="relative h-48 rounded-xl overflow-hidden my-6">
+              <img
+                src="/articles/montazh-fermy-vysota.jpg"
+                alt="Монтаж стальных ферм крыши на высоте"
+                className="w-full h-full object-cover"
+              />
+            </div>
             <p className="text-muted leading-relaxed mb-6">
               Контроль качества монтажа — задача не только подрядчика, но и заказчика. Приёмка металлоконструкций проводится поэтапно. Вот что можно проверить без инженерного образования:
             </p>
