@@ -109,7 +109,7 @@ export default function HeroVideo() {
             trigger: container,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1,
+            scrub: 0.5,
             invalidateOnRefresh: true,
           },
         });
@@ -137,7 +137,7 @@ export default function HeroVideo() {
               trigger: container,
               start: "top+=5% top",
               end: "top+=30% top",
-              scrub: 1.2,
+              scrub: 0.6,
             },
           }
         );
@@ -152,7 +152,7 @@ export default function HeroVideo() {
               trigger: container,
               start: "top+=5% top",
               end: "top+=30% top",
-              scrub: 1.2,
+              scrub: 0.6,
             },
           }
         );
@@ -174,7 +174,7 @@ export default function HeroVideo() {
     <section
       ref={containerRef}
       className="relative bg-white"
-      style={{ height: "400vh" }}
+      style={{ height: "250vh" }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col bg-white">
         {/* Centred heading */}
