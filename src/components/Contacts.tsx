@@ -59,6 +59,8 @@ export default function Contacts() {
   // Form state
   const [form, setForm] = useState({ name: "", phone: "", comment: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -78,16 +80,34 @@ export default function Contacts() {
 
   const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Валидация телефона
+    const phoneDigits = form.phone.replace(/\D/g, "");
+    if (phoneDigits.length < 10) {
+      setError("Введите корректный номер телефона");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Ошибка отправки. Попробуйте позже.");
+        return;
+      }
+      setSubmitted(true);
+      setForm({ name: "", phone: "", comment: "" });
     } catch {
-      // показываем успех в любом случае
+      setError("Ошибка соединения. Проверьте интернет.");
+    } finally {
+      setLoading(false);
     }
-    setSubmitted(true);
   };
 
   return (
@@ -214,11 +234,22 @@ export default function Contacts() {
                       className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors resize-none"
                     />
                   </div>
+                  {error && (
+                    <p className="text-sm text-red-600 text-center">{error}</p>
+                  )}
                   <button
                     type="submit"
-                    className="w-full h-11 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+                    disabled={loading}
+                    className="w-full h-11 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Отправить заявку
+                    {loading ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      "Отправить заявку"
+                    )}
                   </button>
                   <p className="text-[11px] text-muted text-center leading-relaxed">
                     Нажимая кнопку, вы соглашаетесь с{" "}
