@@ -1,53 +1,125 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const TOTAL_FRAMES = 152;
+
+function buildFrameUrls(): string[] {
+  const urls: string[] = [];
+  for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    urls.push(`/frames2/frame_${String(i).padStart(3, "0")}.webp`);
+  }
+  return urls;
+}
+
+const frameUrls = buildFrameUrls();
+
 export default function HeroVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const frameObj = useRef({ frame: 0 });
   const leftLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const rightLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!video || !container) return;
+    if (!canvas || !container) return;
 
-    video.pause();
-    video.currentTime = 0;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const handleLoaded = () => {
-      setIsLoaded(true);
+    const drawFrame = (i: number) => {
+      const img = imagesRef.current[i];
+      if (!img || !canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const canvasRatio = rect.width / rect.height;
+      let dw: number, dh: number, dx: number, dy: number;
+      if (canvasRatio > imgRatio) {
+        dh = rect.height;
+        dw = dh * imgRatio;
+        dx = (rect.width - dw) / 2;
+        dy = 0;
+      } else {
+        dw = rect.width;
+        dh = dw / imgRatio;
+        dx = 0;
+        dy = (rect.height - dh) / 2;
+      }
+      ctx.drawImage(img, dx, dy, dw, dh);
     };
 
-    video.addEventListener("loadedmetadata", handleLoaded);
-    if (video.duration) setIsLoaded(true);
+    const loadImages = (): Promise<void> =>
+      new Promise((resolve) => {
+        const images: HTMLImageElement[] = new Array(frameUrls.length);
+        const EAGER_COUNT = 10;
+
+        const loadRange = (start: number, end: number, onAllDone?: () => void) => {
+          let count = 0;
+          const total = end - start;
+          for (let i = start; i < end; i++) {
+            const img = new Image();
+            if (i === 0) img.fetchPriority = "high";
+            img.src = frameUrls[i];
+            const idx = i;
+            img.onload = img.onerror = () => {
+              images[idx] = img;
+              count++;
+              if (count === total && onAllDone) onAllDone();
+            };
+          }
+        };
+
+        loadRange(0, EAGER_COUNT, () => {
+          imagesRef.current = images;
+          drawFrame(0);
+          resolve();
+
+          window.addEventListener("scroll", () => {
+            loadRange(EAGER_COUNT, frameUrls.length, () => {
+              imagesRef.current = images;
+            });
+          }, { passive: true, once: true });
+        });
+      });
 
     let gsapCtx: gsap.Context;
 
-    gsapCtx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.3,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (video && video.duration && isLoaded) {
-              const targetTime = self.progress * video.duration;
-              if (Math.abs(video.currentTime - targetTime) > 0.1) {
-                video.currentTime = targetTime;
-              }
-            }
+    loadImages().then(() => {
+      drawFrame(0);
+
+      gsapCtx = gsap.context(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5,
+            invalidateOnRefresh: true,
           },
-        },
-      });
+        });
+
+        tl.to(frameObj.current, {
+          frame: imagesRef.current.length - 1,
+          ease: "none",
+          onUpdate: () => {
+            const idx = Math.round(frameObj.current.frame);
+            drawFrame(idx);
+          },
+        });
 
       const leftEls = leftLabelsRef.current.filter(Boolean);
       const rightEls = rightLabelsRef.current.filter(Boolean);
@@ -83,11 +155,16 @@ export default function HeroVideo() {
       );
     }, container);
 
+    const onResize = () => {
+      drawFrame(Math.round(frameObj.current.frame));
+    };
+    window.addEventListener("resize", onResize);
+
     return () => {
-      video.removeEventListener("loadedmetadata", handleLoaded);
+      window.removeEventListener("resize", onResize);
       if (gsapCtx) gsapCtx.revert();
     };
-  }, [isLoaded]);
+  }, []);
 
   return (
     <section
@@ -136,18 +213,9 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
-            {!isLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white">
-                <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
-            <video
-              ref={videoRef}
-              src="/hero-animation.mp4"
-              className={`absolute inset-0 w-full h-full object-contain bg-white transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
-              playsInline
-              muted
-              preload="auto"
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full bg-white"
             />
           </div>
 
