@@ -11,7 +11,7 @@ const TOTAL_FRAMES = 152;
 function buildFrameUrls(): string[] {
   const urls: string[] = [];
   for (let i = 1; i <= TOTAL_FRAMES; i++) {
-    urls.push(`/frames2/frame_${String(i).padStart(3, "0")}.webp`);
+    urls.push(`/frames2/frame_${String(i).padStart(4, "0")}.webp`);
   }
   return urls;
 }
@@ -121,49 +121,50 @@ export default function HeroVideo() {
           },
         });
 
-      const leftEls = leftLabelsRef.current.filter(Boolean);
-      const rightEls = rightLabelsRef.current.filter(Boolean);
+        const leftEls = leftLabelsRef.current.filter(Boolean);
+        const rightEls = rightLabelsRef.current.filter(Boolean);
 
-      gsap.fromTo(leftEls,
-        { opacity: 0, x: -18 },
-        {
-          opacity: 1, x: 0,
-          stagger: 0.12,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: container,
-            start: "top+=5% top",
-            end: "top+=30% top",
-            scrub: 0.6,
-          },
-        }
-      );
+        gsap.fromTo(leftEls,
+          { opacity: 0, x: -18 },
+          {
+            opacity: 1, x: 0,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: container,
+              start: "top+=5% top",
+              end: "top+=30% top",
+              scrub: 0.6,
+            },
+          }
+        );
 
-      gsap.fromTo(rightEls,
-        { opacity: 0, x: 18 },
-        {
-          opacity: 1, x: 0,
-          stagger: 0.12,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: container,
-            start: "top+=5% top",
-            end: "top+=30% top",
-            scrub: 0.6,
-          },
-        }
-      );
-    }, container);
+        gsap.fromTo(rightEls,
+          { opacity: 0, x: 18 },
+          {
+            opacity: 1, x: 0,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: container,
+              start: "top+=5% top",
+              end: "top+=30% top",
+              scrub: 0.6,
+            },
+          }
+        );
+      }, container);
 
-    const onResize = () => {
-      drawFrame(Math.round(frameObj.current.frame));
-    };
-    window.addEventListener("resize", onResize);
+      const onResize = () => {
+        drawFrame(Math.round(frameObj.current.frame));
+      };
+      window.addEventListener("resize", onResize);
 
-    return () => {
-      window.removeEventListener("resize", onResize);
-      if (gsapCtx) gsapCtx.revert();
-    };
+      return () => {
+        window.removeEventListener("resize", onResize);
+        if (gsapCtx) gsapCtx.revert();
+      };
+    });
   }, []);
 
   return (
