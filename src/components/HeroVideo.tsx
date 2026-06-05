@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +11,7 @@ export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const leftLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const rightLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -20,6 +21,13 @@ export default function HeroVideo() {
     video.pause();
     video.currentTime = 0;
 
+    const handleLoaded = () => {
+      setIsLoaded(true);
+    };
+
+    video.addEventListener("loadedmetadata", handleLoaded);
+    if (video.duration) setIsLoaded(true);
+
     let gsapCtx: gsap.Context;
 
     gsapCtx = gsap.context(() => {
@@ -28,11 +36,14 @@ export default function HeroVideo() {
           trigger: container,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.5,
+          scrub: 0.3,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            if (video && video.duration) {
-              video.currentTime = self.progress * video.duration;
+            if (video && video.duration && isLoaded) {
+              const targetTime = self.progress * video.duration;
+              if (Math.abs(video.currentTime - targetTime) > 0.1) {
+                video.currentTime = targetTime;
+              }
             }
           },
         },
@@ -73,9 +84,10 @@ export default function HeroVideo() {
     }, container);
 
     return () => {
+      video.removeEventListener("loadedmetadata", handleLoaded);
       if (gsapCtx) gsapCtx.revert();
     };
-  }, []);
+  }, [isLoaded]);
 
   return (
     <section
@@ -124,10 +136,15 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
+            {!isLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white">
+                <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
             <video
               ref={videoRef}
               src="/hero-animation.mp4"
-              className="absolute inset-0 w-full h-full object-contain bg-white"
+              className={`absolute inset-0 w-full h-full object-contain bg-white transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
               playsInline
               muted
               preload="auto"
