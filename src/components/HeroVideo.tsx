@@ -1,171 +1,78 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TOTAL_FRAMES = 76;
-
-function buildFrameUrls(): string[] {
-  const urls: string[] = [];
-  for (let i = 1; i <= TOTAL_FRAMES; i++) {
-    urls.push(`/frames/frame_${String(i).padStart(3, "0")}.webp?v=2`);
-  }
-  return urls;
-}
-
-const frameUrls = buildFrameUrls();
-
 export default function HeroVideo() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
-  const frameObj = useRef({ frame: 0 });
+  const videoRef = useRef<HTMLVideoElement>(null);
   const leftLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const rightLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const video = videoRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!video || !container) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const drawFrame = (i: number) => {
-      const img = imagesRef.current[i];
-      if (!img || !canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, rect.width, rect.height);
-
-      const imgRatio = img.naturalWidth / img.naturalHeight;
-      const canvasRatio = rect.width / rect.height;
-      let dw: number, dh: number, dx: number, dy: number;
-      if (canvasRatio > imgRatio) {
-        dh = rect.height;
-        dw = dh * imgRatio;
-        dx = (rect.width - dw) / 2;
-        dy = 0;
-      } else {
-        dw = rect.width;
-        dh = dw / imgRatio;
-        dx = 0;
-        dy = (rect.height - dh) / 2;
-      }
-      ctx.drawImage(img, dx, dy, dw, dh);
-    };
-
-    const loadImages = (): Promise<void> =>
-      new Promise((resolve) => {
-        const images: HTMLImageElement[] = new Array(frameUrls.length);
-        const EAGER_COUNT = 5;
-
-        const loadRange = (start: number, end: number, onAllDone?: () => void) => {
-          let count = 0;
-          const total = end - start;
-          for (let i = start; i < end; i++) {
-            const img = new Image();
-            if (i === 0) img.fetchPriority = "high";
-            img.src = frameUrls[i];
-            const idx = i;
-            img.onload = img.onerror = () => {
-              images[idx] = img;
-              count++;
-              if (count === total && onAllDone) onAllDone();
-            };
-          }
-        };
-
-        // Грузим первые EAGER_COUNT кадров — сразу показываем
-        loadRange(0, EAGER_COUNT, () => {
-          imagesRef.current = images;
-          drawFrame(0);
-          resolve();
-
-          // Остальные грузим лениво после первого скролла
-          window.addEventListener("scroll", () => {
-            loadRange(EAGER_COUNT, frameUrls.length, () => {
-              imagesRef.current = images;
-            });
-          }, { passive: true, once: true });
-        });
-      });
+    video.pause();
+    video.currentTime = 0;
 
     let gsapCtx: gsap.Context;
 
-    loadImages().then(() => {
-      drawFrame(0);
+    gsapCtx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (video && video.duration) {
+              video.currentTime = self.progress * video.duration;
+            }
+          },
+        },
+      });
 
-      gsapCtx = gsap.context(() => {
-        const tl = gsap.timeline({
+      const leftEls = leftLabelsRef.current.filter(Boolean);
+      const rightEls = rightLabelsRef.current.filter(Boolean);
+
+      gsap.fromTo(leftEls,
+        { opacity: 0, x: -18 },
+        {
+          opacity: 1, x: 0,
+          stagger: 0.12,
+          ease: "power2.out",
           scrollTrigger: {
             trigger: container,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.5,
-            invalidateOnRefresh: true,
+            start: "top+=5% top",
+            end: "top+=30% top",
+            scrub: 0.6,
           },
-        });
+        }
+      );
 
-        tl.to(frameObj.current, {
-          frame: imagesRef.current.length - 1,
-          ease: "none",
-          onUpdate: () => {
-            const idx = Math.round(frameObj.current.frame);
-            drawFrame(idx);
+      gsap.fromTo(rightEls,
+        { opacity: 0, x: 18 },
+        {
+          opacity: 1, x: 0,
+          stagger: 0.12,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: container,
+            start: "top+=5% top",
+            end: "top+=30% top",
+            scrub: 0.6,
           },
-        });
-
-        // Side labels: stagger in from left/right as user scrolls
-        const leftEls = leftLabelsRef.current.filter(Boolean);
-        const rightEls = rightLabelsRef.current.filter(Boolean);
-
-        gsap.fromTo(leftEls,
-          { opacity: 0, x: -18 },
-          {
-            opacity: 1, x: 0,
-            stagger: 0.12,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: container,
-              start: "top+=5% top",
-              end: "top+=30% top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        gsap.fromTo(rightEls,
-          { opacity: 0, x: 18 },
-          {
-            opacity: 1, x: 0,
-            stagger: 0.12,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: container,
-              start: "top+=5% top",
-              end: "top+=30% top",
-              scrub: 0.6,
-            },
-          }
-        );
-      }, container);
-    });
-
-    const onResize = () => {
-      drawFrame(Math.round(frameObj.current.frame));
-    };
-    window.addEventListener("resize", onResize);
+        }
+      );
+    }, container);
 
     return () => {
-      window.removeEventListener("resize", onResize);
       if (gsapCtx) gsapCtx.revert();
     };
   }, []);
@@ -177,7 +84,6 @@ export default function HeroVideo() {
       style={{ height: "250vh" }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col bg-white">
-        {/* Centred heading */}
         <div className="pt-24 pb-4 px-6 lg:px-10 text-center bg-white">
           <p className="text-sm font-mono uppercase tracking-[0.18em] text-accent-orange mb-3">
             От фундамента до готового здания
@@ -204,9 +110,7 @@ export default function HeroVideo() {
           </div>
         </div>
 
-        {/* Canvas + side labels */}
         <div className="flex-1 relative min-h-0 flex items-stretch bg-white">
-          {/* Left labels */}
           <div className="hidden lg:flex flex-col justify-around items-end w-36 xl:w-44 pr-4 py-4 select-none bg-white">
             {["Проектирование", "Производство", "Монтаж"].map((label, i) => (
               <span
@@ -219,15 +123,17 @@ export default function HeroVideo() {
             ))}
           </div>
 
-          {/* Canvas */}
           <div className="relative flex-1 min-w-0 bg-white">
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 w-full h-full bg-white"
+            <video
+              ref={videoRef}
+              src="/hero-animation.mp4"
+              className="absolute inset-0 w-full h-full object-contain bg-white"
+              playsInline
+              muted
+              preload="auto"
             />
           </div>
 
-          {/* Right labels */}
           <div className="hidden lg:flex flex-col justify-around items-start w-36 xl:w-44 pl-4 py-4 select-none bg-white">
             {["Под ключ", "45 дней", "14 лет опыта"].map((label, i) => (
               <span
