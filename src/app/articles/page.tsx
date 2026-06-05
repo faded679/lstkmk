@@ -116,6 +116,39 @@ const articles = [
     category: "Советы заказчику",
     slug: "kak-vybrat-podryadchika-metallokonstrukcii",
   },
+  {
+    id: 11,
+    title: "Ангар для сельского хозяйства: виды, размеры, требования",
+    excerpt:
+      "Зернохранилища, коровники, птичники, навесы — какие конструктивные решения применяются в АПК и чем сельхозангар отличается от промышленного.",
+    image: "/articles/angar-dlya-selskogo-hozyajstva.jpg",
+    date: "5 июня 2026",
+    readTime: "7 мин",
+    category: "Строительство",
+    slug: "angar-dlya-selskogo-hozyajstva",
+  },
+  {
+    id: 12,
+    title: "Утепление быстровозводимого здания: нормы и практика",
+    excerpt:
+      "Какой слой утеплителя нужен для отапливаемого склада, цеха или СТО. Расчёт по СП 50, типичные ошибки монтажа и как они влияют на теплопотери.",
+    image: "/articles/uteplenie-bystrovozvodimogo-zdaniya.jpg",
+    date: "5 июня 2026",
+    readTime: "8 мин",
+    category: "Материалы",
+    slug: "uteplenie-bystrovozvodimogo-zdaniya",
+  },
+  {
+    id: 13,
+    title: "Пожарная безопасность металлических зданий: требования и решения",
+    excerpt:
+      "Огнезащитная обработка металлоконструкций, классы огнестойкости, требования МЧС — что нужно знать ещё на этапе проектирования.",
+    image: "/articles/pozharnaya-bezopasnost-metallicheskih-zdanij.jpg",
+    date: "5 июня 2026",
+    readTime: "6 мин",
+    category: "Безопасность",
+    slug: "pozharnaya-bezopasnost-metallicheskih-zdanij",
+  },
 ];
 
 export default function ArticlesPage() {
