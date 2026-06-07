@@ -16,10 +16,9 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm install
     
     - name: Build
       run: npm run build
@@ -33,7 +32,7 @@ jobs:
         script: |
           cd /var/www/lstkmk.ru
           git pull origin main
-          npm ci
+          npm install
           npm run build
           # Копируем статику для standalone режима (удаляем старую чтобы не было стейл чанков)
           rm -rf .next/standalone/.next/static
