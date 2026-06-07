@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { saveLead } from "@/lib/db";
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID!;
@@ -11,17 +12,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Phone is required" }, { status: 400 });
     }
 
+    // Сохраняем в БД
+    const lead = saveLead(name || "", phone, comment || "");
+
     const text = [
       "📩 <b>Новая заявка с сайта МАКСТИЛ</b>",
       "",
       `👤 <b>Имя:</b> ${name || "не указано"}`,
       `📞 <b>Телефон:</b> ${phone}`,
       comment ? `💬 <b>Комментарий:</b> ${comment}` : null,
+      `🆔 <b>ID:</b> ${lead.id}`,
     ]
       .filter(Boolean)
       .join("\n");
 
-    const response = await fetch(
+    // Отправляем в Telegram (не блокируем если ошибка)
+    fetch(
       `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
         method: "POST",
@@ -32,15 +38,9 @@ export async function POST(req: NextRequest) {
           parse_mode: "HTML",
         }),
       }
-    );
+    ).catch(err => console.error("Telegram error:", err));
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("Telegram error:", err);
-      return NextResponse.json({ error: "Telegram error" }, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, id: lead.id });
   } catch (e) {
     console.error("Contact API error:", e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
