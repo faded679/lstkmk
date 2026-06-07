@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Phone, User, MessageSquare, Calendar, Search, Lock } from "@phosphor-icons/react";
+import { Phone, User, MessageSquare, Calendar, MagnifyingGlass, Lock } from "@phosphor-icons/react";
 
 interface Lead {
   id: number;
@@ -115,7 +115,7 @@ export default function LeadsAdmin() {
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
               <input
                 type="text"
                 value={search}
