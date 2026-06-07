@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Phone, User, MessageSquare, Calendar, MagnifyingGlass, Lock } from "@phosphor-icons/react";
+import { PhoneIcon, UserIcon, ChatTeardropTextIcon, CalendarIcon, MagnifyingGlassIcon, LockIcon } from "@phosphor-icons/react";
 
 interface Lead {
   id: number;
@@ -75,7 +75,7 @@ export default function LeadsAdmin() {
         >
           <div className="flex items-center justify-center mb-6">
             <div className="w-12 h-12 bg-accent-blue/10 rounded-full flex items-center justify-center">
-              <Lock className="w-6 h-6 text-accent-blue" />
+              <LockIcon className="w-6 h-6 text-accent-blue" />
             </div>
           </div>
           <h1 className="text-xl font-bold text-center mb-2">Админ панель</h1>
@@ -115,7 +115,7 @@ export default function LeadsAdmin() {
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
               <input
                 type="text"
                 value={search}
@@ -150,11 +150,11 @@ export default function LeadsAdmin() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-muted" />
+                        <UserIcon className="w-4 h-4 text-muted" />
                         <span className="font-medium">{lead.name || "—"}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-accent-blue" />
+                        <PhoneIcon className="w-4 h-4 text-accent-blue" />
                         <a 
                           href={`tel:${lead.phone}`}
                           className="text-accent-blue hover:underline font-medium"
@@ -167,7 +167,7 @@ export default function LeadsAdmin() {
                   
                   <div className="flex-1 md:pl-4 md:border-l border-border">
                     <div className="flex items-start gap-2">
-                      <MessageSquare className="w-4 h-4 text-muted mt-0.5" />
+                      <ChatTeardropTextIcon className="w-4 h-4 text-muted mt-0.5" />
                       <p className="text-sm text-muted">
                         {lead.comment || "—"}
                       </p>
@@ -175,7 +175,7 @@ export default function LeadsAdmin() {
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-muted md:pl-4">
-                    <Calendar className="w-4 h-4" />
+                    <CalendarIcon className="w-4 h-4" />
                     {formatDate(lead.created_at)}
                   </div>
                 </div>
