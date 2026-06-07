@@ -65,7 +65,7 @@ export default function HeroVideo() {
     const loadImages = (): Promise<void> =>
       new Promise((resolve) => {
         const images: HTMLImageElement[] = new Array(frameUrls.length);
-        const EAGER_COUNT = 10;
+        const EAGER_COUNT = 50;
 
         const loadRange = (start: number, end: number, onAllDone?: () => void) => {
           let count = 0;
