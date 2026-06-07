@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Warehouse,
@@ -9,12 +9,12 @@ import {
   Storefront,
 } from "@phosphor-icons/react";
 
-type BuildingType = "warehouse" | "production" | "agriculture" | "commercial" | "hangar" | "service";
-type Insulation = "none" | "light" | "full";
+type BuildingType = "warehouse" | "production" | "agriculture" | "commercial" | "small-building" | "service";
+type Insulation = "proflist" | "sandwich" | "pir";
 
 // Real prices from pricelist.txt (300, 600, 900, 1200, 1500 m2)
 const priceMatrix: Record<BuildingType, number[]> = {
-  hangar: [1485000, 2970000, 4455000, 5940000, 7425000],      // Ангары
+  "small-building": [600000, 1200000, 1800000, 2400000, 3000000],  // Здания до 300м²
   warehouse: [1425000, 2850000, 4275000, 5700000, 7125000],    // Склады
   production: [1185000, 2370000, 3555000, 4740000, 5925000],   // Производство
   agriculture: [1725000, 3450000, 5175000, 6900000, 8625000],  // Коровники (avg)
@@ -29,7 +29,7 @@ const buildingTypes: {
   label: string;
   icon: typeof Warehouse;
 }[] = [
-  { id: "hangar", label: "Ангар", icon: Warehouse },
+  { id: "small-building", label: "Здания до 300 м²", icon: Warehouse },
   { id: "warehouse", label: "Склад", icon: Warehouse },
   { id: "production", label: "Производство", icon: Factory },
   { id: "agriculture", label: "Сельхоз", icon: Barn },
@@ -44,22 +44,22 @@ const insulationOptions: {
   multiplier: number;
 }[] = [
   {
-    id: "none",
-    label: "Без утепления",
-    description: "Холодный ангар",
+    id: "proflist",
+    label: "Профлист",
+    description: "Холодное здание",
     multiplier: 1,
   },
   {
-    id: "light",
-    label: "Лёгкое",
-    description: "Сэндвич 80мм",
-    multiplier: 1.15,
+    id: "sandwich",
+    label: "Сэндвич-панели",
+    description: "Утепленное",
+    multiplier: 1.25,
   },
   {
-    id: "full",
-    label: "Полное",
-    description: "Сэндвич 150мм",
-    multiplier: 1.35,
+    id: "pir",
+    label: "PIR-панели",
+    description: "Премиум утепление",
+    multiplier: 1.5,
   },
 ];
 
@@ -69,7 +69,16 @@ export default function Calculator() {
   const [width, setWidth] = useState(24);
   const [length, setLength] = useState(48);
   const [height, setHeight] = useState(8);
-  const [insulation, setInsulation] = useState<Insulation>("light");
+
+  // Reset dimensions when switching to small-building
+  useEffect(() => {
+    if (type === "small-building") {
+      setWidth(6);
+      setLength(12);
+      setHeight(4);
+    }
+  }, [type]);
+  const [insulation, setInsulation] = useState<Insulation>("sandwich");
 
   const selectedType = buildingTypes.find((t) => t.id === type)!;
   const selectedInsulation = insulationOptions.find(
@@ -167,11 +176,18 @@ export default function Calculator() {
                 </label>
                 <input
                   type="range"
-                  min={12}
-                  max={60}
-                  step={6}
-                  value={width}
-                  onChange={(e) => setWidth(Number(e.target.value))}
+                  min={type === "small-building" ? 0 : 12}
+                  max={type === "small-building" ? 3 : 60}
+                  step={type === "small-building" ? 1 : 6}
+                  value={type === "small-building" ? [4, 6, 8, 10].indexOf(width) : width}
+                  onChange={(e) => {
+                    if (type === "small-building") {
+                      const widths = [4, 6, 8, 10];
+                      setWidth(widths[Number(e.target.value)]);
+                    } else {
+                      setWidth(Number(e.target.value));
+                    }
+                  }}
                   className="w-full accent-accent-blue"
                 />
                 <div className="mt-1 text-2xl font-bold text-foreground">
@@ -185,11 +201,18 @@ export default function Calculator() {
                 </label>
                 <input
                   type="range"
-                  min={18}
-                  max={120}
-                  step={6}
-                  value={length}
-                  onChange={(e) => setLength(Number(e.target.value))}
+                  min={type === "small-building" ? 0 : 18}
+                  max={type === "small-building" ? 3 : 120}
+                  step={type === "small-building" ? 1 : 6}
+                  value={type === "small-building" ? [6, 12, 18, 24].indexOf(length) : length}
+                  onChange={(e) => {
+                    if (type === "small-building") {
+                      const lengths = [6, 12, 18, 24];
+                      setLength(lengths[Number(e.target.value)]);
+                    } else {
+                      setLength(Number(e.target.value));
+                    }
+                  }}
                   className="w-full accent-accent-blue"
                 />
                 <div className="mt-1 text-2xl font-bold text-foreground">
@@ -203,11 +226,18 @@ export default function Calculator() {
                 </label>
                 <input
                   type="range"
-                  min={4}
-                  max={18}
-                  step={1}
-                  value={height}
-                  onChange={(e) => setHeight(Number(e.target.value))}
+                  min={type === "small-building" ? 0 : 4}
+                  max={type === "small-building" ? 3 : 18}
+                  step={type === "small-building" ? 1 : 1}
+                  value={type === "small-building" ? [3, 4, 5, 6].indexOf(height) : height}
+                  onChange={(e) => {
+                    if (type === "small-building") {
+                      const heights = [3, 4, 5, 6];
+                      setHeight(heights[Number(e.target.value)]);
+                    } else {
+                      setHeight(Number(e.target.value));
+                    }
+                  }}
                   className="w-full accent-accent-blue"
                 />
                 <div className="mt-1 text-2xl font-bold text-foreground">

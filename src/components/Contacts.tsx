@@ -36,7 +36,7 @@ async function getAIResponse(message: string): Promise<string> {
     return data.reply;
   } catch {
     // Fallback при ошибке API
-    return "Извините, произошла ошибка соединения. Пожалуйста, позвоните нам: +7 (800) 100-91-51 — инженер ответит на все вопросы.";
+    return "Извините, произошла ошибка соединения. Пожалуйста, позвоните нам: +7 (980) 321-15-42 — инженер ответит на все вопросы.";
   }
 }
 
@@ -139,9 +139,9 @@ export default function Contacts() {
             className="space-y-5"
           >
             {[
-              { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (800) 100-91-51", sub: "Бесплатно по России", href: "tel:+78001009151" },
+              { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (980) 321-15-42", sub: "Бесплатно по России", href: "tel:+79803211542" },
               { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: "mailto:maxsteel31@bk.ru" },
-              { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородский р-н, с. Репное, ул. Автодорожная, 2" },
+              { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, с. Репное, ул. Автодорожная, 2" },
               { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 9:00–18:00" },
             ].map(({ icon: Icon, color, label, value, sub, href }) => (
               <div key={label} className="flex items-start gap-4 bg-white rounded-xl p-4 border border-border">

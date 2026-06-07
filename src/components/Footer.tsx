@@ -68,10 +68,10 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <a
-                  href="tel:+78001009151"
+                  href="tel:+79803211542"
                   className="hover:text-foreground transition-colors"
                 >
-                  +7 (800) 100-91-51
+                  +7 (980) 321-15-42
                 </a>
               </li>
               <li>
@@ -83,7 +83,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-slate-500">
-                Белгородский р-н, с. Репное, ул. Автодорожная, 2
+                Белгородская область, с. Репное, ул. Автодорожная, 2
               </li>
             </ul>
           </div>

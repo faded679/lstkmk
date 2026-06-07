@@ -26,11 +26,11 @@ const organizationSchema = {
     addressCountry: "RU",
     addressRegion: "Белгородская область",
     addressLocality: "Белгород",
-    streetAddress: "Белгородский район",
+    streetAddress: "Белгородская область",
   },
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+7-800-100-91-51",
+    telephone: "+7-980-321-15-42",
     contactType: "sales",
     availableLanguage: ["Russian"],
   },
@@ -53,7 +53,7 @@ const localBusinessSchema = {
     addressCountry: "RU",
     addressRegion: "Белгородская область",
     addressLocality: "Белгород",
-    streetAddress: "Белгородский район",
+    streetAddress: "Белгородская область",
   },
   geo: {
     "@type": "GeoCoordinates",
