@@ -40,25 +40,21 @@ const buildingTypes: {
 const insulationOptions: {
   id: Insulation;
   label: string;
-  description: string;
   multiplier: number;
 }[] = [
   {
     id: "proflist",
     label: "Профлист",
-    description: "Холодное здание",
     multiplier: 1,
   },
   {
     id: "sandwich",
     label: "Сэндвич-панели",
-    description: "Утепленное",
     multiplier: 1.25,
   },
   {
     id: "pir",
     label: "PIR-панели",
-    description: "Премиум утепление",
     multiplier: 1.5,
   },
 ];
@@ -270,9 +266,6 @@ export default function Calculator() {
                       }`}
                     >
                       {opt.label}
-                    </span>
-                    <span className="block text-xs text-muted mt-0.5">
-                      {opt.description}
                     </span>
                   </button>
                 ))}
