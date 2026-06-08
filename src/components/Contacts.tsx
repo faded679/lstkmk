@@ -61,6 +61,13 @@ export default function Contacts() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText("maxsteel31@bk.ru");
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -140,17 +147,27 @@ export default function Contacts() {
           >
             {[
               { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (980) 321-15-42", sub: "Бесплатно по России", href: "tel:+79803211542" },
-              { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: "mailto:maxsteel31@bk.ru" },
+              { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: null, copyEmail: true },
               { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, с. Репное, ул. Автодорожная, 2" },
               { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 9:00–18:00" },
-            ].map(({ icon: Icon, color, label, value, sub, href }) => (
+            ].map(({ icon: Icon, color, label, value, sub, href, copyEmail: isCopy }) => (
               <div key={label} className="flex items-start gap-4 bg-white rounded-xl p-4 border border-border">
                 <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-${color}/10`}>
                   <Icon size={20} weight="bold" className={`text-${color}`} />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <div className="text-xs text-muted mb-0.5">{label}</div>
-                  {href ? (
+                  {isCopy ? (
+                    <button
+                      onClick={copyEmail}
+                      className="flex items-center gap-2 text-sm font-semibold text-foreground hover:text-accent-orange transition-colors group"
+                    >
+                      <span>{value}</span>
+                      <span className={`text-xs font-normal transition-all duration-300 ${emailCopied ? "opacity-100 text-green-500" : "opacity-0 group-hover:opacity-60 text-muted"}`}>
+                        {emailCopied ? "✓ Скопировано" : "копировать"}
+                      </span>
+                    </button>
+                  ) : href ? (
                     <a href={href} className="text-sm font-semibold text-foreground hover:text-accent-blue transition-colors">{value}</a>
                   ) : (
                     <div className="text-sm font-semibold text-foreground">{value}</div>
