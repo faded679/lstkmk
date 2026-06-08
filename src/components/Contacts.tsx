@@ -148,7 +148,7 @@ export default function Contacts() {
             {[
               { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (980) 321-15-42", sub: "Бесплатно по России", href: "tel:+79803211542" },
               { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: null, copyEmail: true },
-              { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, с. Репное, ул. Автодорожная, 2" },
+              { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, с. Репное, ул. Автодорожная, 2", href: "https://yandex.ru/maps/?text=Белгородская+область,+с.+Репное,+ул.+Автодорожная,+2" },
               { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 9:00–18:00" },
             ].map(({ icon: Icon, color, label, value, sub, href, copyEmail: isCopy }) => (
               <div key={label} className="flex items-start gap-4 bg-white rounded-xl p-4 border border-border">
@@ -168,7 +168,7 @@ export default function Contacts() {
                       </span>
                     </button>
                   ) : href ? (
-                    <a href={href} className="text-sm font-semibold text-foreground hover:text-accent-blue transition-colors">{value}</a>
+                    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined} className="text-sm font-semibold text-foreground hover:text-accent-blue transition-colors">{value}</a>
                   ) : (
                     <div className="text-sm font-semibold text-foreground">{value}</div>
                   )}
