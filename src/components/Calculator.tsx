@@ -124,7 +124,7 @@ export default function Calculator() {
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ amount: 0.1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mb-14"
         >
@@ -141,7 +141,7 @@ export default function Calculator() {
           <motion.div
             initial={reduce ? false : { opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-3 space-y-8"
           >
@@ -281,7 +281,7 @@ export default function Calculator() {
           <motion.div
             initial={reduce ? false : { opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.1 }}
             transition={{
               duration: 0.6,
               delay: 0.15,
