@@ -10,7 +10,7 @@ import {
 } from "@phosphor-icons/react";
 
 type BuildingType = "warehouse" | "production" | "agriculture" | "commercial" | "small-building" | "service";
-type Insulation = "proflist" | "sandwich" | "pir";
+type Insulation = "none" | "proflist" | "sandwich" | "pir";
 
 // Real prices from pricelist.txt (300, 600, 900, 1200, 1500 m2)
 const priceMatrix: Record<BuildingType, number[]> = {
@@ -43,6 +43,11 @@ const insulationOptions: {
   multiplier: number;
 }[] = [
   {
+    id: "none",
+    label: "Без утепления",
+    multiplier: 0.85,
+  },
+  {
     id: "proflist",
     label: "Профлист",
     multiplier: 1,
@@ -74,7 +79,7 @@ export default function Calculator() {
       setHeight(4);
     }
   }, [type]);
-  const [insulation, setInsulation] = useState<Insulation>("sandwich");
+  const [insulation, setInsulation] = useState<Insulation>("none");
 
   const selectedType = buildingTypes.find((t) => t.id === type)!;
   const selectedInsulation = insulationOptions.find(
@@ -173,7 +178,7 @@ export default function Calculator() {
                 <input
                   type="range"
                   min={type === "small-building" ? 0 : 12}
-                  max={type === "small-building" ? 3 : 60}
+                  max={type === "small-building" ? 3 : 48}
                   step={type === "small-building" ? 1 : 6}
                   value={type === "small-building" ? [4, 6, 8, 10].indexOf(width) : width}
                   onChange={(e) => {
@@ -223,7 +228,7 @@ export default function Calculator() {
                 <input
                   type="range"
                   min={type === "small-building" ? 0 : 4}
-                  max={type === "small-building" ? 3 : 18}
+                  max={type === "small-building" ? 3 : 9}
                   step={type === "small-building" ? 1 : 1}
                   value={type === "small-building" ? [3, 4, 5, 6].indexOf(height) : height}
                   onChange={(e) => {
@@ -247,7 +252,7 @@ export default function Calculator() {
               <label className="block text-sm font-medium text-foreground mb-3">
                 Утепление
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {insulationOptions.map((opt) => (
                   <button
                     key={opt.id}
@@ -326,6 +331,9 @@ export default function Calculator() {
                 </div>
                 <div className="text-xs text-muted mt-1">
                   ~ {formatPrice(estimate.total / estimate.area)} руб/м²
+                </div>
+                <div className="text-xs text-amber-600 mt-2">
+                  * Цена без монтажа и фундамента. Точная смета после выезда инженера.
                 </div>
               </div>
 
