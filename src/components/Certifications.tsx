@@ -49,7 +49,7 @@ export default function Certifications() {
           <motion.div
             initial={reduce ? false : { opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ amount: 0.1 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent-orange mb-4">
@@ -85,7 +85,7 @@ export default function Certifications() {
                 key={cert.title}
                 initial={reduce ? false : { opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ amount: 0.1 }}
                 transition={{
                   duration: 0.6,
                   delay: i * 0.1,
