@@ -129,6 +129,7 @@ export default function Home() {
       <Navigation />
       <main>
         <HeroVideo />
+        <Calculator />
         <About />
         <FactoryBanner />
         <Process />
@@ -136,7 +137,6 @@ export default function Home() {
         <Projects />
         <Testimonials />
         <ClientMarquee />
-        <Calculator />
         <Contacts />
       </main>
       <Footer />
