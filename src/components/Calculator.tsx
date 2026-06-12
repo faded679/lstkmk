@@ -11,15 +11,17 @@ import {
 type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
 type Insulation = "none" | "proflist" | "sandwich";
 
-// Price per m² base (руб/м²), area breakpoints: 300, 600, 900, 1200, 1500+
-const priceMatrix: Record<BuildingType, number[]> = {
-  "small-building": [2100000, 3600000, 4950000, 6000000, 7500000],
-  warehouse:        [1425000, 2850000, 4275000, 5700000, 7125000],
-  agriculture:      [1725000, 3450000, 5175000, 6900000, 8625000],
-  service:          [1605000, 3210000, 4815000, 6420000, 8025000],
-};
+// Цена за м² (руб/м²) по контрольным площадям — чем больше площадь, тем дешевле
+// Контрольные площади: 50, 100, 200, 300, 500, 800, 1200, 2000, 3000, 5000 м²
+const standardAreas = [50, 100, 200, 300, 500, 800, 1200, 2000, 3000, 5000];
 
-const standardAreas = [300, 600, 900, 1200, 1500];
+const priceMatrix: Record<BuildingType, number[]> = {
+  //                   50     100    200    300    500    800    1200   2000   3000   5000  м²
+  "small-building": [12000, 9500,  8000,  7000,  6200,  5800,  5500,  5200,  5000,  4800],
+  warehouse:        [8500,  7200,  6200,  5500,  5000,  4700,  4500,  4300,  4200,  4000],
+  agriculture:      [9000,  7800,  6800,  6000,  5500,  5100,  4800,  4600,  4400,  4200],
+  service:          [9500,  8000,  7000,  6200,  5700,  5300,  5000,  4800,  4600,  4400],
+};
 
 // Allowed discrete values per type
 const typeConfig: Record<BuildingType, { widths: number[]; lengthMin: number; lengthMax: number; lengthStep: number; heights: number[] }> = {
@@ -84,25 +86,29 @@ export default function Calculator() {
     (i) => i.id === insulation
   )!;
 
-  // Interpolate price from pricelist based on area
-  const getPriceFromMatrix = (area: number, type: BuildingType): number => {
-    const prices = priceMatrix[type];
-    if (!prices) return 0;
-    
-    // Find position in standard areas
-    for (let i = 0; i < standardAreas.length - 1; i++) {
-      if (area >= standardAreas[i] && area <= standardAreas[i + 1]) {
-        // Linear interpolation
-        const t = (area - standardAreas[i]) / (standardAreas[i + 1] - standardAreas[i]);
-        return prices[i] + t * (prices[i + 1] - prices[i]);
+  // Интерполируем цену за м² по площади, затем умножаем на площадь
+  const getPriceFromMatrix = (area: number, bType: BuildingType): number => {
+    const rates = priceMatrix[bType];
+    if (!rates) return 0;
+
+    let ratePerSqm: number;
+
+    if (area <= standardAreas[0]) {
+      ratePerSqm = rates[0];
+    } else if (area >= standardAreas[standardAreas.length - 1]) {
+      ratePerSqm = rates[rates.length - 1];
+    } else {
+      ratePerSqm = rates[0];
+      for (let i = 0; i < standardAreas.length - 1; i++) {
+        if (area >= standardAreas[i] && area <= standardAreas[i + 1]) {
+          const t = (area - standardAreas[i]) / (standardAreas[i + 1] - standardAreas[i]);
+          ratePerSqm = rates[i] + t * (rates[i + 1] - rates[i]);
+          break;
+        }
       }
     }
-    // Extrapolation for areas outside range
-    if (area < standardAreas[0]) {
-      return (area / standardAreas[0]) * prices[0];
-    }
-    const lastIdx = standardAreas.length - 1;
-    return (area / standardAreas[lastIdx]) * prices[lastIdx];
+
+    return ratePerSqm * area;
   };
 
   const estimate = useMemo(() => {
