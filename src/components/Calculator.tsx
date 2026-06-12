@@ -139,8 +139,8 @@ export default function Calculator() {
             Калькулятор стоимости
           </h2>
           <p className="mt-3 text-base text-muted max-w-lg leading-relaxed">
-            Рассчитайте предварительную стоимость вашего здания.
-            Точную смету подготовим после выезда инженера.
+            Рассчитайте предварительную стоимость металлокаркаса.
+            Точную стоимость строительства подготовим после обсуждения и предоставления ТЗ.
           </p>
         </motion.div>
 
@@ -332,7 +332,7 @@ export default function Calculator() {
 
               <div className="mt-8 pt-6 border-t-2 border-accent-orange">
                 <div className="text-sm text-muted mb-1">
-                  Ориентировочная стоимость
+                  Цена без монтажных работ
                 </div>
                 <div className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                   {formatPrice(estimate.total)}{" "}
@@ -341,19 +341,16 @@ export default function Calculator() {
                 <div className="text-xs text-muted mt-1">
                   ~ {formatPrice(estimate.total / estimate.area)} руб/м²
                 </div>
-                <div className="text-xs text-amber-600 mt-2">
-                  * Цена без монтажа и фундамента. Точная смета после выезда инженера.
-                </div>
               </div>
 
               <a
                 href="#contacts"
                 className="mt-6 w-full inline-flex h-12 items-center justify-center text-base font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
               >
-                Получить точную смету
+                Рассчитать стоимость строительства
               </a>
               <p className="mt-3 text-xs text-muted text-center leading-relaxed">
-                Инженер свяжется с вами в течение 2 часов
+                Менеджер свяжется с вами в течение 2 часов
               </p>
             </div>
           </motion.div>
