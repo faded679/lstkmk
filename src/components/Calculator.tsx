@@ -4,37 +4,37 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Warehouse,
-  Factory,
   Barn,
-  Storefront,
+  Wrench,
 } from "@phosphor-icons/react";
 
-type BuildingType = "warehouse" | "production" | "agriculture" | "commercial" | "small-building" | "service";
-type Insulation = "none" | "proflist" | "sandwich" | "pir";
+type BuildingType = "warehouse" | "agriculture" | "service";
+type Insulation = "none" | "proflist" | "sandwich";
 
-// Real prices from pricelist.txt (300, 600, 900, 1200, 1500 m2)
+// Price per m² base (руб/м²), area breakpoints: 300, 600, 900, 1200, 1500+
 const priceMatrix: Record<BuildingType, number[]> = {
-  "small-building": [2100000, 3600000, 4950000, 6000000, 7500000],  // Здания до 300м² (7000/6000/5500/5000/5000 ₽/м²)
-  warehouse: [1425000, 2850000, 4275000, 5700000, 7125000],    // Склады
-  production: [1185000, 2370000, 3555000, 4740000, 5925000],   // Производство
-  agriculture: [1725000, 3450000, 5175000, 6900000, 8625000],  // Коровники (avg)
-  commercial: [1635000, 3270000, 4905000, 6540000, 8175000],   // Выставочные залы
-  service: [1605000, 3210000, 4815000, 6420000, 8025000],      // СТО/автомойки
+  warehouse:   [1425000, 2850000, 4275000, 5700000, 7125000],
+  agriculture: [1725000, 3450000, 5175000, 6900000, 8625000],
+  service:     [1605000, 3210000, 4815000, 6420000, 8025000],
 };
 
 const standardAreas = [300, 600, 900, 1200, 1500];
+
+// Allowed discrete values per type
+const typeConfig: Record<BuildingType, { widths: number[]; lengthMin: number; lengthMax: number; lengthStep: number; heights: number[] }> = {
+  warehouse:   { widths: [18, 20, 24, 30, 36],  lengthMin: 30, lengthMax: 120, lengthStep: 6,   heights: [5, 6, 7, 8, 9] },
+  agriculture: { widths: [32.6],                 lengthMin: 48, lengthMax: 120, lengthStep: 4.8, heights: [4] },
+  service:     { widths: [12, 15, 18],           lengthMin: 18, lengthMax: 120, lengthStep: 6,   heights: [4, 5, 6, 7] },
+};
 
 const buildingTypes: {
   id: BuildingType;
   label: string;
   icon: typeof Warehouse;
 }[] = [
-  { id: "small-building", label: "Здания до 300 м²", icon: Warehouse },
-  { id: "warehouse", label: "Склад", icon: Warehouse },
-  { id: "production", label: "Производство", icon: Factory },
-  { id: "agriculture", label: "Сельхоз", icon: Barn },
-  { id: "service", label: "Автосервис", icon: Storefront },
-  { id: "commercial", label: "Торговля", icon: Storefront },
+  { id: "warehouse",   label: "Склад / Производство", icon: Warehouse },
+  { id: "agriculture", label: "Сельхоз",               icon: Barn },
+  { id: "service",     label: "Автосервис / Гараж",    icon: Wrench },
 ];
 
 const insulationOptions: {
@@ -42,44 +42,39 @@ const insulationOptions: {
   label: string;
   multiplier: number;
 }[] = [
-  {
-    id: "none",
-    label: "Без утепления",
-    multiplier: 0.85,
-  },
-  {
-    id: "proflist",
-    label: "Профлист",
-    multiplier: 1,
-  },
-  {
-    id: "sandwich",
-    label: "Сэндвич-панели",
-    multiplier: 1.25,
-  },
-  {
-    id: "pir",
-    label: "PIR-панели",
-    multiplier: 1.5,
-  },
+  { id: "none",     label: "Без утепления",  multiplier: 0.85 },
+  { id: "proflist", label: "Профлист",        multiplier: 1 },
+  { id: "sandwich", label: "Сэндвич-панели",  multiplier: 1.25 },
 ];
 
 export default function Calculator() {
   const reduce = useReducedMotion();
   const [type, setType] = useState<BuildingType>("warehouse");
-  const [width, setWidth] = useState(24);
-  const [length, setLength] = useState(48);
-  const [height, setHeight] = useState(8);
 
-  // Reset dimensions when switching to small-building
-  useEffect(() => {
-    if (type === "small-building") {
-      setWidth(6);
-      setLength(12);
-      setHeight(4);
-    }
-  }, [type]);
+  const cfg = typeConfig[type];
+
+  const [widthIdx, setWidthIdx]   = useState(0);
+  const [lengthVal, setLengthVal] = useState(cfg.lengthMin);
+  const [heightIdx, setHeightIdx] = useState(0);
   const [insulation, setInsulation] = useState<Insulation>("none");
+
+  // Reset sliders when type changes
+  useEffect(() => {
+    setWidthIdx(0);
+    setLengthVal(typeConfig[type].lengthMin);
+    setHeightIdx(0);
+  }, [type]);
+
+  const width  = cfg.widths[widthIdx];
+  const length = lengthVal;
+  const height = cfg.heights[heightIdx];
+
+  // Number of length steps
+  const lengthSteps = Math.round((cfg.lengthMax - cfg.lengthMin) / cfg.lengthStep);
+
+  // Convert slider index → length value
+  const lengthFromIdx = (idx: number) =>
+    Math.round((cfg.lengthMin + idx * cfg.lengthStep) * 10) / 10;
 
   const selectedType = buildingTypes.find((t) => t.id === type)!;
   const selectedInsulation = insulationOptions.find(
@@ -171,49 +166,47 @@ export default function Calculator() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {/* Ширина — дискретные кнопки */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Ширина, м
                 </label>
-                <input
-                  type="range"
-                  min={type === "small-building" ? 0 : 12}
-                  max={type === "small-building" ? 3 : 48}
-                  step={type === "small-building" ? 1 : 6}
-                  value={type === "small-building" ? [4, 6, 8, 10].indexOf(width) : width}
-                  onChange={(e) => {
-                    if (type === "small-building") {
-                      const widths = [4, 6, 8, 10];
-                      setWidth(widths[Number(e.target.value)]);
-                    } else {
-                      setWidth(Number(e.target.value));
-                    }
-                  }}
-                  className="w-full accent-accent-blue"
-                />
-                <div className="mt-1 text-2xl font-bold text-foreground">
-                  {width}
-                  <span className="text-sm font-normal text-muted ml-1">м</span>
-                </div>
+                {cfg.widths.length === 1 ? (
+                  <div className="mt-1 text-2xl font-bold text-foreground">
+                    {cfg.widths[0]}
+                    <span className="text-sm font-normal text-muted ml-1">м</span>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="range"
+                      min={0}
+                      max={cfg.widths.length - 1}
+                      step={1}
+                      value={widthIdx}
+                      onChange={(e) => setWidthIdx(Number(e.target.value))}
+                      className="w-full accent-accent-blue"
+                    />
+                    <div className="mt-1 text-2xl font-bold text-foreground">
+                      {width}
+                      <span className="text-sm font-normal text-muted ml-1">м</span>
+                    </div>
+                  </>
+                )}
               </div>
+
+              {/* Длина — непрерывный ползунок с шагом */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Длина, м
                 </label>
                 <input
                   type="range"
-                  min={type === "small-building" ? 0 : 18}
-                  max={type === "small-building" ? 3 : 120}
-                  step={type === "small-building" ? 1 : 6}
-                  value={type === "small-building" ? [6, 12, 18, 24].indexOf(length) : length}
-                  onChange={(e) => {
-                    if (type === "small-building") {
-                      const lengths = [6, 12, 18, 24];
-                      setLength(lengths[Number(e.target.value)]);
-                    } else {
-                      setLength(Number(e.target.value));
-                    }
-                  }}
+                  min={0}
+                  max={lengthSteps}
+                  step={1}
+                  value={Math.round((lengthVal - cfg.lengthMin) / cfg.lengthStep)}
+                  onChange={(e) => setLengthVal(lengthFromIdx(Number(e.target.value)))}
                   className="w-full accent-accent-blue"
                 />
                 <div className="mt-1 text-2xl font-bold text-foreground">
@@ -221,30 +214,34 @@ export default function Calculator() {
                   <span className="text-sm font-normal text-muted ml-1">м</span>
                 </div>
               </div>
+
+              {/* Высота — дискретные кнопки */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Высота, м
                 </label>
-                <input
-                  type="range"
-                  min={type === "small-building" ? 0 : 4}
-                  max={type === "small-building" ? 3 : 9}
-                  step={type === "small-building" ? 1 : 1}
-                  value={type === "small-building" ? [3, 4, 5, 6].indexOf(height) : height}
-                  onChange={(e) => {
-                    if (type === "small-building") {
-                      const heights = [3, 4, 5, 6];
-                      setHeight(heights[Number(e.target.value)]);
-                    } else {
-                      setHeight(Number(e.target.value));
-                    }
-                  }}
-                  className="w-full accent-accent-blue"
-                />
-                <div className="mt-1 text-2xl font-bold text-foreground">
-                  {height}
-                  <span className="text-sm font-normal text-muted ml-1">м</span>
-                </div>
+                {cfg.heights.length === 1 ? (
+                  <div className="mt-1 text-2xl font-bold text-foreground">
+                    {cfg.heights[0]}
+                    <span className="text-sm font-normal text-muted ml-1">м</span>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="range"
+                      min={0}
+                      max={cfg.heights.length - 1}
+                      step={1}
+                      value={heightIdx}
+                      onChange={(e) => setHeightIdx(Number(e.target.value))}
+                      className="w-full accent-accent-blue"
+                    />
+                    <div className="mt-1 text-2xl font-bold text-foreground">
+                      {height}
+                      <span className="text-sm font-normal text-muted ml-1">м</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -252,7 +249,7 @@ export default function Calculator() {
               <label className="block text-sm font-medium text-foreground mb-3">
                 Утепление
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {insulationOptions.map((opt) => (
                   <button
                     key={opt.id}
