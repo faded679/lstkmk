@@ -147,7 +147,7 @@ export default function Calculator() {
               <label className="block text-sm font-medium text-foreground mb-3">
                 Тип здания
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {buildingTypes.map((bt) => (
                   <button
                     key={bt.id}
