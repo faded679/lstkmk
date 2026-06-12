@@ -170,8 +170,7 @@ export default function HeroVideo() {
   return (
     <section
       ref={containerRef}
-      className="relative bg-white"
-      style={{ height: "250vh" }}
+      className="relative bg-white md:h-[250vh] h-screen"
     >
       <div className="sticky top-0 h-screen w-full flex flex-col bg-white">
         <div className="pt-24 pb-4 px-6 lg:px-10 text-center bg-white">
@@ -214,9 +213,22 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
+            {/* Мобильные: обычное видео */}
+            <video
+              className="md:hidden absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster="/frames/frame_001.webp"
+            >
+              <source src="/animationn.mp4" type="video/mp4" />
+            </video>
+            {/* Десктоп: canvas со скролл-анимацией */}
             <canvas
               ref={canvasRef}
-              className="absolute inset-0 w-full h-full bg-white"
+              className="hidden md:block absolute inset-0 w-full h-full bg-white"
             />
           </div>
 
