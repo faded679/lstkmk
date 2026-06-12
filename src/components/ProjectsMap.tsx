@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X, MapPin, Ruler, Calendar, Buildings } from "@phosphor-icons/react";
 
-const YANDEX_API_KEY = "ВАШ_КЛЮЧ_ЗДЕСЬ";
+const YANDEX_API_KEY = "70a24b9b-d8f0-4dd8-81a8-6e12481c7eff";
 
 interface MapProject {
   id: number;
