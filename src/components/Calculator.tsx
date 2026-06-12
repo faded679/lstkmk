@@ -8,23 +8,25 @@ import {
   Wrench,
 } from "@phosphor-icons/react";
 
-type BuildingType = "warehouse" | "agriculture" | "service";
+type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
 type Insulation = "none" | "proflist" | "sandwich";
 
 // Price per m² base (руб/м²), area breakpoints: 300, 600, 900, 1200, 1500+
 const priceMatrix: Record<BuildingType, number[]> = {
-  warehouse:   [1425000, 2850000, 4275000, 5700000, 7125000],
-  agriculture: [1725000, 3450000, 5175000, 6900000, 8625000],
-  service:     [1605000, 3210000, 4815000, 6420000, 8025000],
+  "small-building": [2100000, 3600000, 4950000, 6000000, 7500000],
+  warehouse:        [1425000, 2850000, 4275000, 5700000, 7125000],
+  agriculture:      [1725000, 3450000, 5175000, 6900000, 8625000],
+  service:          [1605000, 3210000, 4815000, 6420000, 8025000],
 };
 
 const standardAreas = [300, 600, 900, 1200, 1500];
 
 // Allowed discrete values per type
 const typeConfig: Record<BuildingType, { widths: number[]; lengthMin: number; lengthMax: number; lengthStep: number; heights: number[] }> = {
-  warehouse:   { widths: [18, 20, 24, 30, 36],  lengthMin: 30, lengthMax: 120, lengthStep: 6,   heights: [5, 6, 7, 8, 9] },
-  agriculture: { widths: [32.6],                 lengthMin: 48, lengthMax: 120, lengthStep: 4.8, heights: [4] },
-  service:     { widths: [12, 15, 18],           lengthMin: 18, lengthMax: 120, lengthStep: 6,   heights: [4, 5, 6, 7] },
+  "small-building": { widths: [4, 6, 8, 10],        lengthMin: 6,  lengthMax: 24,  lengthStep: 6,   heights: [3, 4, 5, 6] },
+  warehouse:        { widths: [18, 20, 24, 30, 36],  lengthMin: 30, lengthMax: 120, lengthStep: 6,   heights: [5, 6, 7, 8, 9] },
+  agriculture:      { widths: [32.6],                lengthMin: 48, lengthMax: 120, lengthStep: 4.8, heights: [4] },
+  service:          { widths: [12, 15, 18],          lengthMin: 18, lengthMax: 120, lengthStep: 6,   heights: [4, 5, 6, 7] },
 };
 
 const buildingTypes: {
@@ -32,9 +34,10 @@ const buildingTypes: {
   label: string;
   icon: typeof Warehouse;
 }[] = [
-  { id: "warehouse",   label: "Склад / Производство", icon: Warehouse },
-  { id: "agriculture", label: "Сельхоз",               icon: Barn },
-  { id: "service",     label: "Автосервис / Гараж",    icon: Wrench },
+  { id: "small-building", label: "До 300 м²",           icon: Warehouse },
+  { id: "warehouse",      label: "Склад / Производство", icon: Warehouse },
+  { id: "agriculture",    label: "Сельхоз",              icon: Barn },
+  { id: "service",        label: "Автосервис / Гараж",   icon: Wrench },
 ];
 
 const insulationOptions: {
