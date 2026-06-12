@@ -7,10 +7,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const TOTAL_FRAMES = 152;
+const FRAME_STEP = 2; // берём каждый 2-й кадр → 76 файлов вместо 152
 
 function buildFrameUrls(): string[] {
   const urls: string[] = [];
-  for (let i = 1; i <= TOTAL_FRAMES; i++) {
+  for (let i = 1; i <= TOTAL_FRAMES; i += FRAME_STEP) {
     urls.push(`/frames2/frame_${String(i).padStart(4, "0")}.webp`);
   }
   return urls;
@@ -65,7 +66,7 @@ export default function HeroVideo() {
     const loadImages = (): Promise<void> =>
       new Promise((resolve) => {
         const images: HTMLImageElement[] = new Array(frameUrls.length);
-        const EAGER_COUNT = 50;
+        const EAGER_COUNT = 25; // половина от 50, т.к. кадров вдвое меньше
 
         const loadRange = (start: number, end: number, onAllDone?: () => void) => {
           let count = 0;
@@ -83,9 +84,14 @@ export default function HeroVideo() {
           }
         };
 
+        // Блокируем скролл пока не загрузятся первые кадры
+        document.body.style.overflow = "hidden";
+
         loadRange(0, EAGER_COUNT, () => {
           imagesRef.current = images;
           drawFrame(0);
+          // Разблокируем скролл
+          document.body.style.overflow = "";
           resolve();
 
           window.addEventListener("scroll", () => {
