@@ -7,12 +7,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+  { label: "Калькулятор", href: "/#calculator", isAnchor: true },
   { label: "О компании", href: "/#about", isAnchor: true },
   { label: "Проекты", href: "/#projects", isAnchor: true },
-  { label: "Калькулятор", href: "/#calculator", isAnchor: true },
+  { label: "Контакты", href: "/#contacts", isAnchor: true },
   { label: "Статьи", href: "/articles", isAnchor: false },
   { label: "Вакансии", href: "/vacancies", isAnchor: false },
-  { label: "Контакты", href: "/#contacts", isAnchor: true },
 ];
 
 export default function Navigation() {

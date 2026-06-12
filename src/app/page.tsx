@@ -5,6 +5,7 @@ import FactoryBanner from "@/components/FactoryBanner";
 import Process from "@/components/Process";
 import Certifications from "@/components/Certifications";
 import Projects from "@/components/Projects";
+import ProjectsMap from "@/components/ProjectsMap";
 import Testimonials from "@/components/Testimonials";
 import ClientMarquee from "@/components/ClientMarquee";
 import Calculator from "@/components/Calculator";
@@ -135,6 +136,7 @@ export default function Home() {
         <Process />
         <Certifications />
         <Projects />
+        <ProjectsMap />
         <Testimonials />
         <ClientMarquee />
         <Contacts />
