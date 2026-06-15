@@ -94,7 +94,7 @@ export default function PrivacyPage() {
               <p className="text-muted">
                 ООО «ПромПрофиль» (ТМ МАКСТИЛ)<br />
                 Белгородский район, с. Репное, ул. Автодорожная, д. 2<br />
-                Тел.: <a href="tel:+78001009151" className="text-accent-blue hover:underline">+7 (800) 100-91-51</a><br />
+                Тел.: <a href="tel:+79803211542" className="text-accent-blue hover:underline">+7 (980) 321-15-42</a><br />
                 Email: <a href="mailto:maxsteel31@bk.ru" className="text-accent-blue hover:underline">maxsteel31@bk.ru</a>
               </p>
             </section>

@@ -47,7 +47,7 @@ const localBusinessSchema = {
   image: "https://lstkmk.ru/photo_2026-06-01_19-06-27%20(2).jpg",
   "@id": "https://lstkmk.ru",
   url: "https://lstkmk.ru",
-  telephone: "+7-800-100-91-51",
+  telephone: "+7-980-321-15-42",
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",

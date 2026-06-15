@@ -73,7 +73,7 @@ function generateFallbackResponse(message: string): string {
   
   // Контакты
   if (lower.includes("контакт") || lower.includes("телефон") || lower.includes("почта") || lower.includes("адрес") || lower.includes("где")) {
-    return "Связаться с нами:\n\n📞 +7 (800) 100-91-51 (бесплатно по России)\n📧 maxsteel31@bk.ru\n🌐 lstkmk.ru\n📍 Белгородский р-н, с. Репное, ул. Автодорожная, 2\n\nРежим работы: Пн–Пт 9:00–18:00\n\nЗвоните — проконсультируем бесплатно!";
+    return "Связаться с нами:\n\n📞 +7 (980) 321-15-42\n📧 maxsteel31@bk.ru\n🌐 lstkmk.ru\n📍 Белгородский р-н, с. Репное, ул. Автодорожная, 2\n\nРежим работы: Пн–Пт 9:00–18:00\n\nЗвоните — проконсультируем бесплатно!";
   }
   
   // Приветствие
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
     });
   } catch {
     return NextResponse.json({
-      reply: "Извините, произошла техническая ошибка. Пожалуйста, позвоните нам: +7 (800) 100-91-51",
+      reply: "Извините, произошла техническая ошибка. Пожалуйста, позвоните нам: +7 (980) 321-15-42",
       error: true,
     }, { status: 200 });
   }
