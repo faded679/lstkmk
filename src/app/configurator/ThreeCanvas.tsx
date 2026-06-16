@@ -83,12 +83,12 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     fillLight.position.set(-40, 20, -40);
     scene.add(fillLight);
 
-    // Земля
+    // Земля (светлее для лучшей видимости)
     const groundGeometry = new THREE.PlaneGeometry(400, 400);
     const groundMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x1e293b,
-      roughness: 0.9,
-      metalness: 0.1
+      color: 0x475569,
+      roughness: 0.95,
+      metalness: 0.05
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
@@ -96,9 +96,9 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     scene.add(ground);
 
     // Сетка
-    const gridHelper = new THREE.GridHelper(400, 80, 0x475569, 0x334155);
+    const gridHelper = new THREE.GridHelper(400, 80, 0x64748b, 0x475569);
     gridHelper.position.y = 0.01;
-    gridHelper.material.opacity = 0.2;
+    gridHelper.material.opacity = 0.4;
     gridHelper.material.transparent = true;
     scene.add(gridHelper);
 
@@ -308,41 +308,65 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // На уровне верхнего пояса
-  for (let i = 1; i < frameCount; i++) {
+  // На уровне верхнего пояса - включаем крайние фермы
+  for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
     
-    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-    leftTie.position.set(-halfWidth, height, z);
+    // Укорачиваем крайние связи чтобы не торчали
+    const isEdge = (i === 0 || i === frameCount);
+    const tieLength = isEdge ? columnStep * 0.5 : columnStep;
+    const zOffset = isEdge ? (i === 0 ? columnStep * 0.25 : -columnStep * 0.25) : 0;
+    
+    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    leftTie.position.set(-halfWidth, height, z + zOffset);
     leftTie.castShadow = true;
     group.add(leftTie);
 
-    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-    rightTie.position.set(halfWidth, height, z);
+    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    rightTie.position.set(halfWidth, height, z + zOffset);
     rightTie.castShadow = true;
     group.add(rightTie);
 
-    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-    ridgeTie.position.set(0, height + trussHeight, z);
+    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    ridgeTie.position.set(0, height + trussHeight, z + zOffset);
     ridgeTie.castShadow = true;
     group.add(ridgeTie);
   }
 
-  // Вертикальные связи на скатах
-  for (let i = 1; i < frameCount; i++) {
-    const z = startZ + i * columnStep;
-    const y = height + trussHeight / 2;
-    const x = halfWidth / 2;
-    
-    const leftVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
-    leftVert.position.set(-x, y, z);
-    leftVert.castShadow = true;
-    group.add(leftVert);
+  // Вертикальные связи на скатах - скрываем когда сэндвич включен
+  if (!showSandwich) {
+    for (let i = 1; i < frameCount; i++) {
+      const z = startZ + i * columnStep;
+      const y = height + trussHeight / 2;
+      const x = halfWidth / 2;
+      
+      const leftVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
+      leftVert.position.set(-x, y, z);
+      leftVert.castShadow = true;
+      group.add(leftVert);
 
-    const rightVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
-    rightVert.position.set(x, y, z);
-    rightVert.castShadow = true;
-    group.add(rightVert);
+      const rightVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
+      rightVert.position.set(x, y, z);
+      rightVert.castShadow = true;
+      group.add(rightVert);
+    }
+  }
+
+  // === ФРОНТАЛЬНЫЕ СВЯЗИ (торцы здания) ===
+  // Левый торец
+  const leftEndZ = startZ;
+  const rightEndZ = startZ + actualLength;
+  
+  for (const endZ of [leftEndZ, rightEndZ]) {
+    // X-связь на торце
+    const xBrace1 = createDiagonal(-halfWidth, height, endZ, halfWidth, height, endZ, 0.05, trussMat);
+    group.add(xBrace1);
+    
+    // Верхняя связь на торце
+    const topBrace = new THREE.Mesh(new THREE.BoxGeometry(width, 0.05, 0.05), trussMat);
+    topBrace.position.set(0, height + trussHeight * 0.7, endZ);
+    topBrace.castShadow = true;
+    group.add(topBrace);
   }
 
   // === СЭНДВИЧ-ПАНЕЛИ ===
