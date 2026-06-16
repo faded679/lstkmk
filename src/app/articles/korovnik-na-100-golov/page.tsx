@@ -136,15 +136,15 @@ export default function ArticlePage() {
                 <tbody>
                   <tr className="border-b border-border/50">
                     <td className="py-3 pr-4">Площадь здания</td>
-                    <td className="py-3 pr-4">700–850 м²</td>
+                    <td className="py-3 pr-4">720–840 м²</td>
                   </tr>
                   <tr className="border-b border-border/50">
-                    <td className="py-3 pr-4">Размеры (длина × ширина)</td>
-                    <td className="py-3 pr-4">60×12 м или 50×15 м</td>
+                    <td className="py-3 pr-4">Размеры (ширина × длина)</td>
+                    <td className="py-3 pr-4">24×30 м или 30×24 м</td>
                   </tr>
                   <tr className="border-b border-border/50">
                     <td className="py-3 pr-4">Высота в коньке</td>
-                    <td className="py-3 pr-4">5–5,5 м</td>
+                    <td className="py-3 pr-4">4–5 м</td>
                   </tr>
                   <tr className="border-b border-border/50">
                     <td className="py-3 pr-4">Норма площади на голову</td>
