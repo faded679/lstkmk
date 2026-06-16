@@ -308,25 +308,31 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // Только на внутренних линиях колонн (не на крайних), полной длины
-  for (let i = 1; i < frameCount; i++) {
+  // На всех линиях колонн, но крайние - укороченные
+  for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
+    const isEdge = (i === 0 || i === frameCount);
     
-    // Связи на уровне ригелей (под фермами)
-    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-    leftTie.position.set(-halfWidth, height, z);
+    // Длина связи: полная для внутренних, половинная для крайних
+    const tieLength = isEdge ? columnStep * 0.5 : columnStep;
+    // Смещение: вперед для первой, назад для последней, центр для внутренних
+    const zOffset = isEdge ? (i === 0 ? columnStep * 0.25 : -columnStep * 0.25) : 0;
+    
+    // Связи на уровне ригелей (под фермами) - соединяют колонны
+    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    leftTie.position.set(-halfWidth, height, z + zOffset);
     leftTie.castShadow = true;
     group.add(leftTie);
 
-    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-    rightTie.position.set(halfWidth, height, z);
+    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    rightTie.position.set(halfWidth, height, z + zOffset);
     rightTie.castShadow = true;
     group.add(rightTie);
 
     // Связь на коньке - скрываем если сэндвич включен
     if (!showSandwich) {
-      const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
-      ridgeTie.position.set(0, height + trussHeight, z);
+      const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+      ridgeTie.position.set(0, height + trussHeight, z + zOffset);
       ridgeTie.castShadow = true;
       group.add(ridgeTie);
     }
