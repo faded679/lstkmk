@@ -68,11 +68,11 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     controls.target.set(0, height / 2, 0);
 
     // Освещение
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    sunLight.position.set(60, 80, 40);
+    const sunLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
+    sunLight.position.set(80, 100, 50);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
@@ -174,12 +174,13 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   const trussHeight = 1.2;
   const halfWidth = width / 2;
   
-  // Материалы
-  const columnMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4, metalness: 0.7 });
-  const beamMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.4, metalness: 0.75 });
-  const trussMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.5, metalness: 0.6 });
-  const sandwichMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.6, metalness: 0.1 });
-  const boltMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.9 });
+  // Материалы ЛСТК - реалистичная сталь
+  const steelColor = 0x8b9299; // Цвет оцинкованной стали
+  const columnMat = new THREE.MeshStandardMaterial({ color: steelColor, roughness: 0.35, metalness: 0.85 });
+  const beamMat = new THREE.MeshStandardMaterial({ color: steelColor, roughness: 0.35, metalness: 0.85 });
+  const trussMat = new THREE.MeshStandardMaterial({ color: 0x7a828a, roughness: 0.4, metalness: 0.8 });
+  const sandwichMat = new THREE.MeshStandardMaterial({ color: 0xf5f5f5, roughness: 0.5, metalness: 0.05 });
+  const boltMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.3, metalness: 0.9 });
 
   const frameCount = Math.ceil(length / columnStep);
   const actualLength = frameCount * columnStep;
@@ -189,15 +190,15 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
     
-    // Левая колонна
-    const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.15), columnMat);
+    // Левая колонна - ЛСТК профиль шире (300мм х 150мм)
+    const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.3, height, 0.15), columnMat);
     leftCol.position.set(-halfWidth, height / 2, z);
     leftCol.castShadow = true;
     leftCol.receiveShadow = true;
     group.add(leftCol);
 
-    // Правая колонна
-    const rightCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.15), columnMat);
+    // Правая колонна - ЛСТК профиль
+    const rightCol = new THREE.Mesh(new THREE.BoxGeometry(0.3, height, 0.15), columnMat);
     rightCol.position.set(halfWidth, height / 2, z);
     rightCol.castShadow = true;
     rightCol.receiveShadow = true;
@@ -205,7 +206,7 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
 
     // Ригель (связь колонн сверху)
     if (i < frameCount) {
-      const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.12, 0.1), beamMat);
+      const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.16, 0.12), beamMat);
       righel.position.set(0, height, z + columnStep / 2);
       righel.castShadow = true;
       righel.receiveShadow = true;
@@ -213,16 +214,16 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
 
       // Соединительные пластины (болты)
       for (const x of [-halfWidth, halfWidth]) {
-        const plate = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.25, 0.05), boltMat);
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.06), boltMat);
         plate.position.set(x, height, z + columnStep / 2);
         plate.castShadow = true;
         group.add(plate);
       }
     }
 
-    // База колонн (фундаментная болт)
+    // База колонн (фундаментная пластина)
     for (const x of [-halfWidth, halfWidth]) {
-      const base = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.25), boltMat);
+      const base = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.3), boltMat);
       base.position.set(x, 0.05, z);
       base.castShadow = true;
       group.add(base);
