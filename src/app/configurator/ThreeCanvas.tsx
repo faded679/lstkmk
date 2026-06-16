@@ -358,20 +358,36 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ФРОНТАЛЬНЫЕ СВЯЗИ (торцы здания) ===
-  // Левый торец
   const leftEndZ = startZ;
   const rightEndZ = startZ + actualLength;
+  const ridgeY = height + trussHeight;
   
   for (const endZ of [leftEndZ, rightEndZ]) {
-    // X-связь на торце
-    const xBrace1 = createDiagonal(-halfWidth, height, endZ, halfWidth, height, endZ, 0.05, trussMat);
-    group.add(xBrace1);
+    // V-образные связи на торце: от колонн к коньку
+    // Левая связь торца: от левой колонны к коньку
+    const leftEndBrace = createDiagonal(
+      -halfWidth, height, endZ,  // от основания левой фермы
+      0, ridgeY, endZ,          // к коньку
+      0.05, trussMat
+    );
+    group.add(leftEndBrace);
     
-    // Верхняя связь на торце
-    const topBrace = new THREE.Mesh(new THREE.BoxGeometry(width, 0.05, 0.05), trussMat);
-    topBrace.position.set(0, height + trussHeight * 0.7, endZ);
-    topBrace.castShadow = true;
-    group.add(topBrace);
+    // Правая связь торца: от правой колонны к коньку
+    const rightEndBrace = createDiagonal(
+      halfWidth, height, endZ,  // от основания правой фермы
+      0, ridgeY, endZ,          // к коньку
+      0.05, trussMat
+    );
+    group.add(rightEndBrace);
+    
+    // Горизонтальная связь на коньке между V-образными (короткая)
+    const ridgeEndTie = new THREE.Mesh(
+      new THREE.BoxGeometry(0.8, 0.05, 0.05), 
+      trussMat
+    );
+    ridgeEndTie.position.set(0, ridgeY - 0.1, endZ);
+    ridgeEndTie.castShadow = true;
+    group.add(ridgeEndTie);
   }
 
   // === СЭНДВИЧ-ПАНЕЛИ ===
