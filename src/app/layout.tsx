@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   },
   verification: {
     yandex: "7d858012742fb48c",
-    google: "R_PZevWrG8VfFdqs6vcD_Jd9e1F-afIlLZLOL0ukDgs",
+    google: "4Nldt9OJYvBS3EJ53FzDtSWxJNNx-nuzBovQri-fVak",
     other: {
       "msvalidate.01": "Bing Verification Code Here",
     },
