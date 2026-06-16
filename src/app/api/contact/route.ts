@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     ).catch(err => console.error("Telegram error:", err));
 
     // Дублируем заявку на mctender.ru (FastAPI)
-    fetch("https://mctender.ru/api/leads/from-makstal", {
+    fetch("https://www.mctender.ru/api/leads/from-makstal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: name || "", phone, comment: comment || "" }),
