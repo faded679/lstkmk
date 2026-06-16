@@ -308,29 +308,28 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // На уровне верхнего пояса - включаем крайние фермы
-  for (let i = 0; i <= frameCount; i++) {
+  // Только на внутренних линиях колонн (не на крайних), полной длины
+  for (let i = 1; i < frameCount; i++) {
     const z = startZ + i * columnStep;
     
-    // Укорачиваем крайние связи чтобы не торчали
-    const isEdge = (i === 0 || i === frameCount);
-    const tieLength = isEdge ? columnStep * 0.5 : columnStep;
-    const zOffset = isEdge ? (i === 0 ? columnStep * 0.25 : -columnStep * 0.25) : 0;
-    
-    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    leftTie.position.set(-halfWidth, height, z + zOffset);
+    // Связи на уровне ригелей (под фермами)
+    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
+    leftTie.position.set(-halfWidth, height, z);
     leftTie.castShadow = true;
     group.add(leftTie);
 
-    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    rightTie.position.set(halfWidth, height, z + zOffset);
+    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
+    rightTie.position.set(halfWidth, height, z);
     rightTie.castShadow = true;
     group.add(rightTie);
 
-    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    ridgeTie.position.set(0, height + trussHeight, z + zOffset);
-    ridgeTie.castShadow = true;
-    group.add(ridgeTie);
+    // Связь на коньке - скрываем если сэндвич включен
+    if (!showSandwich) {
+      const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, columnStep), trussMat);
+      ridgeTie.position.set(0, height + trussHeight, z);
+      ridgeTie.castShadow = true;
+      group.add(ridgeTie);
+    }
   }
 
   // Вертикальные связи на скатах - скрываем когда сэндвич включен
