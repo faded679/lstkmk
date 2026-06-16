@@ -124,39 +124,9 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     sceneRef.current = { scene, camera, renderer, controls, buildingGroup };
     setIsInitialized(true);
 
-    // Авто-облет камеры для презентации
     let animationId: number;
-    let autoRotate = true;
-    let rotationSpeed = 0.0005;
-    let lastInteraction = Date.now();
-    
-    const resetAutoRotate = () => {
-      lastInteraction = Date.now();
-      autoRotate = false;
-    };
-    
-    // Слушаем взаимодействие
-    containerRef.current?.addEventListener('mousedown', resetAutoRotate);
-    containerRef.current?.addEventListener('wheel', resetAutoRotate);
-    containerRef.current?.addEventListener('touchstart', resetAutoRotate);
-    
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      
-      // Возобновляем авто-вращение через 3 секунды после взаимодействия
-      if (!autoRotate && Date.now() - lastInteraction > 3000) {
-        autoRotate = true;
-      }
-      
-      // Плавный облет вокруг ангара
-      if (autoRotate) {
-        const time = Date.now() * rotationSpeed;
-        const radius = 60;
-        camera.position.x = Math.cos(time) * radius;
-        camera.position.z = Math.sin(time) * radius;
-        camera.lookAt(0, height / 2, 0);
-      }
-      
       controls.update();
       renderer.render(scene, camera);
     };
@@ -483,33 +453,6 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     group.add(ridge);
   }
 
-  // === РАЗМЕРНЫЕ ПОДПИСИ ДЛЯ ПРЕЗЕНТАЦИИ ===
-  const labelY = height + trussHeight + 2;
-  const labelZ = actualLength / 2 + 3;
-  
-  // Ширина
-  const widthLabel = createDimensionLabel(
-    `${width}м`,
-    new THREE.Vector3(0, labelY, labelZ),
-    3
-  );
-  group.add(widthLabel);
-  
-  // Длина
-  const lengthLabel = createDimensionLabel(
-    `${length}м`,
-    new THREE.Vector3(halfWidth + 3, labelY, 0),
-    3
-  );
-  group.add(lengthLabel);
-  
-  // Высота
-  const heightLabel = createDimensionLabel(
-    `${height}м`,
-    new THREE.Vector3(-halfWidth - 4, height / 2, actualLength / 2 + 2),
-    2.5
-  );
-  group.add(heightLabel);
 }
 
 // Хелпер для создания диагонали
@@ -530,38 +473,4 @@ function createDiagonal(x1: number, y1: number, z1: number, x2: number, y2: numb
   
   mesh.castShadow = true;
   return mesh;
-}
-
-// Хелпер для создания размерной подписи
-function createDimensionLabel(text: string, position: THREE.Vector3, size: number = 2) {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
-  canvas.width = 256;
-  canvas.height = 64;
-  
-  // Фон
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-  ctx.roundRect(0, 0, 256, 64, 8);
-  ctx.fill();
-  
-  // Рамка
-  ctx.strokeStyle = '#3b82f6';
-  ctx.lineWidth = 3;
-  ctx.roundRect(0, 0, 256, 64, 8);
-  ctx.stroke();
-  
-  // Текст
-  ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 32px Inter, system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, 128, 32);
-  
-  const texture = new THREE.CanvasTexture(canvas);
-  const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
-  const sprite = new THREE.Sprite(material);
-  sprite.position.copy(position);
-  sprite.scale.set(size, size * 0.25, 1);
-  
-  return sprite;
 }
