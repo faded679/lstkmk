@@ -3,15 +3,15 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
-  title: "Толщина сэндвич-панелей 100, 120, 150, 200 мм | Выбор",
-  description: "Как выбрать толщину сэндвич-панелей для ангара, склада, коровника. Сравнение 100, 120, 150, 200 мм.",
-  keywords: ["толщина сэндвич-панелей", "панели 150 мм", "панели 200 мм", "выбор толщины панелей"],
+  title: "Толщина сэндвич-панелей 80-200 мм | Выбор",
+  description: "Как выбрать толщину сэндвич-панелей для ангара, склада, коровника. Диапазон 80-200 мм под любые задачи.",
+  keywords: ["толщина сэндвич-панелей", "панели 80 мм", "панели 150 мм", "панели 200 мм", "выбор толщины панелей"],
 };
 
 const panelData = [
-  { tolshina: "80 мм", primenenie: "Навесы, летние помещения", temp: "до -10°C", cena: "от 1 800 ₽" },
-  { tolshina: "100 мм", primenenie: "Склады, неотапливаемые", temp: "до -20°C", cena: "от 2 100 ₽" },
-  { tolshina: "120 мм", primenenie: "Производство, цеха", temp: "до -30°C", cena: "от 2 300 ₽" },
+  { tolshina: "80 мм ⭐", primenenie: "Навесы, летние помещения", temp: "до -10°C", cena: "от 1 800 ₽" },
+  { tolshina: "100 мм ⭐", primenenie: "Склады, неотапливаемые", temp: "до -20°C", cena: "от 2 100 ₽" },
+  { tolshina: "120 мм ⭐", primenenie: "Производство, цеха", temp: "до -30°C", cena: "от 2 300 ₽" },
   { tolshina: "150 мм ⭐", primenenie: "Коровники, фермы", temp: "до -40°C", cena: "от 2 600 ₽" },
   { tolshina: "200 мм ⭐", primenenie: "Холодильники, север", temp: "до -50°C", cena: "от 3 100 ₽" },
 ];
@@ -43,7 +43,7 @@ export default function TolshinaPanelejPage() {
           
           <p className="text-muted mb-6">
             Толщина панели определяет теплоизоляцию и несущую способность. 
-            Мы производим панели 150 и 200 мм для сельхозстроительства.
+            Мы производим панели от 80 до 200 мм — подберём под любой тип здания и климат.
           </p>
 
           <div className="overflow-x-auto mb-6">
@@ -69,7 +69,7 @@ export default function TolshinaPanelejPage() {
 
           <div className="bg-slate-50 p-4 rounded-lg mb-6">
             <p className="text-sm text-muted">
-              ⭐ <strong>В наличии у нас</strong> — производим панели 150 и 200 мм под заказ 7-14 дней.
+              ⭐ <strong>В наличии у нас</strong> — производим панели 80-200 мм под заказ 7-14 дней.
             </p>
           </div>
 

@@ -28,7 +28,7 @@ const knowledgeItems = [
     id: 4,
     title: "Толщина сэндвич-панелей",
     slug: "tolshina-sendvich-panelej",
-    description: "100, 120, 150, 200 мм — выбор толщины для разных зданий.",
+    description: "Диапазон 80-200 мм — подберём под любой тип здания.",
   },
   {
     id: 5,
