@@ -211,41 +211,23 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
     
-    // Левая колонна - ЛСТК профиль шире (300мм х 150мм)
-    const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.3, height, 0.15), columnMat);
+    // Левая колонна - Σ-профиль ЛСТК (200x70x2.0 мм)
+    const leftCol = createSigmaProfile(0.14, height, 0.002, columnMat);
     leftCol.position.set(-halfWidth, height / 2, z);
-    leftCol.castShadow = true;
-    leftCol.receiveShadow = true;
+    leftCol.rotation.y = Math.PI; // Поворачиваем профиль наружу
     group.add(leftCol);
 
-    // Правая колонна - ЛСТК профиль
-    const rightCol = new THREE.Mesh(new THREE.BoxGeometry(0.3, height, 0.15), columnMat);
+    // Правая колонна - Σ-профиль ЛСТК
+    const rightCol = createSigmaProfile(0.14, height, 0.002, columnMat);
     rightCol.position.set(halfWidth, height / 2, z);
-    rightCol.castShadow = true;
-    rightCol.receiveShadow = true;
+    // Профиль смотрит наружу по умолчанию
     group.add(rightCol);
 
-    // Ребра жесткости на колоннах (уголки)
-    for (const colX of [-halfWidth, halfWidth]) {
-      // Лицевое ребро (справа/слева от колонны)
-      const rib1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, height * 0.6, 0.02), columnMat);
-      rib1.position.set(colX + (colX > 0 ? 0.17 : -0.17), height * 0.4, z);
-      rib1.castShadow = true;
-      group.add(rib1);
-      
-      // Боковое ребро
-      const rib2 = new THREE.Mesh(new THREE.BoxGeometry(0.02, height * 0.5, 0.08), columnMat);
-      rib2.position.set(colX, height * 0.35, z + (colX > 0 ? 0.1 : -0.1));
-      rib2.castShadow = true;
-      group.add(rib2);
-    }
-
-    // Ригель (связь колонн сверху)
+    // Ригель (связь колонн сверху) - Σ-профиль ЛСТК
     if (i < frameCount) {
-      const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.16, 0.12), beamMat);
+      const righel = createSigmaProfile(columnStep, 0.16, 0.002, beamMat);
       righel.position.set(0, height, z + columnStep / 2);
-      righel.castShadow = true;
-      righel.receiveShadow = true;
+      righel.rotation.y = Math.PI / 2; // Перпендикулярно колоннам
       group.add(righel);
 
       // Соединительные пластины
@@ -311,45 +293,45 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     const midZ = (z + zNext) / 2;
 
     // === ЛЕВАЯ ФЕРМА ===
-    // Нижний пояс (от колонны до конька)
+    // Нижний пояс - C-профиль ЛСТК
     const leftLowerLen = Math.sqrt(halfWidth * halfWidth + trussHeight * trussHeight);
-    const leftLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
+    const leftLower = createCProfile(leftLowerLen, 0.12, 0.05, 0.002, trussMat);
     leftLower.position.set(-halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
     leftLower.rotation.z = Math.atan(trussHeight / halfWidth);
-    leftLower.castShadow = true;
+    leftLower.rotation.x = Math.PI / 2;
     group.add(leftLower);
 
-    // Верхний пояс (конек)
-    const topChord = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, columnStep), trussMat);
+    // Верхний пояс (конек) - Σ-профиль
+    const topChord = createSigmaProfile(columnStep, 0.08, 0.002, trussMat);
     topChord.position.set(0, height + trussHeight, z + columnStep / 2);
-    topChord.castShadow = true;
+    topChord.rotation.y = Math.PI / 2;
     group.add(topChord);
 
     // === ПРАВАЯ ФЕРМА (зеркально) ===
-    const rightLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
+    const rightLower = createCProfile(leftLowerLen, 0.12, 0.05, 0.002, trussMat);
     rightLower.position.set(halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
     rightLower.rotation.z = -Math.atan(trussHeight / halfWidth);
-    rightLower.castShadow = true;
+    rightLower.rotation.x = Math.PI / 2;
     group.add(rightLower);
 
-    // Связи в плоскости фермы (раскосы)
+    // Связи в плоскости фермы (раскосы) - Σ-профили 60x30
     const braceZ1 = z + columnStep * 0.25;
     const braceZ2 = z + columnStep * 0.75;
     
     // Левый раскос 1
-    const leftBrace1 = createDiagonal(-halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.04, trussMat);
+    const leftBrace1 = createDiagonal(-halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.025, trussMat);
     group.add(leftBrace1);
     
     // Левый раскос 2
-    const leftBrace2 = createDiagonal(0, height + trussHeight, braceZ2, -halfWidth, height, braceZ2, 0.04, trussMat);
+    const leftBrace2 = createDiagonal(0, height + trussHeight, braceZ2, -halfWidth, height, braceZ2, 0.025, trussMat);
     group.add(leftBrace2);
 
     // Правый раскос 1
-    const rightBrace1 = createDiagonal(halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.04, trussMat);
+    const rightBrace1 = createDiagonal(halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.025, trussMat);
     group.add(rightBrace1);
     
     // Правый раскос 2
-    const rightBrace2 = createDiagonal(0, height + trussHeight, braceZ2, halfWidth, height, braceZ2, 0.04, trussMat);
+    const rightBrace2 = createDiagonal(0, height + trussHeight, braceZ2, halfWidth, height, braceZ2, 0.025, trussMat);
     group.add(rightBrace2);
   }
 
@@ -357,22 +339,22 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   // Укорочены чтобы не торчать за торцы ферм
   const tieLength = actualLength - 1.2;
   
-  // Связи на уровне ригелей (под фермами)
-  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+  // Связи на уровне ригелей - Σ-профили 60x30
+  const leftTie = createSigmaProfile(tieLength, 0.06, 0.0015, trussMat);
   leftTie.position.set(-halfWidth, height, 0);
-  leftTie.castShadow = true;
+  leftTie.rotation.y = Math.PI / 2;
   group.add(leftTie);
 
-  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+  const rightTie = createSigmaProfile(tieLength, 0.06, 0.0015, trussMat);
   rightTie.position.set(halfWidth, height, 0);
-  rightTie.castShadow = true;
+  rightTie.rotation.y = -Math.PI / 2;
   group.add(rightTie);
 
-  // Связь на коньке - укороченная, скрываем если сэндвич включен
+  // Связь на коньке - укороченная
   if (!showSandwich) {
-    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
+    const ridgeTie = createSigmaProfile(tieLength, 0.05, 0.0015, trussMat);
     ridgeTie.position.set(0, height + trussHeight, 0);
-    ridgeTie.castShadow = true;
+    ridgeTie.rotation.y = Math.PI / 2;
     group.add(ridgeTie);
   }
   
@@ -384,30 +366,25 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   const ridgeY = height + trussHeight;
   
   for (const endZ of [leftEndZ, rightEndZ]) {
-    // V-образные связи на торце: от колонн к коньку
-    // Левая связь торца: от левой колонны к коньку
+    // V-образные связи на торце - Σ-профили 80x40
     const leftEndBrace = createDiagonal(
-      -halfWidth, height, endZ,  // от основания левой фермы
-      0, ridgeY, endZ,          // к коньку
-      0.05, trussMat
+      -halfWidth, height, endZ,
+      0, ridgeY, endZ,
+      0.035, trussMat
     );
     group.add(leftEndBrace);
     
-    // Правая связь торца: от правой колонны к коньку
     const rightEndBrace = createDiagonal(
-      halfWidth, height, endZ,  // от основания правой фермы
-      0, ridgeY, endZ,          // к коньку
-      0.05, trussMat
+      halfWidth, height, endZ,
+      0, ridgeY, endZ,
+      0.035, trussMat
     );
     group.add(rightEndBrace);
     
-    // Горизонтальная связь на коньке между V-образными (короткая)
-    const ridgeEndTie = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.05, 0.05), 
-      trussMat
-    );
+    // Горизонтальная связь на коньке - Σ-профиль
+    const ridgeEndTie = createSigmaProfile(0.8, 0.05, 0.0015, trussMat);
     ridgeEndTie.position.set(0, ridgeY - 0.1, endZ);
-    ridgeEndTie.castShadow = true;
+    ridgeEndTie.rotation.y = Math.PI / 2;
     group.add(ridgeEndTie);
   }
 
@@ -472,5 +449,107 @@ function createDiagonal(x1: number, y1: number, z1: number, x2: number, y2: numb
   mesh.rotateX(Math.PI / 2);
   
   mesh.castShadow = true;
+  return mesh;
+}
+
+// Создание Σ-профиля (сигма/шляпный профиль) ЛСТК
+// Форма: центральная часть + две полки с загибами
+function createSigmaProfile(length: number, height: number, thickness: number, material: THREE.Material): THREE.Mesh {
+  const flangeWidth = height * 0.35; // Ширина полки
+  const bendDepth = height * 0.15;   // Глубина загиба
+  const webHeight = height - bendDepth * 2; // Высота стенки
+  
+  const shape = new THREE.Shape();
+  
+  // Рисуем поперечное сечение Σ-профиля (вид с торца)
+  // Начинаем с нижнего левого угла внутренней части
+  const w = thickness;
+  const h = webHeight;
+  const f = flangeWidth;
+  const b = bendDepth;
+  
+  // Внешний контур (против часовой стрелки)
+  shape.moveTo(0, 0);
+  // Нижняя полка вправо
+  shape.lineTo(f, 0);
+  // Загиб вверх
+  shape.lineTo(f, b);
+  // Стенка вверх
+  shape.lineTo(f - w, b + h * 0.3);
+  shape.lineTo(f - w, b + h * 0.7);
+  // Верхний загиб
+  shape.lineTo(f, b + h);
+  // Верхняя полка влево
+  shape.lineTo(0, b + h);
+  // Загиб вниз
+  shape.lineTo(0, b + h - w);
+  // Внутренняя часть верхней полки
+  shape.lineTo(f - w - b, b + h - w);
+  // Срез к центру
+  shape.lineTo(f - w - b * 1.5, b + h * 0.7);
+  // Центральная часть (спуск)
+  shape.lineTo(f - w - b * 1.5, b + h * 0.3);
+  // Срез к нижней полке
+  shape.lineTo(f - w - b, b + w);
+  // Внутренняя часть нижней полки
+  shape.lineTo(0, b + w);
+  // Замыкаем
+  shape.lineTo(0, 0);
+  
+  const extrudeSettings = {
+    depth: length,
+    bevelEnabled: false,
+    steps: 1
+  };
+  
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  // Поворачиваем чтобы профиль шел вдоль оси Z
+  geometry.rotateY(Math.PI / 2);
+  // Центрируем
+  geometry.translate(0, -height / 2, -length / 2);
+  
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// Упрощенный С-профиль с полками
+function createCProfile(length: number, height: number, width: number, thickness: number, material: THREE.Material): THREE.Mesh {
+  const shape = new THREE.Shape();
+  
+  const w = thickness;
+  const h = height;
+  const b = width;
+  const bend = b * 0.3; // Загиб полки
+  
+  // Рисуем С-сечение
+  shape.moveTo(0, 0);
+  // Нижняя полка (с загибом внутрь)
+  shape.lineTo(b, 0);
+  shape.lineTo(b, w);
+  shape.lineTo(bend, w);
+  // Стенка вверх
+  shape.lineTo(bend, h - w);
+  // Верхняя полка (с загибом внутрь)
+  shape.lineTo(b, h - w);
+  shape.lineTo(b, h);
+  shape.lineTo(0, h);
+  // Замыкаем
+  shape.lineTo(0, 0);
+  
+  const extrudeSettings = {
+    depth: length,
+    bevelEnabled: false,
+    steps: 1
+  };
+  
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  geometry.rotateY(Math.PI / 2);
+  geometry.translate(0, -height / 2, -length / 2);
+  
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
   return mesh;
 }
