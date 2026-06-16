@@ -102,23 +102,7 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     gridHelper.material.transparent = true;
     scene.add(gridHelper);
 
-    // Разметка участка
-    const siteGeometry = new THREE.PlaneGeometry(width + 6, length + 6);
-    const siteMaterial = new THREE.MeshBasicMaterial({
-      color: 0x3b82f6,
-      transparent: true,
-      opacity: 0.05,
-    });
-    const site = new THREE.Mesh(siteGeometry, siteMaterial);
-    site.rotation.x = -Math.PI / 2;
-    site.position.y = 0.02;
-    scene.add(site);
-
-    const siteEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(width + 6, 0.1, length + 6));
-    const siteLineMat = new THREE.LineBasicMaterial({ color: 0x3b82f6 });
-    const siteLines = new THREE.LineSegments(siteEdges, siteLineMat);
-    siteLines.position.y = 0.05;
-    scene.add(siteLines);
+    // Разметка участка убрана по запросу
 
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
@@ -308,23 +292,23 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // Одна длинная связь от торца до торца (не сегментированная)
+  // Укороченные чтобы не торчать за торцы
+  const tieLength = actualLength - 0.4; // чуть короче чтобы не торчать
   
-  // Связи на уровне ригелей (под фермами) - от первой колонны до последней
-  const fullLength = actualLength;
-  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+  // Связи на уровне ригелей (под фермами)
+  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
   leftTie.position.set(-halfWidth, height, 0);
   leftTie.castShadow = true;
   group.add(leftTie);
 
-  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
   rightTie.position.set(halfWidth, height, 0);
   rightTie.castShadow = true;
   group.add(rightTie);
 
-  // Связь на коньке - одна длинная линия, скрываем если сэндвич включен
+  // Связь на коньке - укороченная, скрываем если сэндвич включен
   if (!showSandwich) {
-    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
     ridgeTie.position.set(0, height + trussHeight, 0);
     ridgeTie.castShadow = true;
     group.add(ridgeTie);
