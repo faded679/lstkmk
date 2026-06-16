@@ -284,20 +284,9 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     group.add(rightBrace2);
   }
 
-  // Коньки на крайних фермах (первой и последней)
-  const endRidge1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, columnStep), trussMat);
-  endRidge1.position.set(0, height + trussHeight, startZ + columnStep / 2);
-  endRidge1.castShadow = true;
-  group.add(endRidge1);
-
-  const endRidge2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, columnStep), trussMat);
-  endRidge2.position.set(0, height + trussHeight, startZ + actualLength - columnStep / 2);
-  endRidge2.castShadow = true;
-  group.add(endRidge2);
-
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
   // Укорочены сильнее чтобы не торчать за здание
-  const tieLength = actualLength - 1.6;
+  const tieLength = actualLength - 2.4;
   
   // Связи на уровне ригелей (под фермами)
   const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
