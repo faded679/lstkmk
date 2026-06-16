@@ -40,6 +40,13 @@ export async function POST(req: NextRequest) {
       }
     ).catch(err => console.error("Telegram error:", err));
 
+    // Дублируем заявку на mctender.ru (FastAPI)
+    fetch("https://mctender.ru/api/leads/from-makstal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name || "", phone, comment: comment || "" }),
+    }).catch(err => console.error("MCTender error:", err));
+
     return NextResponse.json({ ok: true, id: lead.id });
   } catch (e) {
     console.error("Contact API error:", e);
