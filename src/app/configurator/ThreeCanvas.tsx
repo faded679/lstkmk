@@ -95,14 +95,7 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Сетка
-    const gridHelper = new THREE.GridHelper(400, 80, 0x64748b, 0x475569);
-    gridHelper.position.y = 0.01;
-    gridHelper.material.opacity = 0.4;
-    gridHelper.material.transparent = true;
-    scene.add(gridHelper);
-
-    // Разметка участка убрана по запросу
+    // Сетка и разметка убраны по запросу
 
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
@@ -293,7 +286,7 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
   // Укороченные чтобы не торчать за торцы
-  const tieLength = actualLength - 0.4; // чуть короче чтобы не торчать
+  const tieLength = actualLength - 1.2; // укорочены сильнее чтобы не торчать за фермы
   
   // Связи на уровне ригелей (под фермами)
   const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
