@@ -29,20 +29,20 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
 
     const scene = new THREE.Scene();
     
-    // Градиентный фон
+    // Яркий контрастный фон — светло-голубой
     const canvas = document.createElement('canvas');
     canvas.width = 2;
     canvas.height = 512;
     const context = canvas.getContext('2d')!;
     const gradient = context.createLinearGradient(0, 0, 0, 512);
-    gradient.addColorStop(0, '#0f172a');
-    gradient.addColorStop(0.5, '#1e293b');
-    gradient.addColorStop(1, '#334155');
+    gradient.addColorStop(0, '#f0f9ff');
+    gradient.addColorStop(0.5, '#e0f2fe');
+    gradient.addColorStop(1, '#bae6fd');
     context.fillStyle = gradient;
     context.fillRect(0, 0, 2, 512);
     const backgroundTexture = new THREE.CanvasTexture(canvas);
     scene.background = backgroundTexture;
-    scene.fog = new THREE.Fog(0x334155, 50, 200);
+    scene.fog = new THREE.Fog(0xe0f2fe, 80, 250);
 
     const camera = new THREE.PerspectiveCamera(
       50,
@@ -92,13 +92,13 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     fillLight.position.set(-30, 20, 60);
     scene.add(fillLight);
 
-    // Глянцевый отражающий пол для презентации
+    // Тёмный контрастный пол — как асфальт
     const groundGeometry = new THREE.PlaneGeometry(400, 400);
     const groundMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x64748b,
-      roughness: 0.1,
-      metalness: 0.3,
-      envMapIntensity: 0.5
+      color: 0x1e293b,
+      roughness: 0.15,
+      metalness: 0.2,
+      envMapIntensity: 0.3
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
