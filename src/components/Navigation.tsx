@@ -12,6 +12,7 @@ const navLinks = [
   { label: "Проекты", href: "/#projects", isAnchor: true },
   { label: "Контакты", href: "/#contacts", isAnchor: true },
   { label: "Статьи", href: "/articles", isAnchor: false },
+  { label: "База знаний", href: "/knowledge", isAnchor: false },
   { label: "Вакансии", href: "/vacancies", isAnchor: false },
 ];
 
