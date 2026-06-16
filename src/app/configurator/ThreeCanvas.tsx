@@ -285,8 +285,8 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // Укороченные чтобы не торчать за торцы
-  const tieLength = actualLength - 1.2; // укорочены сильнее чтобы не торчать за фермы
+  // Укорочены чтобы заканчиваться на последних фермах, а не торчать наружу
+  const tieLength = actualLength - 0.8;
   
   // Связи на уровне ригелей (под фермами)
   const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
