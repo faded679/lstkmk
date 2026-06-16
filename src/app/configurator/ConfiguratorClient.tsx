@@ -1,24 +1,26 @@
-// @ts-nocheck
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
-import BuildingFrame from "./BuildingFrame";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 
-export default function Configurator3D() {
+// Динамический импорт ThreeCanvas без SSR
+const ThreeCanvas = dynamic(() => import("./ThreeCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full">
+      <div className="text-center text-slate-400">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <p>Загрузка 3D движка...</p>
+      </div>
+    </div>
+  ),
+});
+
+export default function ConfiguratorClient() {
   const [width, setWidth] = useState(24);
   const [length, setLength] = useState(48);
   const [height, setHeight] = useState(5);
   const [showSandwich, setShowSandwich] = useState(false);
-
-  const frameConfig = useMemo(() => ({
-    width,
-    length,
-    height,
-    columnStep: 6,
-    trussHeight: 1.2,
-  }), [width, length, height]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -45,7 +47,7 @@ export default function Configurator3D() {
                 step={6}
                 value={width}
                 onChange={(e) => setWidth(Number(e.target.value))}
-                className="w-full accent-accent-blue"
+                className="w-full accent-blue-500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>12м</span>
@@ -64,7 +66,7 @@ export default function Configurator3D() {
                 step={6}
                 value={length}
                 onChange={(e) => setLength(Number(e.target.value))}
-                className="w-full accent-accent-blue"
+                className="w-full accent-blue-500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>24м</span>
@@ -83,7 +85,7 @@ export default function Configurator3D() {
                 step={1}
                 value={height}
                 onChange={(e) => setHeight(Number(e.target.value))}
-                className="w-full accent-accent-blue"
+                className="w-full accent-blue-500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
                 <span>4м</span>
@@ -97,7 +99,7 @@ export default function Configurator3D() {
                   type="checkbox"
                   checked={showSandwich}
                   onChange={(e) => setShowSandwich(e.target.checked)}
-                  className="w-5 h-5 accent-accent-blue"
+                  className="w-5 h-5 accent-blue-500"
                 />
                 <span className="text-sm font-medium">
                   Сэндвич-панели
@@ -114,51 +116,20 @@ export default function Configurator3D() {
 
           <a
             href="/"
-            className="mt-8 block w-full py-3 text-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+            className="mt-8 block w-full py-3 text-center text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Вернуться на сайт
           </a>
         </div>
 
-        <div className="flex-1 relative">
-          <Canvas shadows className="bg-slate-900">
-            <PerspectiveCamera makeDefault position={[width * 0.8, height * 1.5, length * 0.8]} />
-            <OrbitControls 
-              enablePan={true}
-              enableZoom={true}
-              enableRotate={true}
-              minDistance={10}
-              maxDistance={200}
-            />
-            
-            <ambientLight intensity={0.4} />
-            <directionalLight 
-              position={[50, 50, 50]} 
-              intensity={1}
-              castShadow
-              shadow-mapSize={2048}
-            />
-            <directionalLight position={[-50, 30, -50]} intensity={0.3} />
-            
-            <Grid 
-              position={[0, 0, 0]}
-              args={[200, 200]}
-              cellSize={2}
-              cellThickness={0.5}
-              cellColor={"#475569"}
-              sectionSize={10}
-              sectionThickness={1}
-              sectionColor={"#64748b"}
-              fadeDistance={100}
-              fadeStrength={1}
-            />
-            
-            <BuildingFrame 
-              config={frameConfig}
-              showSandwich={showSandwich}
-            />
-          </Canvas>
-
+        <div className="flex-1 relative min-h-[500px]">
+          <ThreeCanvas 
+            width={width} 
+            length={length} 
+            height={height} 
+            showSandwich={showSandwich}
+          />
+          
           <div className="absolute bottom-4 left-4 text-xs text-slate-400 bg-slate-900/80 px-3 py-2 rounded">
             ЛКМ — вращение • Колесо — zoom • ПКМ — панорама
           </div>

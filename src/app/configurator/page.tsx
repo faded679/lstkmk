@@ -1,5 +1,5 @@
-import ConfiguratorLoader from "./ConfiguratorLoader";
+import ConfiguratorClient from "./ConfiguratorClient";
 
 export default function ConfiguratorPage() {
-  return <ConfiguratorLoader />;
+  return <ConfiguratorClient />;
 }
