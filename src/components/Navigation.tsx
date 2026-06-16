@@ -12,7 +12,6 @@ const navLinks = [
   { label: "Проекты", href: "/#projects", isAnchor: true },
   { label: "Контакты", href: "/#contacts", isAnchor: true },
   { label: "Статьи", href: "/articles", isAnchor: false },
-  { label: "База знаний", href: "/knowledge", isAnchor: false },
   { label: "Вакансии", href: "/vacancies", isAnchor: false },
 ];
 
@@ -81,20 +80,20 @@ export default function Navigation() {
             )}
           </div>
 
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3">
             <a
               href="tel:+79803211542"
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors"
+              className="flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent-blue transition-colors whitespace-nowrap"
             >
-              <Phone size={18} weight="bold" />
+              <Phone size={16} weight="bold" />
               +7 (980) 321-15-42
             </a>
             <Link
               href="/#calculator"
               onClick={(e) => handleAnchorClick(e, "/#calculator")}
-              className="inline-flex h-10 items-center px-5 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+              className="inline-flex h-9 items-center px-4 text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors whitespace-nowrap"
             >
-              Рассчитать стоимость
+              Расчёт цены
             </Link>
           </div>
 
