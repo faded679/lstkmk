@@ -204,6 +204,21 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     rightCol.receiveShadow = true;
     group.add(rightCol);
 
+    // Ребра жесткости на колоннах (уголки)
+    for (const colX of [-halfWidth, halfWidth]) {
+      // Лицевое ребро (справа/слева от колонны)
+      const rib1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, height * 0.6, 0.02), columnMat);
+      rib1.position.set(colX + (colX > 0 ? 0.17 : -0.17), height * 0.4, z);
+      rib1.castShadow = true;
+      group.add(rib1);
+      
+      // Боковое ребро
+      const rib2 = new THREE.Mesh(new THREE.BoxGeometry(0.02, height * 0.5, 0.08), columnMat);
+      rib2.position.set(colX, height * 0.35, z + (colX > 0 ? 0.1 : -0.1));
+      rib2.castShadow = true;
+      group.add(rib2);
+    }
+
     // Ригель (связь колонн сверху)
     if (i < frameCount) {
       const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.16, 0.12), beamMat);
@@ -212,21 +227,59 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
       righel.receiveShadow = true;
       group.add(righel);
 
-      // Соединительные пластины (болты)
+      // Соединительные пластины
       for (const x of [-halfWidth, halfWidth]) {
         const plate = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.06), boltMat);
         plate.position.set(x, height, z + columnStep / 2);
         plate.castShadow = true;
         group.add(plate);
+        
+        // Болты на пластине (2x3 сетка)
+        const boltGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.08, 8);
+        const boltHeadGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.01, 6);
+        for (let bx = -1; bx <= 1; bx++) {
+          for (let by = -1; by <= 1; by++) {
+            const boltX = x + bx * 0.1;
+            const boltY = height + by * 0.08;
+            const boltZ = z + columnStep / 2 + (x > 0 ? 0.03 : -0.03);
+            
+            const bolt = new THREE.Mesh(boltGeo, boltMat);
+            bolt.position.set(boltX, boltY, boltZ);
+            bolt.rotation.x = Math.PI / 2;
+            group.add(bolt);
+            
+            // Головка болта
+            const head = new THREE.Mesh(boltHeadGeo, boltMat);
+            head.position.set(boltX, boltY, boltZ + (x > 0 ? 0.03 : -0.03));
+            head.rotation.x = Math.PI / 2;
+            group.add(head);
+          }
+        }
       }
     }
 
     // База колонн (фундаментная пластина)
     for (const x of [-halfWidth, halfWidth]) {
       const base = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.3), boltMat);
-      base.position.set(x, 0.05, z);
+      base.position.set(x, 0.04, z);
       base.castShadow = true;
       group.add(base);
+      
+      // Анкерные болты по углам пластины
+      const anchorGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.12, 8);
+      const anchorHeadGeo = new THREE.BoxGeometry(0.05, 0.02, 0.05);
+      const anchorPositions = [[-0.15, -0.1], [0.15, -0.1], [-0.15, 0.1], [0.15, 0.1]];
+      
+      for (const [ax, az] of anchorPositions) {
+        const anchor = new THREE.Mesh(anchorGeo, boltMat);
+        anchor.position.set(x + ax, 0.06, z + az);
+        group.add(anchor);
+        
+        // Гайка/шайба сверху
+        const head = new THREE.Mesh(anchorHeadGeo, boltMat);
+        head.position.set(x + ax, 0.12, z + az);
+        group.add(head);
+      }
     }
   }
 
