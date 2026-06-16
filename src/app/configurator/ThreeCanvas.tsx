@@ -308,54 +308,29 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // На всех линиях колонн, но крайние - укороченные
-  for (let i = 0; i <= frameCount; i++) {
-    const z = startZ + i * columnStep;
-    const isEdge = (i === 0 || i === frameCount);
-    
-    // Длина связи: полная для внутренних, половинная для крайних
-    const tieLength = isEdge ? columnStep * 0.5 : columnStep;
-    // Смещение: вперед для первой, назад для последней, центр для внутренних
-    const zOffset = isEdge ? (i === 0 ? columnStep * 0.25 : -columnStep * 0.25) : 0;
-    
-    // Связи на уровне ригелей (под фермами) - соединяют колонны
-    const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    leftTie.position.set(-halfWidth, height, z + zOffset);
-    leftTie.castShadow = true;
-    group.add(leftTie);
+  // Одна длинная связь от торца до торца (не сегментированная)
+  
+  // Связи на уровне ригелей (под фермами) - от первой колонны до последней
+  const fullLength = actualLength;
+  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+  leftTie.position.set(-halfWidth, height, 0);
+  leftTie.castShadow = true;
+  group.add(leftTie);
 
-    const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    rightTie.position.set(halfWidth, height, z + zOffset);
-    rightTie.castShadow = true;
-    group.add(rightTie);
+  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+  rightTie.position.set(halfWidth, height, 0);
+  rightTie.castShadow = true;
+  group.add(rightTie);
 
-    // Связь на коньке - скрываем если сэндвич включен
-    if (!showSandwich) {
-      const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-      ridgeTie.position.set(0, height + trussHeight, z + zOffset);
-      ridgeTie.castShadow = true;
-      group.add(ridgeTie);
-    }
-  }
-
-  // Вертикальные связи на скатах - скрываем когда сэндвич включен
+  // Связь на коньке - одна длинная линия, скрываем если сэндвич включен
   if (!showSandwich) {
-    for (let i = 1; i < frameCount; i++) {
-      const z = startZ + i * columnStep;
-      const y = height + trussHeight / 2;
-      const x = halfWidth / 2;
-      
-      const leftVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
-      leftVert.position.set(-x, y, z);
-      leftVert.castShadow = true;
-      group.add(leftVert);
-
-      const rightVert = new THREE.Mesh(new THREE.BoxGeometry(0.03, trussHeight, 0.03), trussMat);
-      rightVert.position.set(x, y, z);
-      rightVert.castShadow = true;
-      group.add(rightVert);
-    }
+    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, fullLength), trussMat);
+    ridgeTie.position.set(0, height + trussHeight, 0);
+    ridgeTie.castShadow = true;
+    group.add(ridgeTie);
   }
+  
+  // Убраны мелкие вертикальные связи на скатах - они мешали визуально
 
   // === ФРОНТАЛЬНЫЕ СВЯЗИ (торцы здания) ===
   const leftEndZ = startZ;
