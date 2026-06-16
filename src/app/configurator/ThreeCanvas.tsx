@@ -304,12 +304,6 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     topChord.castShadow = true;
     group.add(topChord);
 
-    // Вертикальная стойка на коньке
-    const leftPost = new THREE.Mesh(new THREE.BoxGeometry(0.05, trussHeight, 0.05), trussMat);
-    leftPost.position.set(0, height + trussHeight / 2, z + columnStep / 2);
-    leftPost.castShadow = true;
-    group.add(leftPost);
-
     // === ПРАВАЯ ФЕРМА (зеркально) ===
     const rightLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
     rightLower.position.set(halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
@@ -339,8 +333,8 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   }
 
   // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // Укорочены сильнее чтобы не торчать за здание
-  const tieLength = actualLength - 2.4;
+  // Укорочены чтобы не торчать за торцы ферм
+  const tieLength = actualLength - 0.6;
   
   // Связи на уровне ригелей (под фермами)
   const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
