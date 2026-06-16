@@ -29,20 +29,9 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
 
     const scene = new THREE.Scene();
     
-    // Яркий контрастный фон — светло-голубой
-    const canvas = document.createElement('canvas');
-    canvas.width = 2;
-    canvas.height = 512;
-    const context = canvas.getContext('2d')!;
-    const gradient = context.createLinearGradient(0, 0, 0, 512);
-    gradient.addColorStop(0, '#f0f9ff');
-    gradient.addColorStop(0.5, '#e0f2fe');
-    gradient.addColorStop(1, '#bae6fd');
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, 2, 512);
-    const backgroundTexture = new THREE.CanvasTexture(canvas);
-    scene.background = backgroundTexture;
-    scene.fog = new THREE.Fog(0xe0f2fe, 80, 250);
+    // Белый фон как на картинке
+    scene.background = new THREE.Color(0xfafafa);
+    scene.fog = new THREE.FogExp2(0xfafafa, 0.004);
 
     const camera = new THREE.PerspectiveCamera(
       50,
@@ -92,31 +81,31 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     fillLight.position.set(-30, 20, 60);
     scene.add(fillLight);
 
-    // Тёмный контрастный пол — как асфальт
-    const groundGeometry = new THREE.PlaneGeometry(400, 400);
-    const groundMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x1e293b,
-      roughness: 0.15,
-      metalness: 0.2,
-      envMapIntensity: 0.3
-    });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    // Зелёная трава (весь участок)
+    const grassGeo = new THREE.PlaneGeometry(400, 400);
+    const grassMat = new THREE.MeshStandardMaterial({ color: 0x7cb87a, roughness: 0.9, metalness: 0 });
+    const grass = new THREE.Mesh(grassGeo, grassMat);
+    grass.rotation.x = -Math.PI / 2;
+    grass.receiveShadow = true;
+    scene.add(grass);
 
-    // Красивая тень/блик под ангаром
-    const shadowPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(60, 140),
-      new THREE.MeshBasicMaterial({
-        color: 0x000000,
-        transparent: true,
-        opacity: 0.15
-      })
-    );
-    shadowPlane.rotation.x = -Math.PI / 2;
-    shadowPlane.position.y = 0.02;
-    scene.add(shadowPlane);
+    // Асфальт под ангаром и стоянка (buildingGroup ещё не создан — размеры примерные)
+    const asphaltW = width * 1.8 + 20;
+    const asphaltL = length * 1.3 + 20;
+    const asphaltGeo = new THREE.PlaneGeometry(asphaltW, asphaltL);
+    const asphaltMat = new THREE.MeshStandardMaterial({ color: 0x8a9ba8, roughness: 0.95, metalness: 0 });
+    const asphalt = new THREE.Mesh(asphaltGeo, asphaltMat);
+    asphalt.rotation.x = -Math.PI / 2;
+    asphalt.position.y = 0.01;
+    asphalt.receiveShadow = true;
+    scene.add(asphalt);
+
+    // Лёгкая сетка поверх асфальта (как на картинке)
+    const gridHelper = new THREE.GridHelper(Math.max(asphaltW, asphaltL), 20, 0x9cafc0, 0x9cafc0);
+    gridHelper.position.y = 0.02;
+    (gridHelper.material as THREE.LineBasicMaterial).opacity = 0.25;
+    (gridHelper.material as THREE.LineBasicMaterial).transparent = true;
+    scene.add(gridHelper);
 
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
@@ -211,23 +200,26 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
     
-    // Левая колонна - Σ-профиль ЛСТК (200x70x2.0 мм)
-    const leftCol = createSigmaProfile(0.14, height, 0.002, columnMat);
+    // Левая колонна
+    const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.1), columnMat);
     leftCol.position.set(-halfWidth, height / 2, z);
-    leftCol.rotation.y = Math.PI; // Поворачиваем профиль наружу
+    leftCol.castShadow = true;
+    leftCol.receiveShadow = true;
     group.add(leftCol);
 
-    // Правая колонна - Σ-профиль ЛСТК
-    const rightCol = createSigmaProfile(0.14, height, 0.002, columnMat);
+    // Правая колонна
+    const rightCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.1), columnMat);
     rightCol.position.set(halfWidth, height / 2, z);
-    // Профиль смотрит наружу по умолчанию
+    rightCol.castShadow = true;
+    rightCol.receiveShadow = true;
     group.add(rightCol);
 
-    // Ригель (связь колонн сверху) - Σ-профиль ЛСТК
+    // Ригель
     if (i < frameCount) {
-      const righel = createSigmaProfile(columnStep, 0.16, 0.002, beamMat);
+      const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.12, 0.08), beamMat);
       righel.position.set(0, height, z + columnStep / 2);
-      righel.rotation.y = Math.PI / 2; // Перпендикулярно колоннам
+      righel.castShadow = true;
+      righel.receiveShadow = true;
       group.add(righel);
 
       // Соединительные пластины
@@ -293,25 +285,24 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     const midZ = (z + zNext) / 2;
 
     // === ЛЕВАЯ ФЕРМА ===
-    // Нижний пояс - C-профиль ЛСТК
     const leftLowerLen = Math.sqrt(halfWidth * halfWidth + trussHeight * trussHeight);
-    const leftLower = createCProfile(leftLowerLen, 0.12, 0.05, 0.002, trussMat);
+    const leftLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
     leftLower.position.set(-halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
     leftLower.rotation.z = Math.atan(trussHeight / halfWidth);
-    leftLower.rotation.x = Math.PI / 2;
+    leftLower.castShadow = true;
     group.add(leftLower);
 
-    // Верхний пояс (конек) - Σ-профиль
-    const topChord = createSigmaProfile(columnStep, 0.08, 0.002, trussMat);
+    // Верхний пояс (конек)
+    const topChord = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, columnStep), trussMat);
     topChord.position.set(0, height + trussHeight, z + columnStep / 2);
-    topChord.rotation.y = Math.PI / 2;
+    topChord.castShadow = true;
     group.add(topChord);
 
     // === ПРАВАЯ ФЕРМА (зеркально) ===
-    const rightLower = createCProfile(leftLowerLen, 0.12, 0.05, 0.002, trussMat);
+    const rightLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
     rightLower.position.set(halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
     rightLower.rotation.z = -Math.atan(trussHeight / halfWidth);
-    rightLower.rotation.x = Math.PI / 2;
+    rightLower.castShadow = true;
     group.add(rightLower);
 
     // Связи в плоскости фермы (раскосы) - Σ-профили 60x30
@@ -339,22 +330,22 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   // Укорочены чтобы не торчать за торцы ферм
   const tieLength = actualLength - 1.2;
   
-  // Связи на уровне ригелей - Σ-профили 60x30
-  const leftTie = createSigmaProfile(tieLength, 0.06, 0.0015, trussMat);
+  // Связи на уровне ригелей
+  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
   leftTie.position.set(-halfWidth, height, 0);
-  leftTie.rotation.y = Math.PI / 2;
+  leftTie.castShadow = true;
   group.add(leftTie);
 
-  const rightTie = createSigmaProfile(tieLength, 0.06, 0.0015, trussMat);
+  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
   rightTie.position.set(halfWidth, height, 0);
-  rightTie.rotation.y = -Math.PI / 2;
+  rightTie.castShadow = true;
   group.add(rightTie);
 
-  // Связь на коньке - укороченная
+  // Связь на коньке
   if (!showSandwich) {
-    const ridgeTie = createSigmaProfile(tieLength, 0.05, 0.0015, trussMat);
+    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
     ridgeTie.position.set(0, height + trussHeight, 0);
-    ridgeTie.rotation.y = Math.PI / 2;
+    ridgeTie.castShadow = true;
     group.add(ridgeTie);
   }
   
@@ -366,25 +357,13 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   const ridgeY = height + trussHeight;
   
   for (const endZ of [leftEndZ, rightEndZ]) {
-    // V-образные связи на торце - Σ-профили 80x40
-    const leftEndBrace = createDiagonal(
-      -halfWidth, height, endZ,
-      0, ridgeY, endZ,
-      0.035, trussMat
-    );
+    const leftEndBrace = createDiagonal(-halfWidth, height, endZ, 0, ridgeY, endZ, 0.04, trussMat);
     group.add(leftEndBrace);
-    
-    const rightEndBrace = createDiagonal(
-      halfWidth, height, endZ,
-      0, ridgeY, endZ,
-      0.035, trussMat
-    );
+    const rightEndBrace = createDiagonal(halfWidth, height, endZ, 0, ridgeY, endZ, 0.04, trussMat);
     group.add(rightEndBrace);
-    
-    // Горизонтальная связь на коньке - Σ-профиль
-    const ridgeEndTie = createSigmaProfile(0.8, 0.05, 0.0015, trussMat);
+    const ridgeEndTie = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.05, 0.05), trussMat);
     ridgeEndTie.position.set(0, ridgeY - 0.1, endZ);
-    ridgeEndTie.rotation.y = Math.PI / 2;
+    ridgeEndTie.castShadow = true;
     group.add(ridgeEndTie);
   }
 
