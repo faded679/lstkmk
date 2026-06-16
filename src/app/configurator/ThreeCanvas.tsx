@@ -67,35 +67,56 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
     controls.target.set(0, height / 2, 0);
 
-    // Освещение
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // Драматичное освещение для презентации
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
-    sunLight.position.set(80, 100, 50);
+    // Главное солнце - яркое
+    const sunLight = new THREE.DirectionalLight(0xfff8e7, 1.6);
+    sunLight.position.set(60, 80, 30);
     sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
-    sunLight.shadow.bias = -0.0005;
+    sunLight.shadow.mapSize.width = 4096;
+    sunLight.shadow.mapSize.height = 4096;
+    sunLight.shadow.bias = -0.0001;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 500;
     scene.add(sunLight);
 
-    const fillLight = new THREE.DirectionalLight(0x64748b, 0.3);
-    fillLight.position.set(-40, 20, -40);
+    // Подсветка сбоку для объема (rim light)
+    const rimLight = new THREE.DirectionalLight(0x4a90e2, 0.4);
+    rimLight.position.set(-50, 30, -50);
+    scene.add(rimLight);
+
+    // Мягкий заполняющий свет
+    const fillLight = new THREE.DirectionalLight(0x94a3b8, 0.2);
+    fillLight.position.set(-30, 20, 60);
     scene.add(fillLight);
 
-    // Земля (светлее для лучшей видимости)
+    // Глянцевый отражающий пол для презентации
     const groundGeometry = new THREE.PlaneGeometry(400, 400);
     const groundMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x475569,
-      roughness: 0.95,
-      metalness: 0.05
+      color: 0x64748b,
+      roughness: 0.1,
+      metalness: 0.3,
+      envMapIntensity: 0.5
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Сетка и разметка убраны по запросу
+    // Красивая тень/блик под ангаром
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 140),
+      new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.15
+      })
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.y = 0.02;
+    scene.add(shadowPlane);
 
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
@@ -103,9 +124,39 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
     sceneRef.current = { scene, camera, renderer, controls, buildingGroup };
     setIsInitialized(true);
 
+    // Авто-облет камеры для презентации
     let animationId: number;
+    let autoRotate = true;
+    let rotationSpeed = 0.0005;
+    let lastInteraction = Date.now();
+    
+    const resetAutoRotate = () => {
+      lastInteraction = Date.now();
+      autoRotate = false;
+    };
+    
+    // Слушаем взаимодействие
+    containerRef.current?.addEventListener('mousedown', resetAutoRotate);
+    containerRef.current?.addEventListener('wheel', resetAutoRotate);
+    containerRef.current?.addEventListener('touchstart', resetAutoRotate);
+    
     const animate = () => {
       animationId = requestAnimationFrame(animate);
+      
+      // Возобновляем авто-вращение через 3 секунды после взаимодействия
+      if (!autoRotate && Date.now() - lastInteraction > 3000) {
+        autoRotate = true;
+      }
+      
+      // Плавный облет вокруг ангара
+      if (autoRotate) {
+        const time = Date.now() * rotationSpeed;
+        const radius = 60;
+        camera.position.x = Math.cos(time) * radius;
+        camera.position.z = Math.sin(time) * radius;
+        camera.lookAt(0, height / 2, 0);
+      }
+      
       controls.update();
       renderer.render(scene, camera);
     };
@@ -431,6 +482,34 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     ridge.castShadow = true;
     group.add(ridge);
   }
+
+  // === РАЗМЕРНЫЕ ПОДПИСИ ДЛЯ ПРЕЗЕНТАЦИИ ===
+  const labelY = height + trussHeight + 2;
+  const labelZ = actualLength / 2 + 3;
+  
+  // Ширина
+  const widthLabel = createDimensionLabel(
+    `${width}м`,
+    new THREE.Vector3(0, labelY, labelZ),
+    3
+  );
+  group.add(widthLabel);
+  
+  // Длина
+  const lengthLabel = createDimensionLabel(
+    `${length}м`,
+    new THREE.Vector3(halfWidth + 3, labelY, 0),
+    3
+  );
+  group.add(lengthLabel);
+  
+  // Высота
+  const heightLabel = createDimensionLabel(
+    `${height}м`,
+    new THREE.Vector3(-halfWidth - 4, height / 2, actualLength / 2 + 2),
+    2.5
+  );
+  group.add(heightLabel);
 }
 
 // Хелпер для создания диагонали
@@ -451,4 +530,38 @@ function createDiagonal(x1: number, y1: number, z1: number, x2: number, y2: numb
   
   mesh.castShadow = true;
   return mesh;
+}
+
+// Хелпер для создания размерной подписи
+function createDimensionLabel(text: string, position: THREE.Vector3, size: number = 2) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+  canvas.width = 256;
+  canvas.height = 64;
+  
+  // Фон
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.roundRect(0, 0, 256, 64, 8);
+  ctx.fill();
+  
+  // Рамка
+  ctx.strokeStyle = '#3b82f6';
+  ctx.lineWidth = 3;
+  ctx.roundRect(0, 0, 256, 64, 8);
+  ctx.stroke();
+  
+  // Текст
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 128, 32);
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
+  const sprite = new THREE.Sprite(material);
+  sprite.position.copy(position);
+  sprite.scale.set(size, size * 0.25, 1);
+  
+  return sprite;
 }
