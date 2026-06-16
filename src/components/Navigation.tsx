@@ -58,14 +58,14 @@ export default function Navigation() {
             <img src="/photo_2026-06-01_19-06-27 (2).jpg" alt="МАКСТИЛ" className="h-10 w-auto object-contain" />
           </a>
 
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) =>
               link.isAnchor ? (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleAnchorClick(e, link.href)}
-                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200"
+                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200 whitespace-nowrap"
                 >
                   {link.label}
                 </Link>
@@ -73,7 +73,7 @@ export default function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200"
+                  className="text-sm font-medium text-foreground/80 hover:text-accent-blue transition-colors duration-200 whitespace-nowrap"
                 >
                   {link.label}
                 </Link>
