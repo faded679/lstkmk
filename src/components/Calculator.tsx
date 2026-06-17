@@ -352,109 +352,111 @@ export default function Calculator() {
             }}
             className="lg:col-span-2"
           >
-            <div className="sticky top-24 bg-white border border-border rounded-lg p-6 lg:p-8">
-              <h3 className="text-lg font-semibold text-foreground mb-6">
-                Предварительный расчёт
-              </h3>
+            <div className="sticky top-24 flex flex-col gap-4" style={{ maxHeight: "calc(100vh - 7rem)" }}>
+              <div className="bg-white border border-border rounded-lg p-5 shrink-0">
+                <h3 className="text-base font-semibold text-foreground mb-4">
+                  Предварительный расчёт
+                </h3>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between py-2 border-b border-border/60">
-                  <span className="text-muted">Тип</span>
-                  <span className="font-medium text-foreground">
-                    {selectedType.label}
-                  </span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between py-1.5 border-b border-border/60">
+                    <span className="text-muted">Тип</span>
+                    <span className="font-medium text-foreground">
+                      {selectedType.label}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-border/60">
+                    <span className="text-muted">Размеры</span>
+                    <span className="font-medium text-foreground">
+                      {width} x {length} x {height} м
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-border/60">
+                    <span className="text-muted">Площадь</span>
+                    <span className="font-medium text-foreground">
+                      {formatPrice(estimate.area)} м²
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-border/60">
+                    <span className="text-muted">Утепление</span>
+                    <span className="font-medium text-foreground">
+                      {selectedInsulation.label}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between py-2 border-b border-border/60">
-                  <span className="text-muted">Размеры</span>
-                  <span className="font-medium text-foreground">
-                    {width} x {length} x {height} м
-                  </span>
+
+                <div className="mt-5 pt-4 border-t-2 border-accent-orange">
+                  <div className="text-sm text-muted mb-1">
+                    Цена без монтажных работ
+                  </div>
+                  <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                    {formatPrice(estimate.total)}{" "}
+                    <span className="text-base font-normal text-muted">руб.</span>
+                  </div>
+                  <div className="text-xs text-muted mt-1">
+                    ~ {formatPrice(estimate.total / estimate.area)} руб/м²
+                  </div>
                 </div>
-                <div className="flex justify-between py-2 border-b border-border/60">
-                  <span className="text-muted">Площадь</span>
-                  <span className="font-medium text-foreground">
-                    {formatPrice(estimate.area)} м²
-                  </span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-border/60">
-                  <span className="text-muted">Утепление</span>
-                  <span className="font-medium text-foreground">
-                    {selectedInsulation.label}
-                  </span>
-                </div>
+
+                <a
+                  href="#contacts"
+                  className="mt-4 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+                >
+                  Рассчитать стоимость строительства
+                </a>
+                <p className="mt-2 text-xs text-muted text-center leading-relaxed">
+                  Менеджер свяжется с вами в течение 2 часов
+                </p>
               </div>
 
-              <div className="mt-8 pt-6 border-t-2 border-accent-orange">
-                <div className="text-sm text-muted mb-1">
-                  Цена без монтажных работ
+              <div className="bg-white border border-border rounded-lg flex flex-col min-h-0 flex-1">
+                <div className="flex items-center gap-2.5 px-4 py-2.5 border-b border-border shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-accent-blue/10 flex items-center justify-center">
+                    <Robot size={14} weight="bold" className="text-accent-blue" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">Помощник</div>
+                    <div className="text-[11px] text-muted">Подскажу по расчёту</div>
+                  </div>
                 </div>
-                <div className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                  {formatPrice(estimate.total)}{" "}
-                  <span className="text-lg font-normal text-muted">руб.</span>
-                </div>
-                <div className="text-xs text-muted mt-1">
-                  ~ {formatPrice(estimate.total / estimate.area)} руб/м²
-                </div>
-              </div>
 
-              <a
-                href="#contacts"
-                className="mt-6 w-full inline-flex h-12 items-center justify-center text-base font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
-              >
-                Рассчитать стоимость строительства
-              </a>
-              <p className="mt-3 text-xs text-muted text-center leading-relaxed">
-                Менеджер свяжется с вами в течение 2 часов
-              </p>
-            </div>
-
-            <div className="mt-6 bg-white border border-border rounded-lg flex flex-col" style={{ height: 360 }}>
-              <div className="flex items-center gap-2.5 px-4 py-3 border-b border-border">
-                <div className="w-8 h-8 rounded-full bg-accent-blue/10 flex items-center justify-center">
-                  <Robot size={16} weight="bold" className="text-accent-blue" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-foreground">Помощник</div>
-                  <div className="text-[11px] text-muted">Подскажу по расчёту</div>
-                </div>
-              </div>
-
-              <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
-                {chatMessages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
-                      msg.role === "user"
-                        ? "bg-accent-blue text-white rounded-br-sm"
-                        : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
-                    }`}>
-                      {msg.text}
+                <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5 min-h-0">
+                  {chatMessages.map((msg, i) => (
+                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                        msg.role === "user"
+                          ? "bg-accent-blue text-white rounded-br-sm"
+                          : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
+                      }`}>
+                        {msg.text}
+                      </div>
                     </div>
-                  </div>
-                ))}
-                {chatLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-slate-50 border border-border px-3 py-2 rounded-xl rounded-bl-sm text-sm text-muted">Печатает...</div>
-                  </div>
-                )}
-              </div>
+                  ))}
+                  {chatLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-slate-50 border border-border px-3 py-2 rounded-xl rounded-bl-sm text-sm text-muted">Печатает...</div>
+                    </div>
+                  )}
+                </div>
 
-              <div className="px-3 py-2.5 border-t border-border">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                    placeholder="Задайте вопрос..."
-                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
-                  />
-                  <button
-                    onClick={sendChatMessage}
-                    disabled={!chatInput.trim() || chatLoading}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
-                  >
-                    <PaperPlaneRight size={16} weight="bold" />
-                  </button>
+                <div className="px-3 py-2.5 border-t border-border shrink-0">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                      placeholder="Задайте вопрос..."
+                      className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                    />
+                    <button
+                      onClick={sendChatMessage}
+                      disabled={!chatInput.trim() || chatLoading}
+                      className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
+                    >
+                      <PaperPlaneRight size={16} weight="bold" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
