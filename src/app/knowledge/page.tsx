@@ -98,7 +98,7 @@ export default function KnowledgePage() {
             База знаний
           </h1>
           <p className="text-base text-muted max-w-lg leading-relaxed">
-            Краткие ответы на частые вопросы о строительстве сельхоззданий из ЛСТК. 
+            Краткие ответы на частые вопросы о строительстве из ЛСТК. 
             Быстрые справки без лишней информации.
           </p>
         </motion.div>

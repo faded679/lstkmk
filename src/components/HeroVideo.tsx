@@ -1,181 +1,9 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-const TOTAL_FRAMES = 152;
-const FRAME_STEP = 2; // берём каждый 2-й кадр → 76 файлов вместо 152
-
-function buildFrameUrls(): string[] {
-  const urls: string[] = [];
-  for (let i = 1; i <= TOTAL_FRAMES; i += FRAME_STEP) {
-    urls.push(`/frames2/frame_${String(i).padStart(4, "0")}.webp`);
-  }
-  return urls;
-}
-
-const frameUrls = buildFrameUrls();
-
 export default function HeroVideo() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
-  const frameObj = useRef({ frame: 0 });
-  const leftLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const rightLabelsRef = useRef<(HTMLSpanElement | null)[]>([]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const drawFrame = (i: number) => {
-      const img = imagesRef.current[i];
-      if (!img || !canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, rect.width, rect.height);
-
-      const imgRatio = img.naturalWidth / img.naturalHeight;
-      const canvasRatio = rect.width / rect.height;
-      let dw: number, dh: number, dx: number, dy: number;
-      if (canvasRatio > imgRatio) {
-        dh = rect.height;
-        dw = dh * imgRatio;
-        dx = (rect.width - dw) / 2;
-        dy = 0;
-      } else {
-        dw = rect.width;
-        dh = dw / imgRatio;
-        dx = 0;
-        dy = (rect.height - dh) / 2;
-      }
-      ctx.drawImage(img, dx, dy, dw, dh);
-    };
-
-    const loadImages = (): Promise<void> =>
-      new Promise((resolve) => {
-        const images: HTMLImageElement[] = new Array(frameUrls.length);
-        const EAGER_COUNT = 10; // только первые 10 кадров для быстрого старта
-
-        const loadRange = (start: number, end: number, onAllDone?: () => void) => {
-          let count = 0;
-          const total = end - start;
-          for (let i = start; i < end; i++) {
-            const img = new Image();
-            if (i === 0) img.fetchPriority = "high";
-            img.src = frameUrls[i];
-            const idx = i;
-            img.onload = img.onerror = () => {
-              images[idx] = img;
-              count++;
-              if (count === total && onAllDone) onAllDone();
-            };
-          }
-        };
-
-        // Не блокируем скролл — сайт должен быть доступен сразу
-        loadRange(0, EAGER_COUNT, () => {
-          imagesRef.current = images;
-          drawFrame(0);
-          resolve();
-
-          // Остальные кадры загружаем лениво при первом скролле
-          window.addEventListener("scroll", () => {
-            loadRange(EAGER_COUNT, frameUrls.length, () => {
-              imagesRef.current = images;
-            });
-          }, { passive: true, once: true });
-        });
-      });
-
-    let gsapCtx: gsap.Context;
-
-    loadImages().then(() => {
-      drawFrame(0);
-
-      gsapCtx = gsap.context(() => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: container,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.5,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        tl.to(frameObj.current, {
-          frame: imagesRef.current.length - 1,
-          ease: "none",
-          onUpdate: () => {
-            const idx = Math.round(frameObj.current.frame);
-            drawFrame(idx);
-          },
-        });
-
-        const leftEls = leftLabelsRef.current.filter(Boolean);
-        const rightEls = rightLabelsRef.current.filter(Boolean);
-
-        gsap.fromTo(leftEls,
-          { opacity: 0, x: -18 },
-          {
-            opacity: 1, x: 0,
-            stagger: 0.12,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: container,
-              start: "top+=5% top",
-              end: "top+=30% top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        gsap.fromTo(rightEls,
-          { opacity: 0, x: 18 },
-          {
-            opacity: 1, x: 0,
-            stagger: 0.12,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: container,
-              start: "top+=5% top",
-              end: "top+=30% top",
-              scrub: 0.6,
-            },
-          }
-        );
-      }, container);
-
-      const onResize = () => {
-        drawFrame(Math.round(frameObj.current.frame));
-      };
-      window.addEventListener("resize", onResize);
-
-      return () => {
-        window.removeEventListener("resize", onResize);
-        if (gsapCtx) gsapCtx.revert();
-      };
-    });
-  }, []);
-
   return (
-    <section
-      ref={containerRef}
-      className="relative bg-white md:h-[250vh] h-screen"
-    >
-      <div className="sticky top-0 h-screen w-full flex flex-col bg-white">
+    <section className="relative bg-white">
+      <div className="h-screen w-full flex flex-col bg-white">
         <div className="pt-24 pb-4 px-6 lg:px-10 text-center bg-white">
           <p className="text-sm font-mono uppercase tracking-[0.18em] text-accent-orange mb-3">
             От фундамента до готового здания
@@ -204,11 +32,10 @@ export default function HeroVideo() {
 
         <div className="flex-1 relative min-h-0 flex items-stretch bg-white">
           <div className="hidden lg:flex flex-col justify-around items-end w-36 xl:w-44 pr-4 py-4 select-none bg-white">
-            {["Проектирование", "Производство", "Монтаж"].map((label, i) => (
+            {["Проектирование", "Производство", "Монтаж"].map((label) => (
               <span
                 key={label}
-                ref={(el) => { leftLabelsRef.current[i] = el; }}
-                className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight opacity-0"
+                className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight"
               >
                 {label}
               </span>
@@ -216,7 +43,7 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
-            {/* Мобильные: обычное видео */}
+            {/* Мобильные: видео */}
             <video
               className="md:hidden absolute inset-0 w-full h-full object-cover"
               autoPlay
@@ -224,23 +51,23 @@ export default function HeroVideo() {
               loop
               playsInline
               preload="auto"
-              poster="/frames/frame_001.webp"
+              poster="/frames2/frame_0151.webp"
             >
               <source src="/animationn.mp4" type="video/mp4" />
             </video>
-            {/* Десктоп: canvas со скролл-анимацией */}
-            <canvas
-              ref={canvasRef}
-              className="hidden md:block absolute inset-0 w-full h-full bg-white"
+            {/* Десктоп: статичное изображение готового ангара */}
+            <img
+              src="/frames2/frame_0151.webp"
+              alt="Готовый ангар из металлоконструкций"
+              className="hidden md:block absolute inset-0 w-full h-full object-contain bg-white"
             />
           </div>
 
           <div className="hidden lg:flex flex-col justify-around items-start w-36 xl:w-44 pl-4 py-4 select-none bg-white">
-            {["Под ключ", "45 дней", "14 лет опыта"].map((label, i) => (
+            {["Под ключ", "45 дней", "14 лет опыта"].map((label) => (
               <span
                 key={label}
-                ref={(el) => { rightLabelsRef.current[i] = el; }}
-                className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight opacity-0"
+                className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight"
               >
                 {label}
               </span>
