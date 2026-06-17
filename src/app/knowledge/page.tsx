@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, BookOpen } from "@phosphor-icons/react";
+import { ArrowLeft, BookOpen, MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 
@@ -11,65 +12,98 @@ const knowledgeItems = [
     title: "Тип местности для строительства",
     slug: "tip-mestnosti",
     description: "Категории местности А, Б, В, Г, Д и их влияние на проектирование ферм.",
+    category: "Нагрузки",
   },
   {
     id: 2,
     title: "Снеговой район",
     slug: "snegovoj-rajon",
     description: "I-VIII снеговые районы и расчёт снеговой нагрузки на кровлю.",
+    category: "Нагрузки",
   },
   {
     id: 3,
     title: "Сейсмичность",
     slug: "sejsmichnost",
     description: "Сейсмические районы 7, 8, 9 баллов и требования к конструкциям.",
+    category: "Нагрузки",
   },
   {
     id: 4,
     title: "Толщина сэндвич-панелей",
     slug: "tolshina-sendvich-panelej",
     description: "Диапазон 80-200 мм — подберём под любой тип здания.",
+    category: "Материалы",
   },
   {
     id: 5,
     title: "Высота коровника",
     slug: "vysota-korovnika",
     description: "Стандартная высота в коньке для коровников разной вместимости.",
+    category: "Коровники",
   },
   {
     id: 6,
     title: "Площадь на голову КРС",
     slug: "ploshchad-na-golovu-krs",
     description: "Нормы площади для дойных коров по СП и ветеринарным требованиям.",
+    category: "Коровники",
   },
   {
     id: 7,
     title: "Шаг колонн в коровнике",
     slug: "shag-kollon",
     description: "Оптимальный шаг несущих колонн для быстровозводимых ферм.",
+    category: "Коровники",
   },
   {
     id: 8,
     title: "Фундамент для коровника",
     slug: "fundament-korovnika",
     description: "Свайный, ленточный, плитный фундамент — что выбрать.",
+    category: "Фундаменты",
   },
   {
     id: 9,
     title: "Вентиляция в коровнике",
     slug: "ventilyaciya-korovnika",
     description: "Нормы воздухообмена и системы вентиляции по СП 56.",
+    category: "Инженерия",
   },
   {
     id: 10,
     title: "Утепление коровника",
     slug: "uteplenie-korovnika",
     description: "Требования к теплозащите и выбор утеплителя для фермы.",
+    category: "Материалы",
   },
 ];
 
+const categories = ["Все", ...Array.from(new Set(knowledgeItems.map(item => item.category)))];
+
 export default function KnowledgePage() {
   const reduce = useReducedMotion();
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Все");
+
+  const filteredItems = useMemo(() => {
+    let items = knowledgeItems;
+
+    if (selectedCategory !== "Все") {
+      items = items.filter(item => item.category === selectedCategory);
+    }
+
+    if (search.trim()) {
+      const q = search.toLowerCase().trim();
+      items = items.filter(
+        item =>
+          item.title.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q)
+      );
+    }
+
+    return items;
+  }, [search, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -98,13 +132,47 @@ export default function KnowledgePage() {
             База знаний
           </h1>
           <p className="text-base text-muted max-w-lg leading-relaxed">
-            Краткие ответы на частые вопросы о строительстве из ЛСТК. 
+            Краткие ответы на частые вопросы о строительстве из ЛСТК.
             Быстрые справки без лишней информации.
           </p>
         </motion.div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {knowledgeItems.map((item, i) => (
+        {/* Поиск */}
+        <div className="mt-8 relative max-w-md">
+          <MagnifyingGlass
+            size={18}
+            weight="bold"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Поиск по базе знаний..."
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-border rounded-lg bg-white focus:outline-none focus:border-accent-blue/50 focus:ring-2 focus:ring-accent-blue/10 transition-all"
+          />
+        </div>
+
+        {/* Категории */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                selectedCategory === category
+                  ? "bg-accent-blue text-white"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Результаты */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredItems.map((item, i) => (
             <Link
               key={item.id}
               href={`/knowledge/${item.slug}/`}
@@ -120,16 +188,29 @@ export default function KnowledgePage() {
                 }}
                 className="group p-5 rounded-lg border border-border bg-white hover:border-accent-blue/30 hover:shadow-sm transition-all duration-300 h-full"
               >
-                <h2 className="text-base font-semibold text-foreground mb-2 leading-snug group-hover:text-accent-blue transition-colors">
-                  {item.title}
-                </h2>
-                <p className="text-sm text-muted leading-relaxed">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-base font-semibold text-foreground leading-snug group-hover:text-accent-blue transition-colors">
+                    {item.title}
+                  </h2>
+                </div>
+                <p className="text-sm text-muted leading-relaxed mb-3">
                   {item.description}
                 </p>
+                <span className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                  {item.category}
+                </span>
               </motion.article>
             </Link>
           ))}
         </div>
+
+        {filteredItems.length === 0 && (
+          <div className="mt-12 text-center">
+            <p className="text-muted text-sm">
+              Ничего не найдено. Попробуйте изменить запрос или категорию.
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
