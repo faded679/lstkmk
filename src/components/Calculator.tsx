@@ -187,10 +187,10 @@ export default function Calculator() {
   const BuildingSketch = () => {
     // Visual scale to normalize building sizes across types
     const visualScale: Record<BuildingType, number> = {
-      "small-building": 3.5,  // Smaller buildings need larger scale
-      warehouse: 1.5,
+      "small-building": 6,  // Small buildings need much larger scale to fill space
+      warehouse: 1.8,
       agriculture: 1.2,
-      service: 2.0,
+      service: 3.5,
     };
     const baseScale = visualScale[type];
 
