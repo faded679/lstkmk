@@ -114,7 +114,7 @@ export default function ArticlePage() {
           </header>
 
           <img
-            src="/knowledge/cow-farm-3.png"
+            src="/knowledge/cow-farm-3.jpg"
             alt="Коровник из металлоконструкций — фасад здания"
             className="w-full rounded-lg mb-10"
           />
