@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Warehouse,
   Barn,
   Wrench,
+  Robot,
+  PaperPlaneRight,
 } from "@phosphor-icons/react";
 
 type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
@@ -55,6 +57,33 @@ const insulationOptions: {
   { id: "sandwich", label: "Сэндвич-панели",  multiplier: 1.25 },
 ];
 
+const typeHints: Record<BuildingType, string> = {
+  "small-building": "Здания до 300 м² — это хозблоки, гаражи на 2–4 машины, небольшие мастерские, торговые павильоны, бытовки и модульные офисы.",
+  warehouse: "Склады и производственные здания — логистические комплексы, распределительные склады, производственные цеха, сборочные линии, упаковочные центры.",
+  agriculture: "Сельхоз здания — коровники, телятники, свинарники, птицефабрики, овощехранилища, зернохранилища, сенохранилища.",
+  service: "Автосервисы и гаражи — СТО, автомойки, шиномонтажи, автосалоны, гаражные комплексы, пункты техосмотра.",
+};
+
+interface ChatMessage {
+  role: "assistant" | "user";
+  text: string;
+}
+
+async function getChatResponse(message: string): Promise<string> {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    return data.reply;
+  } catch {
+    return "Извините, произошла ошибка. Позвоните нам: +7 (980) 321-15-42";
+  }
+}
+
 export default function Calculator() {
   const reduce = useReducedMotion();
   const [type, setType] = useState<BuildingType>("warehouse");
@@ -66,12 +95,37 @@ export default function Calculator() {
   const [heightIdx, setHeightIdx] = useState(0);
   const [insulation, setInsulation] = useState<Insulation>("none");
 
-  // Reset sliders when type changes
+  // Chat state
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    { role: "assistant", text: "Здравствуйте! Я помощник по расчёту. Выберите тип здания — подскажу что в него входит. Задавайте любые вопросы!" },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // Reset sliders when type changes + send chat hint
   useEffect(() => {
     setWidthIdx(0);
     setLengthVal(typeConfig[type].lengthMin);
     setHeightIdx(0);
+    setChatMessages((prev) => [...prev, { role: "assistant", text: typeHints[type] }]);
   }, [type]);
+
+  // Auto-scroll chat
+  useEffect(() => {
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  }, [chatMessages, chatLoading]);
+
+  const sendChatMessage = async () => {
+    const text = chatInput.trim();
+    if (!text || chatLoading) return;
+    setChatMessages((prev) => [...prev, { role: "user", text }]);
+    setChatInput("");
+    setChatLoading(true);
+    const reply = await getChatResponse(text);
+    setChatMessages((prev) => [...prev, { role: "assistant", text: reply }]);
+    setChatLoading(false);
+  };
 
   const width  = cfg.widths[widthIdx];
   const length = lengthVal;
@@ -352,6 +406,57 @@ export default function Calculator() {
               <p className="mt-3 text-xs text-muted text-center leading-relaxed">
                 Менеджер свяжется с вами в течение 2 часов
               </p>
+            </div>
+
+            <div className="mt-6 bg-white border border-border rounded-lg flex flex-col" style={{ height: 360 }}>
+              <div className="flex items-center gap-2.5 px-4 py-3 border-b border-border">
+                <div className="w-8 h-8 rounded-full bg-accent-blue/10 flex items-center justify-center">
+                  <Robot size={16} weight="bold" className="text-accent-blue" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-foreground">Помощник</div>
+                  <div className="text-[11px] text-muted">Подскажу по расчёту</div>
+                </div>
+              </div>
+
+              <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                      msg.role === "user"
+                        ? "bg-accent-blue text-white rounded-br-sm"
+                        : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
+                    }`}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-50 border border-border px-3 py-2 rounded-xl rounded-bl-sm text-sm text-muted">Печатает...</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="px-3 py-2.5 border-t border-border">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                    placeholder="Задайте вопрос..."
+                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                  />
+                  <button
+                    onClick={sendChatMessage}
+                    disabled={!chatInput.trim() || chatLoading}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
+                  >
+                    <PaperPlaneRight size={16} weight="bold" />
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
