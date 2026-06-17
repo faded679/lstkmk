@@ -72,7 +72,7 @@ export default function About() {
               key={stat.label}
               initial={reduce ? false : { opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.1 }}
+              viewport={{ once: true, amount: 0.1 }}
               transition={{
                 duration: 0.6,
                 delay: i * 0.08,
@@ -94,7 +94,7 @@ export default function About() {
           <motion.div
             initial={reduce ? false : { opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-none text-foreground">
@@ -121,7 +121,7 @@ export default function About() {
                 key={adv.title}
                 initial={reduce ? false : { opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.1 }}
+                viewport={{ once: true, amount: 0.1 }}
                 transition={{
                   duration: 0.6,
                   delay: i * 0.1,

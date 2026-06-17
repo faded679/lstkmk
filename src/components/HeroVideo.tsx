@@ -66,7 +66,7 @@ export default function HeroVideo() {
     const loadImages = (): Promise<void> =>
       new Promise((resolve) => {
         const images: HTMLImageElement[] = new Array(frameUrls.length);
-        const EAGER_COUNT = 25; // половина от 50, т.к. кадров вдвое меньше
+        const EAGER_COUNT = 10; // только первые 10 кадров для быстрого старта
 
         const loadRange = (start: number, end: number, onAllDone?: () => void) => {
           let count = 0;
@@ -84,16 +84,13 @@ export default function HeroVideo() {
           }
         };
 
-        // Блокируем скролл пока не загрузятся первые кадры
-        document.body.style.overflow = "hidden";
-
+        // Не блокируем скролл — сайт должен быть доступен сразу
         loadRange(0, EAGER_COUNT, () => {
           imagesRef.current = images;
           drawFrame(0);
-          // Разблокируем скролл
-          document.body.style.overflow = "";
           resolve();
 
+          // Остальные кадры загружаем лениво при первом скролле
           window.addEventListener("scroll", () => {
             loadRange(EAGER_COUNT, frameUrls.length, () => {
               imagesRef.current = images;
