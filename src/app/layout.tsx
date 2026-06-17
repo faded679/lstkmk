@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import Breadcrumb from "@/components/Breadcrumb";
+import AiAssistant from "@/components/AiAssistant";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +112,7 @@ export default function RootLayout({
       <body>
         <Breadcrumb />
         {children}
+        <AiAssistant />
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-KR3X1J843D" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">

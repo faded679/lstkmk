@@ -12,38 +12,26 @@ interface Message {
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
   content:
-    "Здравствуйте! Я виртуальный помощник МАКСТИЛ. Задайте вопрос о строительстве металлоконструкций, сроках, ценах или наших услугах.",
+    "Здравствуйте! Я помощник МАКСТИЛ. Спрашивайте о ценах, сроках, технологиях ЛСТК, утеплении — отвечу сразу.",
 };
 
-const FAQ_RESPONSES: Record<string, string> = {
-  цена:
-    "Стоимость зависит от типа здания, размеров и утепления. Ориентировочно: холодный ангар от 7 000 руб/м², тёплый склад от 10 000 руб/м². Воспользуйтесь нашим калькулятором для расчёта или оставьте заявку на точную смету.",
-  срок:
-    "Средний срок строительства: 30-60 дней в зависимости от площади и сложности. Проектирование занимает 5-10 дней, производство каркаса 15-20 дней, монтаж 15-30 дней.",
-  гарантия:
-    "Мы предоставляем гарантию 5 лет на несущие конструкции и 2 года на ограждающие. Все сварные соединения проходят ультразвуковой контроль.",
-  доставка:
-    "Доставляем металлоконструкции по всей России собственным автопарком. Стоимость доставки зависит от расстояния и объёма. До 500 км от завода доставка обычно включена в стоимость.",
-  фундамент:
-    "Мы выполняем все типы фундаментов: ленточные, столбчатые, свайные. Тип фундамента подбирается после геологических изысканий и зависит от нагрузок и грунта.",
-  утепление:
-    "Предлагаем сэндвич-панели толщиной от 50 до 200 мм. Для отапливаемых зданий в средней полосе рекомендуем панели 100-150 мм с минеральной ватой.",
-  проект:
-    "Проектирование входит в стоимость при заказе строительства под ключ. Отдельно проект стоит от 150 руб/м². Получаете полный комплект КМ и КМД.",
-};
+async function getAIResponse(message: string): Promise<string> {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
 
-function findResponse(input: string): string {
-  const lower = input.toLowerCase();
+    if (!response.ok) {
+      throw new Error("API error");
+    }
 
-  for (const [key, response] of Object.entries(FAQ_RESPONSES)) {
-    if (lower.includes(key)) return response;
+    const data = await response.json();
+    return data.reply;
+  } catch {
+    return "Извините, произошла ошибка. Позвоните нам: +7 (980) 321-15-42 — инженер ответит на все вопросы.";
   }
-
-  if (lower.includes("привет") || lower.includes("здравств")) {
-    return "Здравствуйте! Чем могу помочь? Спрашивайте о ценах, сроках, гарантии, утеплении или любых других вопросах по строительству.";
-  }
-
-  return "Спасибо за вопрос! Для подробной консультации рекомендую связаться с нашим инженером по телефону 8 (800) 555-35-35 или оставить заявку в разделе контактов. Также вы можете спросить меня о ценах, сроках, гарантии, доставке, фундаменте или утеплении.";
 }
 
 export default function AiAssistant() {
@@ -59,7 +47,7 @@ export default function AiAssistant() {
     }
   }, [messages]);
 
-  const send = () => {
+  const send = async () => {
     const text = input.trim();
     if (!text || loading) return;
 
@@ -67,13 +55,9 @@ export default function AiAssistant() {
     setInput("");
     setLoading(true);
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: findResponse(text) },
-      ]);
-      setLoading(false);
-    }, 800 + Math.random() * 600);
+    const reply = await getAIResponse(text);
+    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    setLoading(false);
   };
 
   return (
@@ -118,7 +102,7 @@ export default function AiAssistant() {
                   }`}
                 >
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed ${
+                    className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
                       msg.role === "user"
                         ? "bg-accent-blue text-white rounded-br-sm"
                         : "bg-slate-100 text-foreground rounded-bl-sm"
@@ -150,7 +134,7 @@ export default function AiAssistant() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Задайте вопрос..."
+                placeholder="Спросите о ценах, сроках..."
                 className="flex-1 h-10 px-3 text-sm bg-slate-50 border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
               />
               <button
