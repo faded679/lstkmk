@@ -45,7 +45,7 @@ export default function HeroVideo() {
           <div className="relative flex-1 min-w-0 bg-white">
             {/* Мобильные: видео */}
             <video
-              className="md:hidden absolute inset-0 w-full h-full object-cover"
+              className="md:hidden absolute inset-0 w-full h-full object-contain bg-white"
               autoPlay
               muted
               loop
