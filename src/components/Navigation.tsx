@@ -55,7 +55,7 @@ export default function Navigation() {
       >
         <nav className="max-w-[1400px] mx-auto flex items-center justify-between h-[68px] px-6 lg:px-10">
           <a href="/" className="flex items-center">
-            <img src="/photo_2026-06-01_19-06-27 (2).jpg" alt="МАКСТИЛ" className="h-10 w-auto object-contain" />
+            <img src="/logo-makstil-new.png" alt="МАКСТИЛ" className="h-10 w-auto object-contain" />
           </a>
 
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">

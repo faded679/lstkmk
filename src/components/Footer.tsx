@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           <div>
-            <img src="/photo_2026-06-01_19-06-27 (2).jpg" alt="МАКСТИЛ" className="h-12 w-auto object-contain mb-3 rounded" />
+            <img src="/logo-makstil-new.png" alt="МАКСТИЛ" className="h-12 w-auto object-contain mb-3" />
             <p className="text-sm text-slate-400 leading-relaxed max-w-[30ch]">
               Проектирование, производство и монтаж быстровозводимых зданий из
               металлоконструкций.

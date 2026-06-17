@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80" fill="none">
+  <!-- Cube icon -->
+  <g transform="translate(10, 10)">
+    <!-- Blue squares -->
+    <rect x="0" y="20" width="18" height="18" fill="#1e3a5f"/>
+    <rect x="20" y="20" width="18" height="18" fill="#1e3a5f"/>
+    <rect x="0" y="40" width="18" height="18" fill="#1e3a5f"/>
+    <rect x="20" y="40" width="18" height="18" fill="#1e3a5f"/>
+    <rect x="40" y="20" width="18" height="18" fill="#1e3a5f"/>
+    <!-- Orange squares -->
+    <rect x="20" y="0" width="18" height="18" fill="#f97316"/>
+    <rect x="40" y="0" width="18" height="18" fill="#f97316"/>
+    <rect x="40" y="40" width="18" height="18" fill="#f97316"/>
+  </g>
+  <!-- Text -->
+  <text x="85" y="55" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#1e3a5f">МАКСТИЛ</text>
+</svg>

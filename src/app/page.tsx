@@ -19,7 +19,7 @@ const organizationSchema = {
   name: "МАКСТИЛ",
   alternateName: "МакСтил",
   url: "https://lstkmk.ru",
-  logo: "https://lstkmk.ru/photo_2026-06-01_19-06-27%20(2).jpg",
+  logo: "https://lstkmk.ru/logo-makstil-new.png",
   description:
     "Производство и монтаж быстровозводимых зданий из металлоконструкций ЛСТК. Ангары, склады, производственные цеха под ключ.",
   address: {
