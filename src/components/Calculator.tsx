@@ -183,58 +183,115 @@ export default function Calculator() {
   const formatPrice = (n: number) =>
     new Intl.NumberFormat("ru-RU").format(Math.round(n));
 
-  // SVG building sketch based on type
+  // SVG building sketch — front + side projections
   const BuildingSketch = () => {
-    const w = 280;
-    const h = 200;
-    const ratio = width / length;
-    const bw = Math.min(240, Math.max(120, ratio * 200));
-    const bh = Math.min(140, Math.max(60, (height / 10) * 120));
-    const x0 = (w - bw) / 2;
-    const y0 = h - 20 - bh;
-    const roofPeak = type === "agriculture" ? y0 - 30 : y0 - 20;
+    const svgW = 400;
+    const svgH = 260;
+    const margin = 20;
 
-    if (type === "agriculture") {
-      return (
-        <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
-          <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
-          <path d={`M${x0} ${y0} Q${x0 + bw / 2} ${roofPeak} ${x0 + bw} ${y0}`} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" fill="none" />
-          {Array.from({ length: Math.floor(bw / 30) }).map((_, i) => (
-            <line key={i} x1={x0 + (i + 1) * 30} y1={y0} x2={x0 + (i + 1) * 30} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" strokeDasharray="4 3" />
-          ))}
-          <rect x={x0 + bw * 0.35} y={y0 + bh - 40} width={bw * 0.3} height={40} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
-          <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
-        </svg>
-      );
-    }
+    // Scale factors (px per meter) — adjusted to fill more space
+    const scaleW = Math.min(4, 200 / Math.max(width, 12));
+    const scaleL = Math.min(3, 160 / Math.max(length, 18));
+    const scaleH = Math.min(12, 180 / Math.max(height, 5));
 
-    if (type === "service") {
-      return (
-        <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
-          <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
-          <line x1={x0} y1={y0} x2={x0 + bw / 2} y2={roofPeak} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
-          <line x1={x0 + bw / 2} y1={roofPeak} x2={x0 + bw} y2={y0} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
-          {[0.15, 0.55].map((p, i) => (
-            <rect key={i} x={x0 + bw * p} y={y0 + bh - 50} width={bw * 0.28} height={50} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
-          ))}
-          <line x1={x0 + bw * 0.15 + bw * 0.14} y1={y0 + bh - 50} x2={x0 + bw * 0.15 + bw * 0.14} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" />
-          <line x1={x0 + bw * 0.55 + bw * 0.14} y1={y0 + bh - 50} x2={x0 + bw * 0.55 + bw * 0.14} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" />
-          <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
-        </svg>
-      );
-    }
+    // Front view (shows width × height)
+    const fw = width * scaleW;
+    const fh = height * scaleH;
+    const fx = margin + 20;
+    const fy = svgH - margin - fh;
+    const fRoof = type === "agriculture" ? fy - fw * 0.25 : fy - 25;
 
-    // warehouse & small-building
+    // Side view (shows length × height)
+    const sl = length * scaleL;
+    const sh = height * scaleH;
+    const sx = fx + fw + 60;
+    const sy = svgH - margin - sh;
+    const sRoof = type === "agriculture" ? sy - sl * 0.15 : sy - 20;
+
+    // Common styles
+    const strokeWall = { stroke: "currentColor", strokeWidth: 1.5, className: "text-slate-400" };
+    const strokeRoof = { stroke: "currentColor", strokeWidth: 2, className: "text-accent-blue" };
+    const strokeDetail = { stroke: "currentColor", strokeWidth: 1, className: "text-slate-400" };
+
+    // Front view roof shape
+    const frontRoofPath = type === "agriculture"
+      ? `M${fx} ${fy} Q${fx + fw / 2} ${fRoof} ${fx + fw} ${fy}`
+      : `M${fx} ${fy} L${fx + fw / 2} ${fRoof} L${fx + fw} ${fy}`;
+
+    // Side view roof shape
+    const sideRoofPath = type === "agriculture"
+      ? `M${sx} ${sy} L${sx + sl} ${sy}`
+      : `M${sx} ${sy} L${sx + sl / 2} ${sRoof} L${sx + sl} ${sy}`;
+
     return (
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
-        <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
-        <line x1={x0} y1={y0} x2={x0 + bw / 2} y2={roofPeak} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
-        <line x1={x0 + bw / 2} y1={roofPeak} x2={x0 + bw} y2={y0} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
-        {Array.from({ length: Math.floor(bw / 40) }).map((_, i) => (
-          <line key={i} x1={x0 + (i + 1) * 40} y1={y0} x2={x0 + (i + 1) * 40} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" strokeDasharray="4 3" />
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-full" fill="none">
+        {/* === FRONT VIEW (width × height) === */}
+        <text x={fx} y={20} className="text-[11px] fill-slate-500 font-medium">Фасад (Ш×В)</text>
+
+        {/* Walls */}
+        <rect x={fx} y={fy} width={fw} height={fh} rx="1" fill="none" {...strokeWall} />
+
+        {/* Roof */}
+        <path d={frontRoofPath} fill="none" {...strokeRoof} />
+        {type !== "agriculture" && (
+          <line x1={fx + fw / 2} y1={fRoof} x2={fx + fw / 2} y2={fy} stroke="currentColor" strokeWidth={0.5} className="text-slate-300" strokeDasharray="3 2" />
+        )}
+
+        {/* Columns/pillars for larger buildings */}
+        {fw > 100 && Array.from({ length: Math.max(2, Math.floor(fw / 80)) }).map((_, i) => (
+          <line
+            key={`col-${i}`}
+            x1={fx + (i + 1) * (fw / (Math.floor(fw / 80) + 1))}
+            y1={fy}
+            x2={fx + (i + 1) * (fw / (Math.floor(fw / 80) + 1))}
+            y2={fy + fh}
+            stroke="currentColor"
+            strokeWidth={0.5}
+            className="text-slate-300"
+            strokeDasharray="4 2"
+          />
         ))}
-        <rect x={x0 + bw * 0.35} y={y0 + bh - 50} width={bw * 0.3} height={50} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
-        <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
+
+        {/* Door/gate for service/agriculture */}
+        {(type === "service" || type === "agriculture" || type === "warehouse") && (
+          <rect
+            x={fx + fw * 0.35}
+            y={fy + fh - Math.min(40, fh * 0.35)}
+            width={fw * 0.3}
+            height={Math.min(40, fh * 0.35)}
+            rx="1"
+            fill="none"
+            {...strokeDetail}
+          />
+        )}
+
+        {/* Width dimension label */}
+        <line x1={fx} y1={fy + fh + 8} x2={fx + fw} y2={fy + fh + 8} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <line x1={fx} y1={fy + fh + 4} x2={fx} y2={fy + fh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <line x1={fx + fw} y1={fy + fh + 4} x2={fx + fw} y2={fy + fh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <text x={fx + fw / 2} y={fy + fh + 18} textAnchor="middle" className="text-[9px] fill-slate-500">{width}м</text>
+
+        {/* === SIDE VIEW (length × height) === */}
+        <text x={sx} y={20} className="text-[11px] fill-slate-500 font-medium">Боковой (Д×В)</text>
+
+        {/* Walls */}
+        <rect x={sx} y={sy} width={sl} height={sh} rx="1" fill="none" {...strokeWall} />
+
+        {/* Roof */}
+        <path d={sideRoofPath} fill="none" {...strokeRoof} />
+
+        {/* Length dimension label */}
+        <line x1={sx} y1={sy + sh + 8} x2={sx + sl} y2={sy + sh + 8} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <line x1={sx} y1={sy + sh + 4} x2={sx} y2={sy + sh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <line x1={sx + sl} y1={sy + sh + 4} x2={sx + sl} y2={sy + sh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
+        <text x={sx + sl / 2} y={sy + sh + 18} textAnchor="middle" className="text-[9px] fill-slate-500">{length}м</text>
+
+        {/* Height labels on both views */}
+        <text x={fx - 5} y={fy + fh / 2} textAnchor="end" className="text-[9px] fill-slate-500">{height}м</text>
+        <text x={sx - 5} y={sy + sh / 2} textAnchor="end" className="text-[9px] fill-slate-500">{height}м</text>
+
+        {/* Dimensions info at bottom */}
+        <text x={svgW / 2} y={svgH - 2} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
       </svg>
     );
   };
