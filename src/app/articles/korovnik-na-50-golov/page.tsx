@@ -117,6 +117,12 @@ export default function ArticlePage() {
             </div>
           </header>
 
+          <img
+            src="/knowledge/cow-farm-2.png"
+            alt="Коровник из металлоконструкций — вид сверху"
+            className="w-full rounded-lg mb-10"
+          />
+
           <div className="prose prose-lg max-w-none">
             <p className="text-xl text-muted leading-relaxed mb-8">
               Коровник на 50 голов — оптимальный вариант для семейной фермы или небольшого сельхозпредприятия. Строительство из ЛСТК позволяет возвести современное помещение за 30–45 дней при экономии до 40% по сравнению с капитальным строительством.

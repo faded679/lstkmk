@@ -78,6 +78,12 @@ export default function ArticlePage() {
             </div>
           </header>
 
+          <img
+            src="/knowledge/cow-farm-1.png"
+            alt="Коровник из металлоконструкций — вид изнутри"
+            className="w-full rounded-lg mb-10"
+          />
+
           <div className="prose prose-lg max-w-none">
             <p className="text-xl text-muted leading-relaxed mb-8">
               Коровник на 200 голов — это полноценная промышленная молочная ферма, требующая профессионального подхода к проектированию. Строительство из ЛСТК позволяет создать современный комплекс с высокой производительностью при оптимальных инвестициях.

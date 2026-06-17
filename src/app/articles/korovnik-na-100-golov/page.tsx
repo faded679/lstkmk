@@ -113,6 +113,12 @@ export default function ArticlePage() {
             </div>
           </header>
 
+          <img
+            src="/knowledge/cow-farm-3.png"
+            alt="Коровник из металлоконструкций — фасад здания"
+            className="w-full rounded-lg mb-10"
+          />
+
           <div className="prose prose-lg max-w-none">
             <p className="text-xl text-muted leading-relaxed mb-8">
               Коровник на 100 голов — это уже коммерческий объект, требующий продуманной инженерии и автоматизации. Строительство из ЛСТК позволяет создать современную ферму с полным комплексом систем: вентиляция, навозоудаление, автоматическое доение.
