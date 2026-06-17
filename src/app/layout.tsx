@@ -111,6 +111,16 @@ export default function RootLayout({
       <body>
         <Breadcrumb />
         {children}
+        {/* Google Analytics */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-KR3X1J843D" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-KR3X1J843D');
+          `}
+        </Script>
         {/* Яндекс.Метрика */}
         <Script id="yandex-metrika" strategy="afterInteractive">
           {`
