@@ -185,10 +185,19 @@ export default function Calculator() {
 
   // SVG building sketch — front + side projections with dynamic viewBox
   const BuildingSketch = () => {
+    // Visual scale to normalize building sizes across types
+    const visualScale: Record<BuildingType, number> = {
+      "small-building": 3.5,  // Smaller buildings need larger scale
+      warehouse: 1.5,
+      agriculture: 1.2,
+      service: 2.0,
+    };
+    const baseScale = visualScale[type];
+
     // Scale factors (px per meter) — adjusted for large buildings
-    const scaleW = Math.min(6, 180 / Math.max(width, 12));
-    const scaleL = Math.min(2.5, 140 / Math.max(length, 24));
-    const scaleH = Math.min(15, 160 / Math.max(height, 5));
+    const scaleW = Math.min(6 * baseScale, (200 * baseScale) / Math.max(width, 6));
+    const scaleL = Math.min(2.5 * baseScale, (160 * baseScale) / Math.max(length, 12));
+    const scaleH = Math.min(15, 160 / Math.max(height, 4));
 
     const margin = 20;
     const gap = 40;
