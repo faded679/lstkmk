@@ -179,6 +179,62 @@ export default function Calculator() {
   const formatPrice = (n: number) =>
     new Intl.NumberFormat("ru-RU").format(Math.round(n));
 
+  // SVG building sketch based on type
+  const BuildingSketch = () => {
+    const w = 280;
+    const h = 200;
+    const ratio = width / length;
+    const bw = Math.min(240, Math.max(120, ratio * 200));
+    const bh = Math.min(140, Math.max(60, (height / 10) * 120));
+    const x0 = (w - bw) / 2;
+    const y0 = h - 20 - bh;
+    const roofPeak = type === "agriculture" ? y0 - 30 : y0 - 20;
+
+    if (type === "agriculture") {
+      return (
+        <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
+          <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
+          <path d={`M${x0} ${y0} Q${x0 + bw / 2} ${roofPeak} ${x0 + bw} ${y0}`} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" fill="none" />
+          {Array.from({ length: Math.floor(bw / 30) }).map((_, i) => (
+            <line key={i} x1={x0 + (i + 1) * 30} y1={y0} x2={x0 + (i + 1) * 30} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" strokeDasharray="4 3" />
+          ))}
+          <rect x={x0 + bw * 0.35} y={y0 + bh - 40} width={bw * 0.3} height={40} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
+          <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
+        </svg>
+      );
+    }
+
+    if (type === "service") {
+      return (
+        <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
+          <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
+          <line x1={x0} y1={y0} x2={x0 + bw / 2} y2={roofPeak} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
+          <line x1={x0 + bw / 2} y1={roofPeak} x2={x0 + bw} y2={y0} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
+          {[0.15, 0.55].map((p, i) => (
+            <rect key={i} x={x0 + bw * p} y={y0 + bh - 50} width={bw * 0.28} height={50} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
+          ))}
+          <line x1={x0 + bw * 0.15 + bw * 0.14} y1={y0 + bh - 50} x2={x0 + bw * 0.15 + bw * 0.14} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" />
+          <line x1={x0 + bw * 0.55 + bw * 0.14} y1={y0 + bh - 50} x2={x0 + bw * 0.55 + bw * 0.14} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" />
+          <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
+        </svg>
+      );
+    }
+
+    // warehouse & small-building
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" fill="none">
+        <rect x={x0} y={y0} width={bw} height={bh} stroke="currentColor" strokeWidth="1.5" className="text-slate-400" rx="1" />
+        <line x1={x0} y1={y0} x2={x0 + bw / 2} y2={roofPeak} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
+        <line x1={x0 + bw / 2} y1={roofPeak} x2={x0 + bw} y2={y0} stroke="currentColor" strokeWidth="1.5" className="text-accent-blue" />
+        {Array.from({ length: Math.floor(bw / 40) }).map((_, i) => (
+          <line key={i} x1={x0 + (i + 1) * 40} y1={y0} x2={x0 + (i + 1) * 40} y2={y0 + bh} stroke="currentColor" strokeWidth="0.5" className="text-slate-300" strokeDasharray="4 3" />
+        ))}
+        <rect x={x0 + bw * 0.35} y={y0 + bh - 50} width={bw * 0.3} height={50} stroke="currentColor" strokeWidth="1" className="text-slate-400" rx="1" />
+        <text x={w / 2} y={h - 4} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
+      </svg>
+    );
+  };
+
   return (
     <section id="calculator" className="py-24 lg:py-32 bg-slate-50/50">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
@@ -198,13 +254,15 @@ export default function Calculator() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          {/* TOP LEFT — Тип здания + утепление + ползунки */}
           <motion.div
-            initial={reduce ? false : { opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={reduce ? false : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-3 space-y-8"
+            className="space-y-6"
           >
             <div>
               <label className="block text-sm font-medium text-foreground mb-3">
@@ -215,7 +273,7 @@ export default function Calculator() {
                   <button
                     key={bt.id}
                     onClick={() => setType(bt.id)}
-                    className={`flex flex-col items-center gap-2 p-4 rounded-lg border transition-all duration-200 ${
+                    className={`relative flex flex-col items-center gap-2 p-4 rounded-lg border transition-all duration-200 ${
                       type === bt.id
                         ? "border-accent-blue bg-accent-blue/5 text-accent-blue"
                         : "border-border bg-white text-muted hover:border-slate-300"
@@ -229,10 +287,29 @@ export default function Calculator() {
                   </button>
                 ))}
               </div>
+
+              {/* Утепление — появляется внутри блока типа */}
+              <div className="mt-3 flex items-center gap-2">
+                <span className="text-xs text-muted shrink-0">Утепление:</span>
+                <div className="flex gap-1.5">
+                  {insulationOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setInsulation(opt.id)}
+                      className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all duration-200 ${
+                        insulation === opt.id
+                          ? "border-accent-blue bg-accent-blue/10 text-accent-blue"
+                          : "border-border bg-white text-muted hover:border-slate-300"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {/* Ширина — дискретные кнопки */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Ширина, м
@@ -261,7 +338,6 @@ export default function Calculator() {
                 )}
               </div>
 
-              {/* Длина — непрерывный ползунок с шагом */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Длина, м
@@ -281,7 +357,6 @@ export default function Calculator() {
                 </div>
               </div>
 
-              {/* Высота — дискретные кнопки */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Высота, м
@@ -310,157 +385,139 @@ export default function Calculator() {
                 )}
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-3">
-                Утепление
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {insulationOptions.map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => setInsulation(opt.id)}
-                    className={`p-4 rounded-lg border text-left transition-all duration-200 ${
-                      insulation === opt.id
-                        ? "border-accent-blue bg-accent-blue/5"
-                        : "border-border bg-white hover:border-slate-300"
-                    }`}
-                  >
-                    <span
-                      className={`text-sm font-medium ${
-                        insulation === opt.id
-                          ? "text-accent-blue"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {opt.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
           </motion.div>
 
+          {/* TOP RIGHT — Помощник */}
           <motion.div
-            initial={reduce ? false : { opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={reduce ? false : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{
-              duration: 0.6,
-              delay: 0.15,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="sticky top-24 flex flex-col gap-4" style={{ maxHeight: "calc(100vh - 7rem)" }}>
-              <div className="bg-white border border-border rounded-lg p-5 shrink-0">
-                <h3 className="text-base font-semibold text-foreground mb-4">
-                  Предварительный расчёт
-                </h3>
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between py-1.5 border-b border-border/60">
-                    <span className="text-muted">Тип</span>
-                    <span className="font-medium text-foreground">
-                      {selectedType.label}
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-1.5 border-b border-border/60">
-                    <span className="text-muted">Размеры</span>
-                    <span className="font-medium text-foreground">
-                      {width} x {length} x {height} м
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-1.5 border-b border-border/60">
-                    <span className="text-muted">Площадь</span>
-                    <span className="font-medium text-foreground">
-                      {formatPrice(estimate.area)} м²
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-1.5 border-b border-border/60">
-                    <span className="text-muted">Утепление</span>
-                    <span className="font-medium text-foreground">
-                      {selectedInsulation.label}
-                    </span>
-                  </div>
+            <div className="bg-white border border-border rounded-lg flex flex-col h-full" style={{ minHeight: 300 }}>
+              <div className="flex items-center gap-2.5 px-4 py-2.5 border-b border-border shrink-0">
+                <div className="w-7 h-7 rounded-full bg-accent-blue/10 flex items-center justify-center">
+                  <Robot size={14} weight="bold" className="text-accent-blue" />
                 </div>
-
-                <div className="mt-5 pt-4 border-t-2 border-accent-orange">
-                  <div className="text-sm text-muted mb-1">
-                    Цена без монтажных работ
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                    {formatPrice(estimate.total)}{" "}
-                    <span className="text-base font-normal text-muted">руб.</span>
-                  </div>
-                  <div className="text-xs text-muted mt-1">
-                    ~ {formatPrice(estimate.total / estimate.area)} руб/м²
-                  </div>
+                <div>
+                  <div className="text-sm font-semibold text-foreground">Помощник</div>
+                  <div className="text-[11px] text-muted">Подскажу по расчёту</div>
                 </div>
-
-                <a
-                  href="#contacts"
-                  className="mt-4 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
-                >
-                  Рассчитать стоимость строительства
-                </a>
-                <p className="mt-2 text-xs text-muted text-center leading-relaxed">
-                  Менеджер свяжется с вами в течение 2 часов
-                </p>
               </div>
 
-              <div className="bg-white border border-border rounded-lg flex flex-col min-h-0 flex-1">
-                <div className="flex items-center gap-2.5 px-4 py-2.5 border-b border-border shrink-0">
-                  <div className="w-7 h-7 rounded-full bg-accent-blue/10 flex items-center justify-center">
-                    <Robot size={14} weight="bold" className="text-accent-blue" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">Помощник</div>
-                    <div className="text-[11px] text-muted">Подскажу по расчёту</div>
-                  </div>
-                </div>
-
-                <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5 min-h-0">
-                  {chatMessages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
-                        msg.role === "user"
-                          ? "bg-accent-blue text-white rounded-br-sm"
-                          : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
-                      }`}>
-                        {msg.text}
-                      </div>
+              <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5 min-h-0">
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                      msg.role === "user"
+                        ? "bg-accent-blue text-white rounded-br-sm"
+                        : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
+                    }`}>
+                      {msg.text}
                     </div>
-                  ))}
-                  {chatLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-slate-50 border border-border px-3 py-2 rounded-xl rounded-bl-sm text-sm text-muted">Печатает...</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="px-3 py-2.5 border-t border-border shrink-0">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                      placeholder="Задайте вопрос..."
-                      className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
-                    />
-                    <button
-                      onClick={sendChatMessage}
-                      disabled={!chatInput.trim() || chatLoading}
-                      className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
-                    >
-                      <PaperPlaneRight size={16} weight="bold" />
-                    </button>
                   </div>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-50 border border-border px-3 py-2 rounded-xl rounded-bl-sm text-sm text-muted">Печатает...</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="px-3 py-2.5 border-t border-border shrink-0">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                    placeholder="Задайте вопрос..."
+                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                  />
+                  <button
+                    onClick={sendChatMessage}
+                    disabled={!chatInput.trim() || chatLoading}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
+                  >
+                    <PaperPlaneRight size={16} weight="bold" />
+                  </button>
                 </div>
               </div>
             </div>
           </motion.div>
+
+          {/* BOTTOM LEFT — Предварительный расчёт */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="bg-white border border-border rounded-lg p-5 h-full">
+              <h3 className="text-base font-semibold text-foreground mb-4">
+                Предварительный расчёт
+              </h3>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between py-1.5 border-b border-border/60">
+                  <span className="text-muted">Тип</span>
+                  <span className="font-medium text-foreground">{selectedType.label}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-border/60">
+                  <span className="text-muted">Размеры</span>
+                  <span className="font-medium text-foreground">{width} × {length} × {height} м</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-border/60">
+                  <span className="text-muted">Площадь</span>
+                  <span className="font-medium text-foreground">{formatPrice(estimate.area)} м²</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-border/60">
+                  <span className="text-muted">Утепление</span>
+                  <span className="font-medium text-foreground">{selectedInsulation.label}</span>
+                </div>
+              </div>
+
+              <div className="mt-5 pt-4 border-t-2 border-accent-orange">
+                <div className="text-sm text-muted mb-1">Цена без монтажных работ</div>
+                <div className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  {formatPrice(estimate.total)}{" "}
+                  <span className="text-base font-normal text-muted">руб.</span>
+                </div>
+                <div className="text-xs text-muted mt-1">
+                  ~ {formatPrice(estimate.total / estimate.area)} руб/м²
+                </div>
+              </div>
+
+              <a
+                href="#contacts"
+                className="mt-4 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+              >
+                Рассчитать стоимость строительства
+              </a>
+              <p className="mt-2 text-xs text-muted text-center leading-relaxed">
+                Менеджер свяжется с вами в течение 2 часов
+              </p>
+            </div>
+          </motion.div>
+
+          {/* BOTTOM RIGHT — Схема здания */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="bg-white border border-border rounded-lg p-5 h-full flex flex-col items-center justify-center">
+              <div className="text-xs text-muted mb-3 font-mono uppercase tracking-wider">Схема здания</div>
+              <div className="w-full max-w-[300px] aspect-[7/5]">
+                <BuildingSketch />
+              </div>
+              <div className="mt-3 text-xs text-muted text-center">
+                {selectedType.label} · {selectedInsulation.label}
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
