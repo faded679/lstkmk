@@ -67,6 +67,7 @@ const typeHints: Record<BuildingType, string> = {
 interface ChatMessage {
   role: "assistant" | "user";
   text: string;
+  isHint?: boolean;
 }
 
 async function getChatResponse(message: string): Promise<string> {
@@ -108,7 +109,10 @@ export default function Calculator() {
     setWidthIdx(0);
     setLengthVal(typeConfig[type].lengthMin);
     setHeightIdx(0);
-    setChatMessages((prev) => [...prev, { role: "assistant", text: typeHints[type] }]);
+    setChatMessages((prev) => {
+      const filtered = prev.filter((m) => !m.isHint);
+      return [...filtered, { role: "assistant", text: typeHints[type], isHint: true }];
+    });
   }, [type]);
 
   // Auto-scroll chat
@@ -394,7 +398,7 @@ export default function Calculator() {
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="bg-white border border-border rounded-lg flex flex-col h-full" style={{ minHeight: 300 }}>
+            <div className="bg-white border border-border rounded-lg flex flex-col" style={{ height: 340 }}>
               <div className="flex items-center gap-2.5 px-4 py-2.5 border-b border-border shrink-0">
                 <div className="w-7 h-7 rounded-full bg-accent-blue/10 flex items-center justify-center">
                   <Robot size={14} weight="bold" className="text-accent-blue" />
