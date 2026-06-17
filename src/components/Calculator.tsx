@@ -183,30 +183,33 @@ export default function Calculator() {
   const formatPrice = (n: number) =>
     new Intl.NumberFormat("ru-RU").format(Math.round(n));
 
-  // SVG building sketch — front + side projections
+  // SVG building sketch — front + side projections with dynamic viewBox
   const BuildingSketch = () => {
-    const svgW = 400;
-    const svgH = 260;
-    const margin = 20;
+    // Scale factors (px per meter) — adjusted for large buildings
+    const scaleW = Math.min(6, 180 / Math.max(width, 12));
+    const scaleL = Math.min(2.5, 140 / Math.max(length, 24));
+    const scaleH = Math.min(15, 160 / Math.max(height, 5));
 
-    // Scale factors (px per meter) — larger to fill canvas
-    const scaleW = Math.min(8, 320 / Math.max(width, 6));
-    const scaleL = Math.min(5, 280 / Math.max(length, 12));
-    const scaleH = Math.min(20, 200 / Math.max(height, 4));
+    const margin = 20;
+    const gap = 40;
 
     // Front view (shows width × height)
     const fw = width * scaleW;
     const fh = height * scaleH;
-    const fx = margin + 20;
-    const fy = svgH - margin - fh;
-    const fRoof = type === "agriculture" ? fy - fw * 0.25 : fy - 25;
+    const fx = margin;
+    const fy = margin + 30 + fh * 0.3; // roof space
+    const fRoof = type === "agriculture" ? fy - fw * 0.25 : fy - Math.min(30, fh * 0.3);
 
     // Side view (shows length × height)
     const sl = length * scaleL;
     const sh = height * scaleH;
-    const sx = fx + fw + 60;
-    const sy = svgH - margin - sh;
-    const sRoof = type === "agriculture" ? sy - sl * 0.15 : sy - 20;
+    const sx = fx + fw + gap;
+    const sy = margin + 30 + sh * 0.3;
+    const sRoof = type === "agriculture" ? sy - sl * 0.15 : sy - Math.min(30, sh * 0.3);
+
+    // Dynamic viewBox size
+    const svgW = Math.max(400, sx + sl + margin);
+    const svgH = Math.max(260, margin + 30 + Math.max(fh, sh) * 1.5 + 40);
 
     // Common styles
     const strokeWall = { stroke: "currentColor", strokeWidth: 1.5, className: "text-slate-400" };
