@@ -2,7 +2,8 @@ module.exports = {
   apps: [{
     name: 'lstkmk',
     cwd: '/var/www/lstkmk.ru',
-    script: '.next/standalone/server.js',
+    script: 'node_modules/next/dist/bin/next',
+    args: 'start',
     instances: 1,
     autorestart: true,
     watch: false,
@@ -10,9 +11,7 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: 3001,
-      HOSTNAME: '0.0.0.0',
-      TELEGRAM_BOT_TOKEN: '8612647167:AAGsVai3AX8oQb5HbT1tUNZIwD24algWQtc',
-      TELEGRAM_CHAT_ID: '918858687'
+      HOSTNAME: '0.0.0.0'
     },
     // Логи
     log_file: '/var/log/pm2/lstkmk.log',
