@@ -189,10 +189,10 @@ export default function Calculator() {
     const svgH = 260;
     const margin = 20;
 
-    // Scale factors (px per meter) — adjusted to fill more space
-    const scaleW = Math.min(4, 200 / Math.max(width, 12));
-    const scaleL = Math.min(3, 160 / Math.max(length, 18));
-    const scaleH = Math.min(12, 180 / Math.max(height, 5));
+    // Scale factors (px per meter) — larger to fill canvas
+    const scaleW = Math.min(8, 320 / Math.max(width, 6));
+    const scaleL = Math.min(5, 280 / Math.max(length, 12));
+    const scaleH = Math.min(20, 200 / Math.max(height, 4));
 
     // Front view (shows width × height)
     const fw = width * scaleW;
@@ -568,9 +568,9 @@ export default function Calculator() {
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="bg-white border border-border rounded-lg p-5 h-full flex flex-col items-center justify-center">
+            <div className="bg-white border border-border rounded-lg p-5 h-full flex flex-col">
               <div className="text-xs text-muted mb-3 font-mono uppercase tracking-wider">Схема здания</div>
-              <div className="w-full max-w-[300px] aspect-[7/5]">
+              <div className="flex-1 w-full min-h-0">
                 <BuildingSketch />
               </div>
               <div className="mt-3 text-xs text-muted text-center">
