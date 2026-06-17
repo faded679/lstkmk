@@ -1,5 +1,3 @@
-"use client";
-
 export default function HeroVideo() {
   return (
     <section className="relative bg-white">
@@ -43,23 +41,10 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
-            {/* Мобильные: видео */}
-            <video
-              className="md:hidden absolute inset-0 w-full h-full object-contain bg-white"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster="/frames2/frame_0151.webp"
-            >
-              <source src="/animationn.mp4" type="video/mp4" />
-            </video>
-            {/* Десктоп: статичное изображение готового ангара */}
             <img
               src="/frames2/frame_0151.webp"
               alt="Готовый ангар из металлоконструкций"
-              className="hidden md:block absolute inset-0 w-full h-full object-contain bg-white"
+              className="absolute inset-0 w-full h-full object-contain bg-white"
             />
           </div>
 
