@@ -481,7 +481,7 @@ export default function Calculator() {
               <div ref={chatRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5 min-h-0">
                 {chatMessages.map((msg, i) => (
                   <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                    <div className={`max-w-[88%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap break-words ${
                       msg.role === "user"
                         ? "bg-accent-blue text-white rounded-br-sm"
                         : "bg-slate-50 border border-border text-foreground rounded-bl-sm"
