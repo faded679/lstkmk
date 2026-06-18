@@ -41,7 +41,7 @@ export default function AiAssistant() {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -55,8 +55,9 @@ export default function AiAssistant() {
   };
 
   const toggleListening = () => {
-    const SR = (typeof window !== "undefined") &&
-      (window.SpeechRecognition || (window as Window & { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition);
+    if (typeof window === "undefined") return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
       alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome.");
       return;
@@ -65,10 +66,11 @@ export default function AiAssistant() {
       stopListening();
       return;
     }
-    const rec = new SR();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rec: any = new SR();
     rec.lang = "ru-RU";
     rec.interimResults = false;
-    rec.onresult = (e: SpeechRecognitionEvent) => {
+    rec.onresult = (e: any) => {
       const transcript = e.results[0][0].transcript;
       setInput((prev) => (prev ? prev + " " + transcript : transcript));
     };
