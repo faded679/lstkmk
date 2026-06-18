@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Robot, X, PaperPlaneTilt, CircleNotch } from "@phosphor-icons/react";
+import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash } from "@phosphor-icons/react";
 
 interface Message {
   role: "user" | "assistant";
@@ -39,7 +39,9 @@ export default function AiAssistant() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -47,7 +49,38 @@ export default function AiAssistant() {
     }
   }, [messages]);
 
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setListening(false);
+  };
+
+  const toggleListening = () => {
+    const SR = (typeof window !== "undefined") &&
+      (window.SpeechRecognition || (window as Window & { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition);
+    if (!SR) {
+      alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome.");
+      return;
+    }
+    if (listening) {
+      stopListening();
+      return;
+    }
+    const rec = new SR();
+    rec.lang = "ru-RU";
+    rec.interimResults = false;
+    rec.onresult = (e: SpeechRecognitionEvent) => {
+      const transcript = e.results[0][0].transcript;
+      setInput((prev) => (prev ? prev + " " + transcript : transcript));
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    rec.start();
+    setListening(true);
+  };
+
   const send = async () => {
+    if (listening) stopListening();
     const text = input.trim();
     if (!text || loading) return;
 
@@ -131,10 +164,22 @@ export default function AiAssistant() {
               }}
               className="flex items-center gap-2 px-4 py-3 border-t border-border"
             >
+              <button
+                type="button"
+                onClick={toggleListening}
+                className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg transition-colors ${
+                  listening
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                }`}
+                title={listening ? "Остановить запись" : "Голосовой ввод"}
+              >
+                {listening ? <MicrophoneSlash size={18} weight="bold" /> : <Microphone size={18} weight="bold" />}
+              </button>
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Спросите о ценах, сроках..."
+                placeholder={listening ? "Говорите..." : "Спросите о ценах, сроках..."}
                 className="flex-1 h-10 px-3 text-sm bg-slate-50 border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
               />
               <button
