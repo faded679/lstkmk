@@ -8,6 +8,8 @@ import {
   Wrench,
   Robot,
   PaperPlaneRight,
+  Microphone,
+  MicrophoneSlash,
 } from "@phosphor-icons/react";
 
 type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
@@ -102,7 +104,32 @@ export default function Calculator() {
   ]);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
+  const [chatListening, setChatListening] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chatRecognitionRef = useRef<any>(null);
+
+  const stopChatListening = () => {
+    chatRecognitionRef.current?.stop();
+    setChatListening(false);
+  };
+
+  const toggleChatListening = () => {
+    if (typeof window === "undefined") return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome."); return; }
+    if (chatListening) { stopChatListening(); return; }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rec: any = new SR();
+    rec.lang = "ru-RU"; rec.interimResults = false;
+    rec.onresult = (e: any) => { const t = e.results[0][0].transcript; setChatInput((p) => p ? p + " " + t : t); };
+    rec.onerror = () => setChatListening(false);
+    rec.onend = () => setChatListening(false);
+    chatRecognitionRef.current = rec;
+    rec.start();
+    setChatListening(true);
+  };
 
   // Reset sliders when type changes + send chat hint
   useEffect(() => {
@@ -121,6 +148,7 @@ export default function Calculator() {
   }, [chatMessages, chatLoading]);
 
   const sendChatMessage = async () => {
+    if (chatListening) stopChatListening();
     const text = chatInput.trim();
     if (!text || chatLoading) return;
     setChatMessages((prev) => [...prev, { role: "user", text }]);
@@ -499,12 +527,20 @@ export default function Calculator() {
 
               <div className="px-3 py-2.5 border-t border-border shrink-0">
                 <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleChatListening}
+                    className={`flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${chatListening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                    title={chatListening ? "Остановить" : "Голосовой ввод"}
+                  >
+                    {chatListening ? <MicrophoneSlash size={16} weight="bold" /> : <Microphone size={16} weight="bold" />}
+                  </button>
                   <input
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                    placeholder="Задайте вопрос..."
+                    placeholder={chatListening ? "Говорите..." : "Задайте вопрос..."}
                     className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
                   />
                   <button

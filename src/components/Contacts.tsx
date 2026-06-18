@@ -10,6 +10,8 @@ import {
   PaperPlaneRight,
   Robot,
   CheckCircle,
+  Microphone,
+  MicrophoneSlash,
 } from "@phosphor-icons/react";
 
 const TelegramIcon = () => (
@@ -77,7 +79,29 @@ export default function Contacts() {
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [listening, setListening] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
+
+  const stopListening = () => { recognitionRef.current?.stop(); setListening(false); };
+
+  const toggleListening = () => {
+    if (typeof window === "undefined") return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome."); return; }
+    if (listening) { stopListening(); return; }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rec: any = new SR();
+    rec.lang = "ru-RU"; rec.interimResults = false;
+    rec.onresult = (e: any) => { const t = e.results[0][0].transcript; setInput((p) => p ? p + " " + t : t); };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    rec.start();
+    setListening(true);
+  };
 
   // Form state
   const [form, setForm] = useState({ name: "", phone: "", comment: "" });
@@ -97,6 +121,7 @@ export default function Contacts() {
   }, [messages, typing]);
 
   const sendMessage = async () => {
+    if (listening) stopListening();
     const trimmed = input.trim();
     if (!trimmed) return;
     setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
@@ -369,12 +394,20 @@ export default function Contacts() {
 
               <div className="px-4 py-3 border-t border-border">
                 <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleListening}
+                    className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg transition-colors ${listening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                    title={listening ? "Остановить" : "Голосовой ввод"}
+                  >
+                    {listening ? <MicrophoneSlash size={18} weight="bold" /> : <Microphone size={18} weight="bold" />}
+                  </button>
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                    placeholder="Спросите о ценах, сроках..."
+                    placeholder={listening ? "Говорите..." : "Спросите о ценах, сроках..."}
                     className="flex-1 h-10 px-3.5 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
                   />
                   <button
