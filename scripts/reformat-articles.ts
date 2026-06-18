@@ -1,20 +1,37 @@
-import { Metadata } from "next";
+import * as fs from "fs";
+import * as path from "path";
+
+const articles = [
+  { slug: "calculation-krovlja", title: "Расчёт кровли ангара: калькулятор и формулы", category: "Калькуляторы" },
+  { slug: "zakon-stroitelstvo", title: "Закон о строительстве ангаров 2024", category: "Законодательство" },
+  { slug: "sravnenie-sendvich", title: "Сравнение сэндвич-панелей", category: "Материалы" },
+  { slug: "stoimost-m2", title: "Стоимость ангара за 1 м² в 2024", category: "Цены" },
+  { slug: "montazh-svoimi-rukami", title: "Монтаж ЛСТК своими руками", category: "Монтаж" },
+  { slug: "otoplenie-gazom", title: "Отопление ангара газом", category: "Инженерия" },
+  { slug: "proektirovanie-online", title: "Проектирование ангаров онлайн", category: "Проектирование" },
+  { slug: "sravnenie-kirpich", title: "ЛСТК vs кирпич", category: "Сравнение" },
+  { slug: "dokumenty-na-stroitelstvo", title: "Документы для строительства ангара", category: "Документы" },
+  { slug: "fundament-pod-angar", title: "Фундамент под ангар", category: "Фундамент" },
+];
+
+function generateProperTemplate(article: typeof articles[0]): string {
+  return `import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calculator, Phone } from "@phosphor-icons/react/dist/ssr";
 import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
-  title: "Закон о строительстве ангаров 2024 | Справочник ЛСТК",
-  description: "Профессиональное руководство по закон о строительстве ангаров 2024. Цены, сроки, технологии ЛСТК.",
-  keywords: ["zakon stroitelstvo"],
+  title: "${article.title} | Справочник ЛСТК",
+  description: "Профессиональное руководство по ${article.title.toLowerCase()}. Цены, сроки, технологии ЛСТК.",
+  keywords: ["${article.slug.replace(/-/g, ' ')}"],
 };
 
 export default function Page() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Закон о строительстве ангаров 2024",
-    "description": "Руководство по закон о строительстве ангаров 2024",
+    "headline": "${article.title}",
+    "description": "Руководство по ${article.title.toLowerCase()}",
     "author": { "@type": "Organization", "name": "ЛСТК-МК" }
   };
 
@@ -33,7 +50,7 @@ export default function Page() {
         <article>
           {/* Заголовок */}
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Закон о строительстве ангаров 2024
+            ${article.title}
           </h1>
           
           {/* Категория */}
@@ -43,7 +60,7 @@ export default function Page() {
 
           {/* Вступление */}
           <p className="text-muted mb-8 leading-relaxed">
-            Профессиональное руководство по закон о строительстве ангаров 2024. 
+            Профессиональное руководство по ${article.title.toLowerCase()}. 
             Актуальная информация на 2024 год с учётом последних изменений в законодательстве и практики строительства.
           </p>
 
@@ -102,3 +119,36 @@ export default function Page() {
     </div>
   );
 }
+`;
+}
+
+async function reformatArticles() {
+  const knowledgeDir = path.join(process.cwd(), "src", "app", "knowledge");
+  
+  console.log("🔄 Реформатирование статей в правильный шаблон...\n");
+  
+  for (const article of articles) {
+    const articleDir = path.join(knowledgeDir, article.slug);
+    const filePath = path.join(articleDir, "page.tsx");
+    
+    if (fs.existsSync(filePath)) {
+      // Сохраняем старый контент для переноса
+      const oldContent = fs.readFileSync(filePath, "utf-8");
+      
+      // Генерируем новый шаблон
+      const newTemplate = generateProperTemplate(article);
+      
+      // Записываем
+      fs.writeFileSync(filePath, newTemplate);
+      console.log(`✅ ${article.slug} — обновлён шаблон`);
+      
+      // Сохраняем старый контент для ручного переноса
+      fs.writeFileSync(path.join(articleDir, "content-old.txt"), oldContent);
+    }
+  }
+  
+  console.log("\n🎉 Готово! Старые версии сохранены в content-old.txt");
+  console.log("Теперь нужно перенести текст из content-old.txt в новый шаблон");
+}
+
+reformatArticles();

@@ -1,59 +1,103 @@
-
+import { Metadata } from "next";
+import Link from "next/link";
+import { ArrowLeft, Calculator, Phone } from "@phosphor-icons/react/dist/ssr";
 import Navigation from "@/components/Navigation";
 
-export const metadata = {
-  title: "Какие документы нужны для строительства ангара | ЛСТК МАКСТИЛ",
-  description: "Какие документы нужны для строительства ангара. Профессиональное строительство ангаров из ЛСТК. Расчёт стоимости, проектирование, монтаж. Телефон: +7 (980) 321-15-42",
-  keywords: ["ЛСТК", "ангар", "строительство", "цена", "проект", "монтаж", "сроки", "расчёт", "dokumenty na stroitelstvo"],
+export const metadata: Metadata = {
+  title: "Документы для строительства ангара | Справочник ЛСТК",
+  description: "Профессиональное руководство по документы для строительства ангара. Цены, сроки, технологии ЛСТК.",
+  keywords: ["dokumenty na stroitelstvo"],
 };
 
 export default function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Документы для строительства ангара",
+    "description": "Руководство по документы для строительства ангара",
+    "author": { "@type": "Organization", "name": "ЛСТК-МК" }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <main className="max-w-[800px] mx-auto px-6 pt-28 pb-20">
-        <article itemScope itemType="https://schema.org/Article">
-<h1 itemProp="headline">Какие документы нужны для строительства ангара из ЛСТК</h1>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      
+      <main className="max-w-[800px] mx-auto px-6 py-12 pt-28">
+        {/* Хлебные крошки */}
+        <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
+          <ArrowLeft size={16} />
+          База знаний
+        </Link>
 
-<p>Строительство ангара — серьёзный инвестиционный проект, и грамотное оформление документации напрямую влияет на сроки, цену и итоговый расчёт стоимости объекта. Компания <strong>ЛСТК МАКСТИЛ</strong> возводит ангары из лёгких стальных тонкостенных конструкций с 2012 года и помогает клиентам пройти весь путь — от эскиза до ввода в эксплуатацию. Разберём, какой пакет документов потребуется для законного строительства.</p>
+        <article>
+          {/* Заголовок */}
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+            Документы для строительства ангара
+          </h1>
+          
+          {/* Категория */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm text-muted mb-6">
+            {article.category}
+          </div>
 
-<h2>Правоустанавливающие документы на земельный участок</h2>
-<p>Первый и обязательный блок — подтверждение прав на землю. Сюда входят свидетельство о собственности или договор аренды (минимум на 5 лет), кадастровый паспорт участка и градостроительный план (ГПЗУ). Важно: вид разрешённого использования должен допускать размещение производственных или складских объектов. Около 30% задержек на старте монтажа связано именно с несоответствием категории земли.</p>
+          {/* Вступление */}
+          <p className="text-muted mb-8 leading-relaxed">
+            Профессиональное руководство по документы для строительства ангара. 
+            Актуальная информация на 2024 год с учётом последних изменений в законодательстве и практики строительства.
+          </p>
 
-<h2>Проектная документация на ангар</h2>
-<p>Полноценный проект ЛСТК-ангара включает архитектурные, конструктивные и инженерные разделы. Специалисты МАКСТИЛ разрабатывают проект за 7–14 рабочих дней. В состав входят: расчёт металлокаркаса на снеговые и ветровые нагрузки (по СП 20.13330.2016), схема фундамента, узлы крепления, спецификация материалов. Для ангаров площадью до 1500 м² и высотой до 20 м экспертиза проекта в большинстве регионов не требуется — это сокращает сроки на 2–3 месяца.</p>
+          {/* Содержание статьи */}
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Основные аспекты</h2>
+              <div className="prose prose-slate max-w-none">
+                <p>Тут должен быть основной контент статьи...</p>
+              </div>
+            </section>
 
-<h2>Разрешение на строительство и уведомления</h2>
-<p>Для капитального ангара необходимо получить разрешение на строительство в местной администрации. Если объект некапитальный (на сборно-разборном фундаменте), достаточно уведомительного порядка. Срок рассмотрения — до 7 рабочих дней. Дополнительно могут потребоваться технические условия на подключение к электросетям, водоснабжению и согласование с МЧС при площади свыше 800 м².</p>
+            {/* Блок с CTA */}
+            <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-6 my-8">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
+                Нужна консультация?
+              </h3>
+              <p className="text-muted mb-4">
+                Наши инженеры бесплатно рассчитают стоимость вашего проекта за 15 минут.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a 
+                  href="/configurator" 
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors"
+                >
+                  <Calculator size={18} />
+                  Рассчитать стоимость
+                </a>
+                <a 
+                  href="tel:+79803211542" 
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  <Phone size={18} />
+                  +7 (980) 321-15-42
+                </a>
+              </div>
+            </div>
 
-<h2>Документы от подрядчика на монтаж</h2>
-<p>МАКСТИЛ предоставляет полный комплект: договор подряда с фиксированной ценой, СРО-допуск, сертификаты на металл (сталь 350 МПа), паспорта на сэндвич-панели, исполнительную документацию и гарантию 25 лет на каркас. Это упрощает ввод объекта в эксплуатацию и постановку на кадастровый учёт.</p>
-
-<h2>Заключение</h2>
-<p>Правильно собранный пакет документов экономит до 40% времени на этапе согласований. Доверьте проектирование и строительство ангара из ЛСТК профессионалам — мы возьмём оформление на себя.</p>
-
-<p><strong>Закажите бесплатный расчёт и консультацию по документации: +7 (980) 321-15-42</strong></p>
-</article>
-
-<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "Какие документы нужны для строительства ангара из ЛСТК",
-  "description": "Полный перечень документов для строительства ангара ЛСТК: земля, проект, разрешения, подрядные документы. Экспертные рекомендации от МАКСТИЛ.",
-  "author": {
-    "@type": "Organization",
-    "name": "ЛСТК МАКСТИЛ"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "ЛСТК МАКСТИЛ",
-    "telephone": "+7 (980) 321-15-42"
-  },
-  "about": "Строительство ангаров из ЛСТК",
-  "keywords": "ЛСТК, ангар, строительство, проект, монтаж, цена, расчёт, сроки, документы"
-}
-`}} />
+            {/* FAQ */}
+            <section>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Частые вопросы</h2>
+              <div className="space-y-4">
+                <div className="border border-border rounded-lg p-4">
+                  <h3 className="font-medium text-foreground mb-2">Вопрос 1?</h3>
+                  <p className="text-muted text-sm">Ответ на вопрос...</p>
+                </div>
+                <div className="border border-border rounded-lg p-4">
+                  <h3 className="font-medium text-foreground mb-2">Вопрос 2?</h3>
+                  <p className="text-muted text-sm">Ответ на вопрос...</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </article>
       </main>
     </div>
   );
