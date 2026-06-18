@@ -12,8 +12,8 @@ export default function Page() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <main className="max-w-[800px] mx-auto px-6 pt-28 pb-20">
-        <article itemscope itemtype="https://schema.org/Article">
-<h1 itemprop="headline">Какие документы нужны для строительства ангара из ЛСТК</h1>
+        <article itemScope itemType="https://schema.org/Article">
+<h1 itemProp="headline">Какие документы нужны для строительства ангара из ЛСТК</h1>
 
 <p>Строительство ангара — серьёзный инвестиционный проект, и грамотное оформление документации напрямую влияет на сроки, цену и итоговый расчёт стоимости объекта. Компания <strong>ЛСТК МАКСТИЛ</strong> возводит ангары из лёгких стальных тонкостенных конструкций с 2012 года и помогает клиентам пройти весь путь — от эскиза до ввода в эксплуатацию. Разберём, какой пакет документов потребуется для законного строительства.</p>
 

@@ -12,8 +12,8 @@ export default function Page() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <main className="max-w-[800px] mx-auto px-6 pt-28 pb-20">
-        <article itemscope itemtype="https://schema.org/Article">
-<h1 itemprop="headline">Закон о строительстве ангаров 2024: что изменилось для заказчиков ЛСТК-объектов</h1>
+        <article itemScope itemType="https://schema.org/Article">
+<h1 itemProp="headline">Закон о строительстве ангаров 2024: что изменилось для заказчиков ЛСТК-объектов</h1>
 
 <p>В 2024 году в законодательство о возведении некапитальных и капитальных строений внесены существенные поправки, которые напрямую затрагивают <strong>строительство ангаров</strong> из ЛСТК. Компания МАКСТИЛ подготовила обзор ключевых изменений, чтобы заказчики могли корректно оформить проект, рассчитать цену и спланировать сроки монтажа.</p>
 
