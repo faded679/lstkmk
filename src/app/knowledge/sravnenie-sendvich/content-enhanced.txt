@@ -1,44 +1,5 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Calculator, Phone } from "@phosphor-icons/react/dist/ssr";
-import Navigation from "@/components/Navigation";
-
-export const metadata: Metadata = {
-  title: "Сравнение сэндвич-панелей | Справочник ЛСТК",
-  description: "Профессиональное руководство по сравнение сэндвич-панелей. Цены, сроки, технологии ЛСТК.",
-  keywords: ["sravnenie sendvich"],
-};
-
-export default function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Сравнение сэндвич-панелей",
-    "description": "Руководство по сравнение сэндвич-панелей",
-    "author": { "@type": "Organization", "name": "ЛСТК-МК" }
-  };
-
-  return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      
-      <main className="max-w-[800px] mx-auto px-6 py-12 pt-28">
-        <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
-          <ArrowLeft size={16} />
-          База знаний
-        </Link>
-
-        <article>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Сравнение сэндвич-панелей
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm text-muted mb-6">
-            Материалы
-          </div>
-
-          <h1 class="text-4xl font-bold mb-6">Сравнение сэндвич-панелей: какие выбрать для ангара из ЛСТК</h1>
+```html
+<h1 class="text-4xl font-bold mb-6">Сравнение сэндвич-панелей: какие выбрать для ангара из ЛСТК</h1>
 
 <p class="mb-6">Выбор сэндвич-панелей напрямую влияет на стоимость строительства ангара, сроки монтажа и эксплуатационные характеристики объекта. Компания «МАКСТИЛ» специализируется на возведении зданий из ЛСТК под ключ и помогает заказчикам подобрать оптимальное решение под конкретный проект и бюджет.</p>
 
@@ -128,23 +89,4 @@ export default function Page() {
 
 <h3 class="text-xl font-semibold mt-6 mb-3">Как выбрать оптимальный тип панели по бюджету?</h3>
 <p class="mb-6">Минимальный бюджет — ПСБ (на 25–30% дешевле минваты), универсальный выбор — минвата, премиум-решение с лучшей теплоизоляцией — ППУ (+15–20% к цене минваты). Инженеры «МАКСТИЛ» рассчитают оптимальный вариант под ваш проект — звоните +7 (980) 321-15-42.</p>
-
-          <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-6 my-8">
-            <h3 className="text-lg font-semibold text-foreground mb-3">Нужна консультация?</h3>
-            <p className="text-muted mb-4">Наши инженеры бесплатно рассчитают стоимость вашего проекта за 15 минут.</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a href="/configurator" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors">
-                <Calculator size={18} />
-                Рассчитать стоимость
-              </a>
-              <a href="tel:+79803211542" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
-                <Phone size={18} />
-                +7 (980) 321-15-42
-              </a>
-            </div>
-          </div>
-        </article>
-      </main>
-    </div>
-  );
-}
+```

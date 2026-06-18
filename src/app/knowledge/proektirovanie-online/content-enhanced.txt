@@ -1,44 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Calculator, Phone } from "@phosphor-icons/react/dist/ssr";
-import Navigation from "@/components/Navigation";
-
-export const metadata: Metadata = {
-  title: "Проектирование ангаров онлайн | Справочник ЛСТК",
-  description: "Профессиональное руководство по проектирование ангаров онлайн. Цены, сроки, технологии ЛСТК.",
-  keywords: ["proektirovanie online"],
-};
-
-export default function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Проектирование ангаров онлайн",
-    "description": "Руководство по проектирование ангаров онлайн",
-    "author": { "@type": "Organization", "name": "ЛСТК-МК" }
-  };
-
-  return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      
-      <main className="max-w-[800px] mx-auto px-6 py-12 pt-28">
-        <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
-          <ArrowLeft size={16} />
-          База знаний
-        </Link>
-
-        <article>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Проектирование ангаров онлайн
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm text-muted mb-6">
-            Проектирование
-          </div>
-
-          <h1>Проектирование ангаров онлайн: бесплатный расчёт стоимости и проекта ЛСТК</h1>
+<h1>Проектирование ангаров онлайн: бесплатный расчёт стоимости и проекта ЛСТК</h1>
 
 <p>Современные технологии позволяют выполнить проектирование ангара из ЛСТК без визита в офис. Компания МАКСТИЛ предлагает бесплатный онлайн-расчёт стоимости строительства за <strong>15 минут</strong>, готовое 3D-визуализированное решение и точную смету. Вам достаточно указать габариты и назначение объекта — наши инженеры подготовят проект с учётом снеговой и ветровой нагрузки региона.</p>
 
@@ -139,23 +99,3 @@ export default function Page() {
 
 <h3>Какая гарантия даётся на металлоконструкции?</h3>
 <p>Гарантия на ангары из ЛСТК МАКСТИЛ составляет <strong>50 лет</strong> при использовании оцинкованной стали с покрытием Z350. Это в 2–3 раза дольше, чем у конструкций из сварного двутавра.</p>
-
-          <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-6 my-8">
-            <h3 className="text-lg font-semibold text-foreground mb-3">Нужна консультация?</h3>
-            <p className="text-muted mb-4">Наши инженеры бесплатно рассчитают стоимость вашего проекта за 15 минут.</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a href="/configurator" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors">
-                <Calculator size={18} />
-                Рассчитать стоимость
-              </a>
-              <a href="tel:+79803211542" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
-                <Phone size={18} />
-                +7 (980) 321-15-42
-              </a>
-            </div>
-          </div>
-        </article>
-      </main>
-    </div>
-  );
-}

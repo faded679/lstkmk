@@ -1,44 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Calculator, Phone } from "@phosphor-icons/react/dist/ssr";
-import Navigation from "@/components/Navigation";
-
-export const metadata: Metadata = {
-  title: "Монтаж ЛСТК своими руками | Справочник ЛСТК",
-  description: "Профессиональное руководство по монтаж лстк своими руками. Цены, сроки, технологии ЛСТК.",
-  keywords: ["montazh svoimi rukami"],
-};
-
-export default function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Монтаж ЛСТК своими руками",
-    "description": "Руководство по монтаж лстк своими руками",
-    "author": { "@type": "Organization", "name": "ЛСТК-МК" }
-  };
-
-  return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      
-      <main className="max-w-[800px] mx-auto px-6 py-12 pt-28">
-        <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
-          <ArrowLeft size={16} />
-          База знаний
-        </Link>
-
-        <article>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Монтаж ЛСТК своими руками
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm text-muted mb-6">
-            Монтаж
-          </div>
-
-          <h1>Монтаж ЛСТК своими руками: пошаговая инструкция</h1>
+<h1>Монтаж ЛСТК своими руками: пошаговая инструкция</h1>
 
 <p>Технология ЛСТК (лёгкие стальные тонкостенные конструкции) — оптимальное решение для строительства ангаров, складов и быстровозводимых зданий. Благодаря точному заводскому изготовлению деталей с погрешностью до 1 мм, монтаж ЛСТК можно выполнить своими руками при наличии готового проекта и базовых строительных навыков. Расскажем, как организовать работы, уложиться в сроки и не превысить расчётную цену.</p>
 
@@ -108,23 +68,3 @@ export default function Page() {
 
 <h3>За какой срок реально построить ангар ЛСТК «под ключ»?</h3>
 <p>Общий срок строительства составляет от 1 до 3 месяцев в зависимости от площади и сложности объекта, включая фундамент, сборку каркаса и монтаж ограждающих конструкций.</p>
-
-          <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-6 my-8">
-            <h3 className="text-lg font-semibold text-foreground mb-3">Нужна консультация?</h3>
-            <p className="text-muted mb-4">Наши инженеры бесплатно рассчитают стоимость вашего проекта за 15 минут.</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a href="/configurator" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors">
-                <Calculator size={18} />
-                Рассчитать стоимость
-              </a>
-              <a href="tel:+79803211542" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
-                <Phone size={18} />
-                +7 (980) 321-15-42
-              </a>
-            </div>
-          </div>
-        </article>
-      </main>
-    </div>
-  );
-}
