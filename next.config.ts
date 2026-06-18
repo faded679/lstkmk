@@ -7,6 +7,10 @@ const nextConfig = {
     unoptimized: false,
   },
   experimental: {
+<<<<<<< HEAD
+=======
+    // Отключаем streaming для стабильности
+>>>>>>> cdb6b87 (fix: add Navigation to all knowledge articles)
     streamingMetadata: false,
   },
 };

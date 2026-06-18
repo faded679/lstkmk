@@ -57,9 +57,6 @@ export default function VacanciesPage() {
                   className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
                 >
                   <h3 className="font-medium text-foreground">{vacancy}</h3>
-                  <p className="mt-2 text-sm text-muted">
-                    Все условия — на собеседовании
-                  </p>
                 </div>
               ))}
             </div>
@@ -85,9 +82,6 @@ export default function VacanciesPage() {
                   className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
                 >
                   <h3 className="font-medium text-foreground">{vacancy}</h3>
-                  <p className="mt-2 text-sm text-muted">
-                    Все условия — на собеседовании
-                  </p>
                 </div>
               ))}
             </div>
@@ -113,9 +107,6 @@ export default function VacanciesPage() {
                   className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
                 >
                   <h3 className="font-medium text-foreground">{vacancy}</h3>
-                  <p className="mt-2 text-sm text-muted">
-                    Все условия — на собеседовании
-                  </p>
                 </div>
               ))}
             </div>
@@ -136,9 +127,6 @@ export default function VacanciesPage() {
                   className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
                 >
                   <h3 className="font-medium text-foreground">{vacancy}</h3>
-                  <p className="mt-2 text-sm text-muted">
-                    Все условия — на собеседовании
-                  </p>
                 </div>
               ))}
             </div>

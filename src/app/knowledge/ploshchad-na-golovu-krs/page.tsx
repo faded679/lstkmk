@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Площадь на голову КРС | Нормы по СП для коровника",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 export default function PloshchadKrsPage() {
   return (
     <div className="min-h-screen bg-white">
-      <main className="max-w-[800px] mx-auto px-6 py-12">
+      <Navigation />
+      <main className="max-w-[800px] mx-auto px-6 pt-28 pb-20">
         <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
           <ArrowLeft size={16} />
           База знаний

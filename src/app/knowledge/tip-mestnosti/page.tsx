@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calculator } from "@phosphor-icons/react/dist/ssr";
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Тип местности для строительства ангара и фермы | Справочник ЛСТК",
@@ -46,10 +47,11 @@ export default function TipMestnostiPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       
-      <main className="max-w-[800px] mx-auto px-6 py-12">
+      <main className="max-w-[800px] mx-auto px-6 py-12 pt-28">
         <Link href="/knowledge/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent-blue transition-colors mb-6">
           <ArrowLeft size={16} />
           База знаний
