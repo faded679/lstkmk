@@ -28,7 +28,7 @@ const mapProjects: MapProject[] = [
     duration: "2021 год",
     type: "Коровник",
     description: "Коровник 32,6×57,6 м с трёхпролётной системой и аэрационным коньком.",
-    image: "/projects/korovnik.jpg",
+    image: "/korovnik.png",
     coords: [51.0193, 36.7269],
   },
   {
