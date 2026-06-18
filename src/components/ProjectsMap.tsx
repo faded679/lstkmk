@@ -102,11 +102,32 @@ declare global {
 
 export default function ProjectsMap() {
   const mapRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<MapProject | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Lazy load map when section enters viewport
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" } // Start loading 200px before visible
+    );
+    
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (loaded) return;
+    if (!isVisible || loaded) return;
+    
     const existingScript = document.getElementById("ymaps-script");
     if (existingScript) {
       existingScript.addEventListener("load", initMap);
@@ -117,6 +138,7 @@ export default function ProjectsMap() {
     script.id = "ymaps-script";
     script.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
     script.async = true;
+    script.defer = true; // Defer for better performance
     script.onload = initMap;
     document.head.appendChild(script);
     setLoaded(true);
@@ -124,7 +146,7 @@ export default function ProjectsMap() {
     return () => {
       script.removeEventListener("load", initMap);
     };
-  }, []);
+  }, [isVisible, loaded]);
 
   function initMap() {
     window.ymaps.ready(() => {
@@ -158,7 +180,7 @@ export default function ProjectsMap() {
   }
 
   return (
-    <section className="py-24 lg:py-32 bg-white">
+    <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <div className="mb-14">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-none text-foreground">
@@ -171,9 +193,15 @@ export default function ProjectsMap() {
 
         <div
           ref={mapRef}
-          className="w-full rounded-2xl overflow-hidden border border-border"
+          className="w-full rounded-2xl overflow-hidden border border-border bg-slate-100"
           style={{ height: "500px" }}
-        />
+        >
+          {!isVisible && (
+            <div className="w-full h-full flex items-center justify-center text-muted">
+              Загрузка карты...
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Попап проекта */}
