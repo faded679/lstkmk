@@ -46,35 +46,35 @@ export default function Page() {
 <p>С 2024 года ангары площадью до 1500 м² при отсутствии заглублённого фундамента признаются некапитальными объектами. Это означает, что вместо полного разрешения на строительство достаточно уведомления в местную администрацию. Срок согласования сократился с 30 до 7 рабочих дней. Для ЛСТК-ангаров МАКСТИЛ на винтовых сваях это упрощение особенно актуально — мы экономим клиенту до 3 недель.</p>
 
 <h2>Сравнение порядка согласования: до и после 2024</h2>
-<div class="overflow-x-auto my-6">
-  <table class="min-w-full border border-slate-300">
-    <thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-slate-300">
+    <thead className="bg-slate-100">
       <tr>
-        <th class="border border-slate-300 px-4 py-2 text-left">Параметр</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">До 2024</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">С 2024</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Параметр</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">До 2024</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">С 2024</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Документ</td>
-        <td class="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
-        <td class="border border-slate-300 px-4 py-2">Уведомление в администрацию</td>
+        <td className="border border-slate-300 px-4 py-2">Документ</td>
+        <td className="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
+        <td className="border border-slate-300 px-4 py-2">Уведомление в администрацию</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Срок согласования</td>
-        <td class="border border-slate-300 px-4 py-2">30 рабочих дней</td>
-        <td class="border border-slate-300 px-4 py-2">7 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">Срок согласования</td>
+        <td className="border border-slate-300 px-4 py-2">30 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">7 рабочих дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Лимит площади</td>
-        <td class="border border-slate-300 px-4 py-2">Без льгот</td>
-        <td class="border border-slate-300 px-4 py-2">До 1500 м² (некапитальные)</td>
+        <td className="border border-slate-300 px-4 py-2">Лимит площади</td>
+        <td className="border border-slate-300 px-4 py-2">Без льгот</td>
+        <td className="border border-slate-300 px-4 py-2">До 1500 м² (некапитальные)</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Экономия времени</td>
-        <td class="border border-slate-300 px-4 py-2">—</td>
-        <td class="border border-slate-300 px-4 py-2">До 3 недель</td>
+        <td className="border border-slate-300 px-4 py-2">Экономия времени</td>
+        <td className="border border-slate-300 px-4 py-2">—</td>
+        <td className="border border-slate-300 px-4 py-2">До 3 недель</td>
       </tr>
     </tbody>
   </table>
@@ -90,38 +90,38 @@ export default function Page() {
 <p>Несмотря на усиление требований, цена ангара ЛСТК осталась в диапазоне <strong>от 8 500 ₽/м²</strong>. Срок монтажа ангара 600 м² — 21–28 дней. Применение заводских комплектов с маркировкой позволяет ускорить сборку и пройти проверки без замечаний.</p>
 
 <h2>Ключевые показатели ЛСТК-ангаров МАКСТИЛ 2024</h2>
-<div class="overflow-x-auto my-6">
-  <table class="min-w-full border border-slate-300">
-    <thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-slate-300">
+    <thead className="bg-slate-100">
       <tr>
-        <th class="border border-slate-300 px-4 py-2 text-left">Показатель</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Значение</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Показатель</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Значение</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Цена за м²</td>
-        <td class="border border-slate-300 px-4 py-2">от 8 500 ₽</td>
+        <td className="border border-slate-300 px-4 py-2">Цена за м²</td>
+        <td className="border border-slate-300 px-4 py-2">от 8 500 ₽</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Срок монтажа (600 м²)</td>
-        <td class="border border-slate-300 px-4 py-2">21–28 дней</td>
+        <td className="border border-slate-300 px-4 py-2">Срок монтажа (600 м²)</td>
+        <td className="border border-slate-300 px-4 py-2">21–28 дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Цинковое покрытие</td>
-        <td class="border border-slate-300 px-4 py-2">275 г/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Цинковое покрытие</td>
+        <td className="border border-slate-300 px-4 py-2">275 г/м²</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Запас прочности (SCAD)</td>
-        <td class="border border-slate-300 px-4 py-2">1,4</td>
+        <td className="border border-slate-300 px-4 py-2">Запас прочности (SCAD)</td>
+        <td className="border border-slate-300 px-4 py-2">1,4</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Срок регистрации в Росреестре</td>
-        <td class="border border-slate-300 px-4 py-2">до 90 дней</td>
+        <td className="border border-slate-300 px-4 py-2">Срок регистрации в Росреестре</td>
+        <td className="border border-slate-300 px-4 py-2">до 90 дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Штраф за нарушение</td>
-        <td class="border border-slate-300 px-4 py-2">до 200 000 ₽</td>
+        <td className="border border-slate-300 px-4 py-2">Штраф за нарушение</td>
+        <td className="border border-slate-300 px-4 py-2">до 200 000 ₽</td>
       </tr>
     </tbody>
   </table>

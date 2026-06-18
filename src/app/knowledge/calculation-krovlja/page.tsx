@@ -45,35 +45,35 @@ export default function Page() {
 <h2>Основные формулы расчёта кровли ангара</h2>
 <p>Площадь двускатной кровли вычисляется по формуле: <strong>S = (L × B) / cos(α)</strong>, где L — длина ангара, B — ширина ската, α — угол наклона. Для арочных конструкций ЛСТК применяется формула длины дуги: <strong>L = π × R × α / 180°</strong>. Стандартный угол наклона для ангаров — от 8° до 25°, оптимум — 15°, что обеспечивает баланс между ветровой и снеговой нагрузкой.</p>
 
-<div class="overflow-x-auto my-6">
-  <table class="min-w-full border border-slate-300">
-    <thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-slate-300">
+    <thead className="bg-slate-100">
       <tr>
-        <th class="border border-slate-300 px-4 py-2 text-left">Параметр</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Значение</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Комментарий</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Параметр</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Значение</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Комментарий</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Угол наклона (диапазон)</td>
-        <td class="border border-slate-300 px-4 py-2">8° – 25°</td>
-        <td class="border border-slate-300 px-4 py-2">Допустимый интервал для ангаров</td>
+        <td className="border border-slate-300 px-4 py-2">Угол наклона (диапазон)</td>
+        <td className="border border-slate-300 px-4 py-2">8° – 25°</td>
+        <td className="border border-slate-300 px-4 py-2">Допустимый интервал для ангаров</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Оптимальный угол</td>
-        <td class="border border-slate-300 px-4 py-2">15°</td>
-        <td class="border border-slate-300 px-4 py-2">Баланс ветровой и снеговой нагрузки</td>
+        <td className="border border-slate-300 px-4 py-2">Оптимальный угол</td>
+        <td className="border border-slate-300 px-4 py-2">15°</td>
+        <td className="border border-slate-300 px-4 py-2">Баланс ветровой и снеговой нагрузки</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Площадь двускатной кровли</td>
-        <td class="border border-slate-300 px-4 py-2">S = (L × B) / cos(α)</td>
-        <td class="border border-slate-300 px-4 py-2">Базовая формула</td>
+        <td className="border border-slate-300 px-4 py-2">Площадь двускатной кровли</td>
+        <td className="border border-slate-300 px-4 py-2">S = (L × B) / cos(α)</td>
+        <td className="border border-slate-300 px-4 py-2">Базовая формула</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Длина дуги (арочная)</td>
-        <td class="border border-slate-300 px-4 py-2">L = π × R × α / 180°</td>
-        <td class="border border-slate-300 px-4 py-2">Для арочных ЛСТК-конструкций</td>
+        <td className="border border-slate-300 px-4 py-2">Длина дуги (арочная)</td>
+        <td className="border border-slate-300 px-4 py-2">L = π × R × α / 180°</td>
+        <td className="border border-slate-300 px-4 py-2">Для арочных ЛСТК-конструкций</td>
       </tr>
     </tbody>
   </table>
@@ -82,35 +82,35 @@ export default function Page() {
 <h2>Расчёт нагрузок: снег и ветер</h2>
 <p>Согласно СП 20.13330.2016, снеговая нагрузка в средней полосе России составляет 180 кг/м², в северных регионах — до 320 кг/м². Ветровая нагрузка для большинства районов — 23-30 кг/м². Конструкции ЛСТК МАКСТИЛ из оцинкованной стали толщиной 1,5-3 мм выдерживают суммарные нагрузки до 450 кг/м² при шаге ферм 1,2 м.</p>
 
-<div class="overflow-x-auto my-6">
-  <table class="min-w-full border border-slate-300">
-    <thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-slate-300">
+    <thead className="bg-slate-100">
       <tr>
-        <th class="border border-slate-300 px-4 py-2 text-left">Тип нагрузки</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Регион/Условия</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Значение</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Тип нагрузки</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Регион/Условия</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Значение</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Снеговая</td>
-        <td class="border border-slate-300 px-4 py-2">Средняя полоса РФ</td>
-        <td class="border border-slate-300 px-4 py-2">180 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Снеговая</td>
+        <td className="border border-slate-300 px-4 py-2">Средняя полоса РФ</td>
+        <td className="border border-slate-300 px-4 py-2">180 кг/м²</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Снеговая</td>
-        <td class="border border-slate-300 px-4 py-2">Северные регионы</td>
-        <td class="border border-slate-300 px-4 py-2">до 320 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Снеговая</td>
+        <td className="border border-slate-300 px-4 py-2">Северные регионы</td>
+        <td className="border border-slate-300 px-4 py-2">до 320 кг/м²</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Ветровая</td>
-        <td class="border border-slate-300 px-4 py-2">Большинство районов</td>
-        <td class="border border-slate-300 px-4 py-2">23–30 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Ветровая</td>
+        <td className="border border-slate-300 px-4 py-2">Большинство районов</td>
+        <td className="border border-slate-300 px-4 py-2">23–30 кг/м²</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Несущая способность ЛСТК</td>
-        <td class="border border-slate-300 px-4 py-2">Сталь 1,5–3 мм, шаг ферм 1,2 м</td>
-        <td class="border border-slate-300 px-4 py-2">до 450 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Несущая способность ЛСТК</td>
+        <td className="border border-slate-300 px-4 py-2">Сталь 1,5–3 мм, шаг ферм 1,2 м</td>
+        <td className="border border-slate-300 px-4 py-2">до 450 кг/м²</td>
       </tr>
     </tbody>
   </table>
@@ -122,30 +122,30 @@ export default function Page() {
 <h2>Что учесть при расчёте: практические нюансы</h2>
 <p>К базовой площади кровли добавьте 7-10% на свесы, нахлёсты и обрезки. Учтите вес утеплителя (минвата 100 мм — 15 кг/м²), пароизоляции и обрешётки. Для ангаров шириной более 24 м применяются усиленные фермы, что увеличивает стоимость конструкции.</p>
 
-<div class="overflow-x-auto my-6">
-  <table class="min-w-full border border-slate-300">
-    <thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-slate-300">
+    <thead className="bg-slate-100">
       <tr>
-        <th class="border border-slate-300 px-4 py-2 text-left">Элемент</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Поправка / Вес</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Элемент</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Поправка / Вес</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Свесы, нахлёсты, обрезки</td>
-        <td class="border border-slate-300 px-4 py-2">+7–10% к площади</td>
+        <td className="border border-slate-300 px-4 py-2">Свесы, нахлёсты, обрезки</td>
+        <td className="border border-slate-300 px-4 py-2">+7–10% к площади</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Минвата 100 мм</td>
-        <td class="border border-slate-300 px-4 py-2">15 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Минвата 100 мм</td>
+        <td className="border border-slate-300 px-4 py-2">15 кг/м²</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Ширина ангара &gt; 24 м</td>
-        <td class="border border-slate-300 px-4 py-2">Требуются усиленные фермы</td>
+        <td className="border border-slate-300 px-4 py-2">Ширина ангара &gt; 24 м</td>
+        <td className="border border-slate-300 px-4 py-2">Требуются усиленные фермы</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Экономия бюджета (МАКСТИЛ)</td>
-        <td class="border border-slate-300 px-4 py-2">до 25%</td>
+        <td className="border border-slate-300 px-4 py-2">Экономия бюджета (МАКСТИЛ)</td>
+        <td className="border border-slate-300 px-4 py-2">до 25%</td>
       </tr>
     </tbody>
   </table>

@@ -45,30 +45,30 @@ export default function Page() {
 <h2>Как выполняется расчёт мощности газового котла</h2>
 <p>Базовая формула для ангара: 1 кВт мощности на 10 м² площади при высоте потолков до 3 м. Для строительства складских ЛСТК-ангаров с высотой 6–8 м применяется коэффициент 1,5–2. Например, для ангара 600 м² потребуется котёл мощностью 90–120 кВт. На итоговый расчёт влияют толщина утеплителя сэндвич-панелей (100–200 мм), регион строительства и режим эксплуатации объекта.</p>
 
-<div class="overflow-x-auto my-6">
-<table class="min-w-full border border-slate-300">
-<thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+<table className="min-w-full border border-slate-300">
+<thead className="bg-slate-100">
 <tr>
-<th class="border border-slate-300 px-4 py-2 text-left">Площадь ангара</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Высота потолков</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Требуемая мощность котла</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Площадь ангара</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Высота потолков</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Требуемая мощность котла</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">300 м²</td>
-<td class="border border-slate-300 px-4 py-2">до 3 м</td>
-<td class="border border-slate-300 px-4 py-2">30 кВт</td>
+<td className="border border-slate-300 px-4 py-2">300 м²</td>
+<td className="border border-slate-300 px-4 py-2">до 3 м</td>
+<td className="border border-slate-300 px-4 py-2">30 кВт</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">600 м²</td>
-<td class="border border-slate-300 px-4 py-2">6–8 м</td>
-<td class="border border-slate-300 px-4 py-2">90–120 кВт</td>
+<td className="border border-slate-300 px-4 py-2">600 м²</td>
+<td className="border border-slate-300 px-4 py-2">6–8 м</td>
+<td className="border border-slate-300 px-4 py-2">90–120 кВт</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">1000 м²</td>
-<td class="border border-slate-300 px-4 py-2">6–8 м</td>
-<td class="border border-slate-300 px-4 py-2">150–200 кВт</td>
+<td className="border border-slate-300 px-4 py-2">1000 м²</td>
+<td className="border border-slate-300 px-4 py-2">6–8 м</td>
+<td className="border border-slate-300 px-4 py-2">150–200 кВт</td>
 </tr>
 </tbody>
 </table>
@@ -77,30 +77,30 @@ export default function Page() {
 <h2>Стоимость газового отопления ангара</h2>
 <p>Цена системы под ключ для ангара ЛСТК 500–800 м² составляет от 450 000 до 1 200 000 рублей.</p>
 
-<div class="overflow-x-auto my-6">
-<table class="min-w-full border border-slate-300">
-<thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+<table className="min-w-full border border-slate-300">
+<thead className="bg-slate-100">
 <tr>
-<th class="border border-slate-300 px-4 py-2 text-left">Статья сметы</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Стоимость (от)</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Статья сметы</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Стоимость (от)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Газовый котёл</td>
-<td class="border border-slate-300 px-4 py-2">180 000 руб.</td>
+<td className="border border-slate-300 px-4 py-2">Газовый котёл</td>
+<td className="border border-slate-300 px-4 py-2">180 000 руб.</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Воздушные тепловентиляторы или регистры</td>
-<td class="border border-slate-300 px-4 py-2">120 000 руб.</td>
+<td className="border border-slate-300 px-4 py-2">Воздушные тепловентиляторы или регистры</td>
+<td className="border border-slate-300 px-4 py-2">120 000 руб.</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Дымоход, обвязка, автоматика</td>
-<td class="border border-slate-300 px-4 py-2">90 000 руб.</td>
+<td className="border border-slate-300 px-4 py-2">Дымоход, обвязка, автоматика</td>
+<td className="border border-slate-300 px-4 py-2">90 000 руб.</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Монтаж и пусконаладка</td>
-<td class="border border-slate-300 px-4 py-2">60 000 руб.</td>
+<td className="border border-slate-300 px-4 py-2">Монтаж и пусконаладка</td>
+<td className="border border-slate-300 px-4 py-2">60 000 руб.</td>
 </tr>
 </tbody>
 </table>

@@ -45,30 +45,30 @@ export default function Page() {
 <h2>Как работает онлайн-проектирование ангара из ЛСТК</h2>
 <p>Расчёт ангара выполняется в специализированном ПО на базе типовых каркасов ЛСТК. Программа учитывает более <strong>40 параметров</strong>: пролёт от 6 до 30 м, высоту до карниза, шаг ферм, тип кровли и стенового заполнения. На выходе клиент получает чертежи КМД, спецификацию металла и прозрачную цену без скрытых платежей.</p>
 
-<div class="overflow-x-auto my-6">
-<table class="min-w-full border border-slate-300">
-<thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+<table className="min-w-full border border-slate-300">
+<thead className="bg-slate-100">
 <tr>
-<th class="border border-slate-300 px-4 py-2 text-left">Параметр</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Диапазон значений</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Параметр</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Диапазон значений</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Пролёт ангара</td>
-<td class="border border-slate-300 px-4 py-2">от 6 до 30 м</td>
+<td className="border border-slate-300 px-4 py-2">Пролёт ангара</td>
+<td className="border border-slate-300 px-4 py-2">от 6 до 30 м</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Толщина профиля ЛСТК</td>
-<td class="border border-slate-300 px-4 py-2">1,5–3 мм</td>
+<td className="border border-slate-300 px-4 py-2">Толщина профиля ЛСТК</td>
+<td className="border border-slate-300 px-4 py-2">1,5–3 мм</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Количество учитываемых параметров</td>
-<td class="border border-slate-300 px-4 py-2">более 40</td>
+<td className="border border-slate-300 px-4 py-2">Количество учитываемых параметров</td>
+<td className="border border-slate-300 px-4 py-2">более 40</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Время онлайн-расчёта</td>
-<td class="border border-slate-300 px-4 py-2">15 минут</td>
+<td className="border border-slate-300 px-4 py-2">Время онлайн-расчёта</td>
+<td className="border border-slate-300 px-4 py-2">15 минут</td>
 </tr>
 </tbody>
 </table>
@@ -86,35 +86,35 @@ export default function Page() {
 <h2>Цена и сроки строительства ангара ЛСТК</h2>
 <p>Стоимость ангара из ЛСТК стартует от <strong>6 500 ₽/м²</strong> «под ключ» — это на 30–40% дешевле традиционных решений из сварного двутавра. Срок изготовления комплекта каркаса — от <strong>14 дней</strong>, монтаж ангара площадью 600 м² занимает 3–4 недели. Гарантия на металлоконструкции — <strong>50 лет</strong> при использовании оцинкованной стали Z350.</p>
 
-<div class="overflow-x-auto my-6">
-<table class="min-w-full border border-slate-300">
-<thead class="bg-slate-100">
+<div className="overflow-x-auto my-6">
+<table className="min-w-full border border-slate-300">
+<thead className="bg-slate-100">
 <tr>
-<th class="border border-slate-300 px-4 py-2 text-left">Показатель</th>
-<th class="border border-slate-300 px-4 py-2 text-left">ЛСТК МАКСТИЛ</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Сварной двутавр</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Показатель</th>
+<th className="border border-slate-300 px-4 py-2 text-left">ЛСТК МАКСТИЛ</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Сварной двутавр</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Цена «под ключ»</td>
-<td class="border border-slate-300 px-4 py-2">от 6 500 ₽/м²</td>
-<td class="border border-slate-300 px-4 py-2">на 30–40% дороже</td>
+<td className="border border-slate-300 px-4 py-2">Цена «под ключ»</td>
+<td className="border border-slate-300 px-4 py-2">от 6 500 ₽/м²</td>
+<td className="border border-slate-300 px-4 py-2">на 30–40% дороже</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Срок изготовления каркаса</td>
-<td class="border border-slate-300 px-4 py-2">от 14 дней</td>
-<td class="border border-slate-300 px-4 py-2">от 30–45 дней</td>
+<td className="border border-slate-300 px-4 py-2">Срок изготовления каркаса</td>
+<td className="border border-slate-300 px-4 py-2">от 14 дней</td>
+<td className="border border-slate-300 px-4 py-2">от 30–45 дней</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Монтаж 600 м²</td>
-<td class="border border-slate-300 px-4 py-2">3–4 недели</td>
-<td class="border border-slate-300 px-4 py-2">6–8 недель</td>
+<td className="border border-slate-300 px-4 py-2">Монтаж 600 м²</td>
+<td className="border border-slate-300 px-4 py-2">3–4 недели</td>
+<td className="border border-slate-300 px-4 py-2">6–8 недель</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Гарантия</td>
-<td class="border border-slate-300 px-4 py-2">50 лет (сталь Z350)</td>
-<td class="border border-slate-300 px-4 py-2">15–25 лет</td>
+<td className="border border-slate-300 px-4 py-2">Гарантия</td>
+<td className="border border-slate-300 px-4 py-2">50 лет (сталь Z350)</td>
+<td className="border border-slate-300 px-4 py-2">15–25 лет</td>
 </tr>
 </tbody>
 </table>

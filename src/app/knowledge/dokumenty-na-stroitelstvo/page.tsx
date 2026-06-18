@@ -52,70 +52,70 @@ export default function Page() {
 <p>Для капитального ангара необходимо получить разрешение на строительство в местной администрации. Если объект некапитальный (на сборно-разборном фундаменте), достаточно уведомительного порядка. Срок рассмотрения — до 7 рабочих дней. Дополнительно могут потребоваться технические условия на подключение к коммуникациям и согласования с надзорными органами.</p>
 
 <h2>Сравнение пакетов документов: капитальный и некапитальный ангар</h2>
-<div class="overflow-x-auto my-6">
-  <table class="w-full border border-slate-300 border-collapse">
+<div className="overflow-x-auto my-6">
+  <table className="w-full border border-slate-300 border-collapse">
     <thead>
-      <tr class="bg-slate-100">
-        <th class="border border-slate-300 px-4 py-2 text-left">Параметр</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Капитальный ангар</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Некапитальный ангар</th>
+      <tr className="bg-slate-100">
+        <th className="border border-slate-300 px-4 py-2 text-left">Параметр</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Капитальный ангар</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Некапитальный ангар</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Тип процедуры</td>
-        <td class="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
-        <td class="border border-slate-300 px-4 py-2">Уведомительный порядок</td>
+        <td className="border border-slate-300 px-4 py-2">Тип процедуры</td>
+        <td className="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
+        <td className="border border-slate-300 px-4 py-2">Уведомительный порядок</td>
       </tr>
-      <tr class="bg-slate-50">
-        <td class="border border-slate-300 px-4 py-2">Срок рассмотрения</td>
-        <td class="border border-slate-300 px-4 py-2">До 30 рабочих дней</td>
-        <td class="border border-slate-300 px-4 py-2">До 7 рабочих дней</td>
-      </tr>
-      <tr>
-        <td class="border border-slate-300 px-4 py-2">Фундамент</td>
-        <td class="border border-slate-300 px-4 py-2">Стационарный (свайный, плитный)</td>
-        <td class="border border-slate-300 px-4 py-2">Сборно-разборный</td>
-      </tr>
-      <tr class="bg-slate-50">
-        <td class="border border-slate-300 px-4 py-2">Экспертиза проекта</td>
-        <td class="border border-slate-300 px-4 py-2">Не требуется до 1500 м² и H≤20 м</td>
-        <td class="border border-slate-300 px-4 py-2">Не требуется</td>
+      <tr className="bg-slate-50">
+        <td className="border border-slate-300 px-4 py-2">Срок рассмотрения</td>
+        <td className="border border-slate-300 px-4 py-2">До 30 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">До 7 рабочих дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Ввод в эксплуатацию</td>
-        <td class="border border-slate-300 px-4 py-2">Обязателен</td>
-        <td class="border border-slate-300 px-4 py-2">Не требуется</td>
+        <td className="border border-slate-300 px-4 py-2">Фундамент</td>
+        <td className="border border-slate-300 px-4 py-2">Стационарный (свайный, плитный)</td>
+        <td className="border border-slate-300 px-4 py-2">Сборно-разборный</td>
+      </tr>
+      <tr className="bg-slate-50">
+        <td className="border border-slate-300 px-4 py-2">Экспертиза проекта</td>
+        <td className="border border-slate-300 px-4 py-2">Не требуется до 1500 м² и H≤20 м</td>
+        <td className="border border-slate-300 px-4 py-2">Не требуется</td>
+      </tr>
+      <tr>
+        <td className="border border-slate-300 px-4 py-2">Ввод в эксплуатацию</td>
+        <td className="border border-slate-300 px-4 py-2">Обязателен</td>
+        <td className="border border-slate-300 px-4 py-2">Не требуется</td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <h2>Сроки подготовки документации</h2>
-<div class="overflow-x-auto my-6">
-  <table class="w-full border border-slate-300 border-collapse">
+<div className="overflow-x-auto my-6">
+  <table className="w-full border border-slate-300 border-collapse">
     <thead>
-      <tr class="bg-slate-100">
-        <th class="border border-slate-300 px-4 py-2 text-left">Этап</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Срок</th>
+      <tr className="bg-slate-100">
+        <th className="border border-slate-300 px-4 py-2 text-left">Этап</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Срок</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Получение ГПЗУ</td>
-        <td class="border border-slate-300 px-4 py-2">14–20 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">Получение ГПЗУ</td>
+        <td className="border border-slate-300 px-4 py-2">14–20 рабочих дней</td>
       </tr>
-      <tr class="bg-slate-50">
-        <td class="border border-slate-300 px-4 py-2">Разработка проекта ЛСТК</td>
-        <td class="border border-slate-300 px-4 py-2">7–14 рабочих дней</td>
+      <tr className="bg-slate-50">
+        <td className="border border-slate-300 px-4 py-2">Разработка проекта ЛСТК</td>
+        <td className="border border-slate-300 px-4 py-2">7–14 рабочих дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
-        <td class="border border-slate-300 px-4 py-2">До 30 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">Разрешение на строительство</td>
+        <td className="border border-slate-300 px-4 py-2">До 30 рабочих дней</td>
       </tr>
-      <tr class="bg-slate-50">
-        <td class="border border-slate-300 px-4 py-2">Уведомление о некапитальном объекте</td>
-        <td class="border border-slate-300 px-4 py-2">До 7 рабочих дней</td>
+      <tr className="bg-slate-50">
+        <td className="border border-slate-300 px-4 py-2">Уведомление о некапитальном объекте</td>
+        <td className="border border-slate-300 px-4 py-2">До 7 рабочих дней</td>
       </tr>
     </tbody>
   </table>

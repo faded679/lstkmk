@@ -55,35 +55,35 @@ export default function Page() {
 <p>На каркас крепится сэндвич-панель или профлист с утеплителем. Работы ведутся снизу вверх, с обязательным контролем геометрии. Общий срок строительства ангара ЛСТК «под ключ» — от 1 до 3 месяцев в зависимости от площади.</p>
 
 <h2>Сводная таблица этапов монтажа</h2>
-<div class="overflow-x-auto my-6">
-  <table class="w-full border border-slate-300 border-collapse">
+<div className="overflow-x-auto my-6">
+  <table className="w-full border border-slate-300 border-collapse">
     <thead>
-      <tr class="bg-slate-100">
-        <th class="border border-slate-300 px-4 py-2 text-left">Этап</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Ключевые показатели</th>
-        <th class="border border-slate-300 px-4 py-2 text-left">Экономия / Сроки</th>
+      <tr className="bg-slate-100">
+        <th className="border border-slate-300 px-4 py-2 text-left">Этап</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Ключевые показатели</th>
+        <th className="border border-slate-300 px-4 py-2 text-left">Экономия / Сроки</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Проект и расчёт</td>
-        <td class="border border-slate-300 px-4 py-2">КМД-чертежи, погрешность до 1 мм</td>
-        <td class="border border-slate-300 px-4 py-2">Экономия материала 15–20%</td>
+        <td className="border border-slate-300 px-4 py-2">Проект и расчёт</td>
+        <td className="border border-slate-300 px-4 py-2">КМД-чертежи, погрешность до 1 мм</td>
+        <td className="border border-slate-300 px-4 py-2">Экономия материала 15–20%</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Фундамент</td>
-        <td class="border border-slate-300 px-4 py-2">Вес конструкций 25–35 кг/м²</td>
-        <td class="border border-slate-300 px-4 py-2">Снижение цены на 30–40%</td>
+        <td className="border border-slate-300 px-4 py-2">Фундамент</td>
+        <td className="border border-slate-300 px-4 py-2">Вес конструкций 25–35 кг/м²</td>
+        <td className="border border-slate-300 px-4 py-2">Снижение цены на 30–40%</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Сборка каркаса</td>
-        <td class="border border-slate-300 px-4 py-2">Бригада 4 человека, площадь 500 м²</td>
-        <td class="border border-slate-300 px-4 py-2">7–10 рабочих дней</td>
+        <td className="border border-slate-300 px-4 py-2">Сборка каркаса</td>
+        <td className="border border-slate-300 px-4 py-2">Бригада 4 человека, площадь 500 м²</td>
+        <td className="border border-slate-300 px-4 py-2">7–10 рабочих дней</td>
       </tr>
       <tr>
-        <td class="border border-slate-300 px-4 py-2">Кровля и стены</td>
-        <td class="border border-slate-300 px-4 py-2">Сэндвич-панель или профлист</td>
-        <td class="border border-slate-300 px-4 py-2">1–3 месяца «под ключ»</td>
+        <td className="border border-slate-300 px-4 py-2">Кровля и стены</td>
+        <td className="border border-slate-300 px-4 py-2">Сэндвич-панель или профлист</td>
+        <td className="border border-slate-300 px-4 py-2">1–3 месяца «под ключ»</td>
       </tr>
     </tbody>
   </table>

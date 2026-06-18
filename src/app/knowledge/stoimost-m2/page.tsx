@@ -45,30 +45,30 @@ export default function Page() {
 <h2>Средняя цена ангара ЛСТК в 2024 году</h2>
 <p>Базовая стоимость строительства ангара из ЛСТК стартует от <strong>8 500 руб./м²</strong> за каркас и от <strong>14 000 руб./м²</strong> «под ключ» с фундаментом, кровлей и воротами. Для сравнения: классический металлокаркас обойдётся в 18 000–25 000 руб./м². Экономия достигает 30–40% за счёт меньшего веса конструкции и упрощённого фундамента.</p>
 
-<div class="overflow-x-auto my-6">
-<table class="w-full border border-slate-300 border-collapse">
+<div className="overflow-x-auto my-6">
+<table className="w-full border border-slate-300 border-collapse">
 <thead>
-<tr class="bg-slate-100">
-<th class="border border-slate-300 px-4 py-2 text-left">Тип конструкции / комплектация</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Стоимость, руб./м²</th>
+<tr className="bg-slate-100">
+<th className="border border-slate-300 px-4 py-2 text-left">Тип конструкции / комплектация</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Стоимость, руб./м²</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Каркас ЛСТК</td>
-<td class="border border-slate-300 px-4 py-2">от 8 500</td>
+<td className="border border-slate-300 px-4 py-2">Каркас ЛСТК</td>
+<td className="border border-slate-300 px-4 py-2">от 8 500</td>
 </tr>
-<tr class="bg-slate-50">
-<td class="border border-slate-300 px-4 py-2">Ангар ЛСТК «под ключ»</td>
-<td class="border border-slate-300 px-4 py-2">от 14 000</td>
+<tr className="bg-slate-50">
+<td className="border border-slate-300 px-4 py-2">Ангар ЛСТК «под ключ»</td>
+<td className="border border-slate-300 px-4 py-2">от 14 000</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Классический металлокаркас</td>
-<td class="border border-slate-300 px-4 py-2">18 000 – 25 000</td>
+<td className="border border-slate-300 px-4 py-2">Классический металлокаркас</td>
+<td className="border border-slate-300 px-4 py-2">18 000 – 25 000</td>
 </tr>
-<tr class="bg-slate-50">
-<td class="border border-slate-300 px-4 py-2">Экономия с ЛСТК</td>
-<td class="border border-slate-300 px-4 py-2">30 – 40%</td>
+<tr className="bg-slate-50">
+<td className="border border-slate-300 px-4 py-2">Экономия с ЛСТК</td>
+<td className="border border-slate-300 px-4 py-2">30 – 40%</td>
 </tr>
 </tbody>
 </table>
@@ -83,30 +83,30 @@ export default function Page() {
 <li><strong>Сложность проекта</strong> — кран-балка, антресоли, доковые ворота.</li>
 </ul>
 
-<div class="overflow-x-auto my-6">
-<table class="w-full border border-slate-300 border-collapse">
+<div className="overflow-x-auto my-6">
+<table className="w-full border border-slate-300 border-collapse">
 <thead>
-<tr class="bg-slate-100">
-<th class="border border-slate-300 px-4 py-2 text-left">Фактор</th>
-<th class="border border-slate-300 px-4 py-2 text-left">Влияние на цену</th>
+<tr className="bg-slate-100">
+<th className="border border-slate-300 px-4 py-2 text-left">Фактор</th>
+<th className="border border-slate-300 px-4 py-2 text-left">Влияние на цену</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Пролёт</td>
-<td class="border border-slate-300 px-4 py-2">Эффективно до 24 м</td>
+<td className="border border-slate-300 px-4 py-2">Пролёт</td>
+<td className="border border-slate-300 px-4 py-2">Эффективно до 24 м</td>
 </tr>
-<tr class="bg-slate-50">
-<td class="border border-slate-300 px-4 py-2">Холодный vs тёплый ангар</td>
-<td class="border border-slate-300 px-4 py-2">Холодный дешевле на 20–25%</td>
+<tr className="bg-slate-50">
+<td className="border border-slate-300 px-4 py-2">Холодный vs тёплый ангар</td>
+<td className="border border-slate-300 px-4 py-2">Холодный дешевле на 20–25%</td>
 </tr>
 <tr>
-<td class="border border-slate-300 px-4 py-2">Дополнительное оборудование</td>
-<td class="border border-slate-300 px-4 py-2">Увеличивает смету индивидуально</td>
+<td className="border border-slate-300 px-4 py-2">Дополнительное оборудование</td>
+<td className="border border-slate-300 px-4 py-2">Увеличивает смету индивидуально</td>
 </tr>
-<tr class="bg-slate-50">
-<td class="border border-slate-300 px-4 py-2">Снеговой/ветровой район</td>
-<td class="border border-slate-300 px-4 py-2">Влияет на сечение профиля</td>
+<tr className="bg-slate-50">
+<td className="border border-slate-300 px-4 py-2">Снеговой/ветровой район</td>
+<td className="border border-slate-300 px-4 py-2">Влияет на сечение профиля</td>
 </tr>
 </tbody>
 </table>
