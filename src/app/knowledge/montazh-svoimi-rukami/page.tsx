@@ -35,7 +35,7 @@ export default function Page() {
 
 <p><strong>Закажите расчёт стоимости вашего ангара в компании ЛСТК МАКСТИЛ по телефону +7 (980) 321-15-42 — подготовим проект и КП за 1 рабочий день!</strong></p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -52,7 +52,7 @@ export default function Page() {
   },
   "keywords": "ЛСТК, ангар, строительство, монтаж, проект, расчёт, цена, сроки"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>

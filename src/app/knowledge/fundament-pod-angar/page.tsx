@@ -33,7 +33,7 @@ export default function Page() {
 <h2>Закажите расчёт фундамента бесплатно</h2>
 <p>Инженеры ЛСТК МАКСТИЛ подберут оптимальный тип основания по геологии вашего участка, рассчитают цену и составят проект ангара под ключ. Звоните: <strong>+7 (980) 321-15-42</strong> — консультация и предварительная смета за 1 рабочий день.</p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -50,7 +50,7 @@ export default function Page() {
   },
   "about": "Выбор фундамента для строительства ангара из ЛСТК"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>

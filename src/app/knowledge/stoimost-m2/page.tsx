@@ -39,7 +39,7 @@ export default function Page() {
 <h2>Закажите расчёт ангара уже сегодня</h2>
 <p>Хотите узнать точную цену для вашего проекта? Инженеры МАКСТИЛ подготовят коммерческое предложение за 1 рабочий день. Звоните: <strong>+7 (980) 321-15-42</strong> — поможем выбрать оптимальное решение и сэкономить до 40% бюджета.</p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -57,7 +57,7 @@ export default function Page() {
   "datePublished": "2024-01-15",
   "about": "Строительство ангаров из ЛСТК"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>

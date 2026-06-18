@@ -36,8 +36,7 @@ export default function Page() {
 <p><strong>Звоните прямо сейчас: +7 (980) 321-15-42</strong> — рассчитаем ваш проект бесплатно!</p>
 </article>
 
-<script type="application/ld+json">
-{
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Расчёт кровли ангара: калькулятор и формулы для точного проекта",
@@ -53,8 +52,7 @@ export default function Page() {
   },
   "about": "Расчёт кровли ангара из ЛСТК",
   "keywords": "ЛСТК, ангар, расчёт кровли, калькулятор, проект, монтаж, цена, строительство"
-}
-</script>
+}`}} />
       </main>
     </div>
   );

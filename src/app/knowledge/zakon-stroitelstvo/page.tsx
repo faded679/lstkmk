@@ -36,7 +36,7 @@ export default function Page() {
 <p><strong>Закажите расчёт стоимости вашего ангара уже сегодня по телефону <a href="tel:+79803211542">+7 (980) 321-15-42</a> — проект и смета бесплатно!</strong></p>
 </article>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -54,7 +54,7 @@ export default function Page() {
   "datePublished": "2024-01-15",
   "keywords": "ЛСТК, ангар, строительство, цена, проект, монтаж, сроки, расчёт, закон 2024"
 }
-</script>
+`}} />
       </main>
     </div>
   );

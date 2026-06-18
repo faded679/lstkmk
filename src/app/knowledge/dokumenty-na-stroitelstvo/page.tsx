@@ -36,7 +36,7 @@ export default function Page() {
 <p><strong>Закажите бесплатный расчёт и консультацию по документации: +7 (980) 321-15-42</strong></p>
 </article>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -54,7 +54,7 @@ export default function Page() {
   "about": "Строительство ангаров из ЛСТК",
   "keywords": "ЛСТК, ангар, строительство, проект, монтаж, цена, расчёт, сроки, документы"
 }
-</script>
+`}} />
       </main>
     </div>
   );

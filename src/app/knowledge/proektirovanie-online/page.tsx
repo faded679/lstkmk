@@ -40,7 +40,7 @@ export default function Page() {
 <p>Получите бесплатный проект и цену вашего ангара сегодня. Позвоните по телефону <strong><a href="tel:+79803211542">+7 (980) 321-15-42</a></strong> — инженер МАКСТИЛ ответит на все вопросы и подготовит коммерческое предложение в течение часа.</p>
 </article>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -60,7 +60,7 @@ export default function Page() {
     "@id": "https://maxsteel.ru/proektirovanie-angarov"
   }
 }
-</script>
+`}} />
       </main>
     </div>
   );

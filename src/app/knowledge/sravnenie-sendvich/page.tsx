@@ -35,7 +35,7 @@ export default function Page() {
 
 <p><strong>Закажите расчёт ангара из ЛСТК по телефону +7 (980) 321-15-42 — обсудим проект, сроки и стоимость монтажа уже сегодня!</strong></p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -52,7 +52,7 @@ export default function Page() {
   },
   "keywords": "ЛСТК, ангар, строительство, сэндвич-панели, монтаж, расчёт, цена, проект"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>

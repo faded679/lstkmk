@@ -40,7 +40,7 @@ export default function Page() {
 <h2>Заключение</h2>
 <p>Газовое отопление ангара ЛСТК — это инвестиция, которая окупается за 2–3 отопительных сезона. Закажите расчёт стоимости и проект отопления в компании МАКСТИЛ по телефону <strong>+7 (980) 321-15-42</strong> — подготовим коммерческое предложение за 1 рабочий день.</p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -58,7 +58,7 @@ export default function Page() {
   "about": "Газовое отопление ангаров из ЛСТК",
   "keywords": "ЛСТК, ангар, отопление, газ, расчёт мощности, цена, проект, монтаж, сроки строительства"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>

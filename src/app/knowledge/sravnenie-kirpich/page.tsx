@@ -34,7 +34,7 @@ export default function Page() {
 <p>Компания ЛСТК МАКСТИЛ выполнит бесплатный расчёт стоимости ангара по вашим габаритам за 1 рабочий день. Проектирование, изготовление и монтаж — под ключ с гарантией 25 лет.</p>
 <p><strong>Звоните: +7 (980) 321-15-42</strong> — инженер ответит на все вопросы и подготовит коммерческое предложение.</p>
 
-<script type="application/ld+json">
+<script type="application/ld+json" dangerouslySetInnerHTML={{__html: `
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -52,7 +52,7 @@ export default function Page() {
   "about": "Строительство ангаров из ЛСТК",
   "keywords": "ЛСТК, ангар, строительство, цена, проект, монтаж, сроки, расчёт"
 }
-</script>
+`}} />
 </article>
       </main>
     </div>
