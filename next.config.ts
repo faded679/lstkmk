@@ -13,27 +13,9 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
-  // Webpack оптимизации
-  webpack: (config, { dev, isServer }) => {
-    // Разделение чанков для лучшего кэширования
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: "all",
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendors",
-            chunks: "all",
-          },
-          common: {
-            minChunks: 2,
-            chunks: "all",
-            enforce: true,
-          },
-        },
-      };
-    }
-    return config;
+  // Turbopack оптимизации (замена webpack)
+  turbopack: {
+    // Turbopack имеет встроенное разделение чанков
   },
   // Экспериментальные фичи для оптимизации
   serverExternalPackages: ["better-sqlite3"],
