@@ -41,7 +41,8 @@ export default function AiAssistant() {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
