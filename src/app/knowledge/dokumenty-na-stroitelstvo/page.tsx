@@ -38,7 +38,7 @@ export default function Page() {
           
           {/* Категория */}
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-sm text-muted mb-6">
-            {article.category}
+            Документы
           </div>
 
           {/* Вступление */}
