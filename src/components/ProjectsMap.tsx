@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, MapPin, Ruler, Calendar, Buildings } from "@phosphor-icons/react";
+import Image from "next/image";
 
 const YANDEX_API_KEY = "70a24b9b-d8f0-4dd8-81a8-6e12481c7eff";
 
@@ -184,10 +185,12 @@ export default function ProjectsMap() {
           />
           <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-50 bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="relative h-52 flex-shrink-0">
-              <img
+              <Image
                 src={selected.image}
                 alt={selected.title}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 512px"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <button

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function HeroVideo() {
   return (
     <section className="relative bg-white">
@@ -41,10 +43,13 @@ export default function HeroVideo() {
           </div>
 
           <div className="relative flex-1 min-w-0 bg-white">
-            <img
+            <Image
               src="/frames2/frame_0152.webp"
               alt="Готовый ангар из металлоконструкций"
-              className="absolute inset-0 w-full h-full object-contain bg-white"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 80vw"
+              className="object-contain bg-white"
             />
           </div>
 

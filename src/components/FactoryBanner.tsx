@@ -3,6 +3,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { ArrowRight } from "@phosphor-icons/react";
+import Image from "next/image";
 
 export default function FactoryBanner() {
   const ref = useRef<HTMLDivElement>(null);
@@ -21,10 +22,13 @@ export default function FactoryBanner() {
         style={{ y }}
         className="absolute inset-0"
       >
-        <img
+        <Image
           src="/zavod.png"
           alt="Завод МАКСТИЛ в Белгороде"
-          className="w-full h-full object-cover object-center"
+          fill
+          loading="lazy"
+          sizes="100vw"
+          className="object-cover object-center"
         />
       </motion.div>
 

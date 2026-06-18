@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ArrowRight, MapPin, Ruler, Calendar, X, Buildings, Stack, Rows } from "@phosphor-icons/react";
+import Image from "next/image";
 
 interface Project {
   title: string;
@@ -142,11 +143,13 @@ export default function Projects() {
                 className="group rounded-xl border border-border bg-white md:hover:shadow-xl md:hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
               >
                 <div className="h-52 overflow-hidden relative">
-                  <img
+                  <Image
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    style={project.title.includes("Коровник") ? { objectPosition: "70% center" } : undefined}
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className={`object-cover group-hover:scale-110 transition-transform duration-700 ease-out ${project.title.includes("Коровник") ? "object-[70%_center]" : ""}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
@@ -204,10 +207,12 @@ export default function Projects() {
             >
               {/* Image */}
               <div className="relative h-56 md:h-64 flex-shrink-0">
-                <img
+                <Image
                   src={selected.image}
                   alt={selected.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <button
