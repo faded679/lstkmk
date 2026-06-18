@@ -1,12 +1,12 @@
-# Project Handoff: LSTKM Knowledge Base Articles
+# Project Handoff: ЛСТК-МК Knowledge Base
 
-## Summary
-Successfully integrated Wellflow AI (Claude Opus 4.8) to generate 10 SEO-optimized articles for the LSTKM (ЛСТК-МК) construction company website. All articles now have proper structure with tables, FAQ sections, and CTA blocks.
+## Project Status
+Knowledge base module completed. 10 SEO-optimized articles generated and integrated into Next.js application. Ready for production deployment.
 
-## What Was Accomplished
+## What Was Completed
 
-### Articles Created (10 total)
-All articles located in `src/app/knowledge/[slug]/page.tsx`:
+### 10 Knowledge Articles
+All articles live in `src/app/knowledge/[slug]/page.tsx`:
 
 | Slug | Title | Category |
 |------|-------|----------|
@@ -21,27 +21,26 @@ All articles located in `src/app/knowledge/[slug]/page.tsx`:
 | dokumenty-na-stroitelstvo | Документы для строительства | Документы |
 | fundament-pod-angar | Фундамент под ангар | Фундамент |
 
-### Key Features Added
-- **SEO metadata** with titles, descriptions, keywords
-- **JSON-LD schema** markup for search engines
-- **HTML tables** with Tailwind styling for comparisons/data
-- **FAQ sections** with 4-5 Q&A per article
-- **CTA blocks** with calculator link and phone number
-- **Navigation** and breadcrumbs
+### Article Features
+- **SEO metadata** — unique titles, descriptions, keywords
+- **JSON-LD schema** — Article structured data for search engines
+- **HTML tables** — comparison tables with Tailwind CSS
+- **FAQ sections** — 4-5 questions/answers per article
+- **CTA blocks** — calculator link + phone call-to-action
+- **Navigation** — breadcrumbs back to knowledge base
+- **Responsive** — mobile-friendly tables
 
-### Wellflow Integration
-- API endpoint: `https://api.wellflow.dev/v1/messages`
-- Model: `claude-opus-4.8`
-- File: `src/lib/wellflow.ts`
+### Temporary Scripts (can be deleted)
+Located in `scripts/` directory:
+- `generate-articles.ts`
+- `reformat-articles.ts`
+- `restore-content.ts`
+- `enhance-content.ts`
+- `enhance-all-content.ts`
+- `apply-enhanced.ts`
+- `apply-all-enhanced.ts`
 
-### Scripts Created
-- `scripts/generate-articles.ts` — initial article generation
-- `scripts/reformat-articles.ts` — template reformatting
-- `scripts/restore-content.ts` — content restoration
-- `scripts/enhance-content.ts` — single article enhancement
-- `scripts/enhance-all-content.ts` — batch enhancement via Wellflow
-- `scripts/apply-enhanced.ts` — apply enhanced content to pages
-- `scripts/apply-all-enhanced.ts` — batch apply all enhanced content
+Used for batch content processing. Safe to remove after deployment.
 
 ## Current State
 
@@ -59,16 +58,19 @@ All articles located in `src/app/knowledge/[slug]/page.tsx`:
 ### File Structure
 ```
 src/app/knowledge/
-├── page.tsx                    # Knowledge base listing
+├── page.tsx                    # Knowledge base listing with search/filter
 ├── [slug]/
-│   ├── page.tsx               # Article page (enhanced content)
-│   ├── content-old.txt        # Original Wellflow output
-│   └── content-enhanced.txt   # Enhanced version with tables/FAQ
+│   ├── page.tsx               # Article page with full content
+│   ├── content-old.txt        # Backup of original content
+│   └── content-enhanced.txt   # Backup of final content
 ```
 
-## Next Steps / TODO
+## Current Blockers / Known Issues
+✅ All resolved — build passes successfully.
 
-1. **Server deployment** — pull latest changes and build:
+## Next Steps (Priority Order)
+
+1. **Deploy to production** — immediate:
    ```bash
    cd /var/www/lstkmk.ru
    git pull origin main
@@ -79,46 +81,50 @@ src/app/knowledge/
    pm2 save
    ```
 
-2. **Content quality check** — manually review articles for:
-   - Factual accuracy
-   - Brand voice consistency
-   - Missing images/charts if needed
+2. **Content review** — verify factual accuracy in articles:
+   - Prices and calculations
+   - Legal references (zakon-stroitelstvo)
+   - Technical specifications
 
-3. **SEO optimization** — verify:
-   - Meta descriptions are unique
-   - Keywords are relevant
-   - Schema markup validates
+3. **Enhancement ideas** — future improvements:
+   - Add images/diagrams to articles
+   - Implement article search/filter
+   - Add "related articles" component
+   - Analytics tracking on CTA clicks
 
-4. **Performance** — check:
-   - Page load speeds
-   - Mobile responsiveness
-   - Table overflow on small screens
+## Technical Stack
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- React Server Components
+- JSON-LD structured data
 
-## Important Notes for Next Agent
+## Styling Guidelines Used
+```
+Tables:
+- overflow-x-auto my-6 (container)
+- min-w-full border border-slate-300 (table)
+- bg-slate-100 (header)
+- border border-slate-300 px-4 py-2 (cells)
 
-### Working with Wellflow
-- Use `scripts/enhance-all-content.ts` for batch content improvements
-- Use `scripts/apply-all-enhanced.ts` to apply changes to page.tsx files
-- Wellflow API key is in `src/lib/wellflow.ts` (already configured)
+Typography:
+- prose prose-slate max-w-none (content wrapper)
+- h1, h2, h3 for headings
+- strong for emphasis
 
-### Content Updates
-- Always backup to `content-old.txt` before major changes
-- Enhanced versions go to `content-enhanced.txt`
-- Final content is embedded directly in `page.tsx`
+Components:
+- Navigation (imported from @/components/Navigation)
+- Phosphor icons for UI elements
+```
 
-### Build Process
-- Next.js with TypeScript
-- Tailwind CSS for styling
-- Check `npm run build` before committing
-- Fix any TypeScript errors immediately
+## Content Update Process
+If editing articles in the future:
+1. Content lives directly in `src/app/knowledge/[slug]/page.tsx`
+2. Backup files (content-old.txt, content-enhanced.txt) are for reference
+3. Always run `npm run build` locally before pushing
+4. Use `className` not `class` in JSX (React requirement)
 
-### Styling Conventions
-- Use Tailwind classes: `prose`, `prose-slate`, `overflow-x-auto`, `my-6`
-- Tables use: `border`, `border-slate-300`, `bg-slate-100`, `px-4`, `py-2`
-- Always use `className` not `class` in JSX
-
-## Contact / Resources
-- Project root: `/Users/k/CascadeProjects/lstkmk`
-- Server path: `/var/www/lstkmk.ru`
-- Repo: `https://github.com/faded679/lstkmk`
-- Wellflow API docs: https://api.wellflow.dev
+## Resources
+- Local: `/Users/k/CascadeProjects/lstkmk`
+- Production: `/var/www/lstkmk.ru`
+- GitHub: `faded679/lstkmk`
