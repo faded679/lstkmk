@@ -21,18 +21,12 @@ export default function HeroVideo() {
           <div className="hidden lg:flex flex-col justify-around items-end w-36 xl:w-44 pr-4 py-4 select-none bg-white">
             {["Проектирование", "Производство", "Монтаж"].map((label) => <span key={label} className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">{label}</span>)}
           </div>
-<<<<<<< HEAD
-          <div className="relative flex-1 min-w-0 bg-white flex items-center justify-center">
-            <img src="/frames2/frame_0152.webp" alt="Готовый ангар" className="max-w-full max-h-full object-contain" />
-=======
-
           <div className="relative flex-1 min-w-0 bg-white flex items-center justify-center">
             <img
               src="/frames2/frame_0152.webp"
               alt="Готовый ангар из металлоконструкций"
               className="max-w-full max-h-full object-contain"
             />
->>>>>>> cdb6b87 (fix: add Navigation to all knowledge articles)
           </div>
           <div className="hidden lg:flex flex-col justify-around items-start w-36 xl:w-44 pl-4 py-4 select-none bg-white">
             {["Под ключ", "45 дней", "14 лет опыта"].map((label) => <span key={label} className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">{label}</span>)}
