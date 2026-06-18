@@ -22,7 +22,7 @@ export default function FactoryBanner() {
         className="absolute inset-0"
       >
         <img
-          src="/210mnyal2yqegf757m7kgadnbm924h8n.jpeg"
+          src="/zavod.png"
           alt="Завод МАКСТИЛ в Белгороде"
           className="w-full h-full object-cover object-center"
         />

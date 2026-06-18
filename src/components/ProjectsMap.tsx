@@ -52,7 +52,7 @@ const mapProjects: MapProject[] = [
     duration: "38 дней",
     type: "Сельхозхранилище",
     description: "Хранилище для картофеля на базе быстровозводимого каркаса ЛСТК.",
-    image: "/projects/kartofel.jpg",
+    image: "/kartofel.png",
     coords: [50.7481, 36.1833],
   },
   {
@@ -76,7 +76,7 @@ const mapProjects: MapProject[] = [
     duration: "21 день",
     type: "Автомойка",
     description: "Многоместная автомойка. Металлокаркас с антикоррозийным покрытием.",
-    image: "/projects/avtomoika.jpg",
+    image: "/moyka.png",
     coords: [51.2963, 37.8422],
   },
   {
@@ -88,7 +88,7 @@ const mapProjects: MapProject[] = [
     duration: "42 дня",
     type: "Склад",
     description: "Тёплый склад для хранения товарно-материальных ценностей.",
-    image: "/projects/sklad.jpg",
+    image: "/sklad-pomeshenie.png",
     coords: [50.5957, 36.5872],
   },
 ];

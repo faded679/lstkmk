@@ -52,7 +52,7 @@ const projects: Project[] = [
     duration: "38 дней",
     description:
       "Хранилище для картофеля на базе быстровозводимого каркаса ЛСТК. Промышленное сельхозсооружение.",
-    image: "/projects/kartofel.jpg",
+    image: "/kartofel.png",
     size: "18 × 90 м",
     type: "Сельхозхранилище",
     frame: "ЛСТК",
@@ -78,7 +78,7 @@ const projects: Project[] = [
     duration: "21 день",
     description:
       "Многоместная автомойка шириной 9 м, длиной 24 м. Металлокаркас из высококачественной стали с антикоррозийным покрытием.",
-    image: "/projects/avtomoika.jpg",
+    image: "/moyka.png",
     size: "9 × 24 м",
     type: "Автомойка",
     frame: "ЛСТК",
@@ -93,7 +93,7 @@ const projects: Project[] = [
     duration: "42 дня",
     description:
       "Тёплый склад для хранения товарно-материальных ценностей. Ворота для заезда фуры, естественное освещение.",
-    image: "/projects/sklad.jpg",
+    image: "/sklad-pomeshenie.png",
     size: "30 × 60 м",
     type: "Склад",
     frame: "ЛСТК",
