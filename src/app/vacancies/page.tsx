@@ -38,27 +38,72 @@ export default function VacanciesPage() {
           initial={reduce ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14 flex flex-col items-center justify-center py-20 rounded-lg border border-border bg-slate-50 text-center"
+          className="mt-14"
         >
-          <p className="text-xl font-semibold text-foreground">
-            На данный момент открытых вакансий нет
-          </p>
-          <p className="mt-3 text-sm text-muted max-w-sm leading-relaxed">
-            Следите за обновлениями — новые позиции появляются регулярно.
-            Вы также можете отправить резюме заранее.
-          </p>
+          <h2 className="text-xl font-semibold text-foreground mb-6">
+            Открытые вакансии
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              "Сварщики",
+              "Токарь-фрезеровщик",
+              "Сборщики металлоконструкций",
+              "Слесарь",
+              "Разнорабочий",
+              "Инженер-строитель",
+              "Бригадир монтажников",
+              "Монтажники металлоконструкций",
+              "Бетонщики",
+              "Инженер-конструктор",
+              "Менеджер по продажам",
+              "Кладовщик",
+              "Оператор станка ЧПУ",
+              "Механик по ремонту станков",
+              "Водитель манипулятора",
+              "Электрик",
+            ].map((vacancy) => (
+              <div
+                key={vacancy}
+                className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-medium text-foreground">{vacancy}</h3>
+                <p className="mt-2 text-sm text-muted">
+                  Все условия — на собеседовании
+                </p>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
-        <div className="mt-8 p-6 rounded-lg bg-slate-50 border border-border">
+        <div className="mt-12 p-6 rounded-lg bg-slate-50 border border-border">
+          <p className="text-base font-medium text-foreground mb-2">
+            Связаться по вакансиям
+          </p>
           <p className="text-sm text-muted leading-relaxed">
-            Хотите работать в нашей команде? Отправьте резюме на{" "}
+            Телефон: {" "}
+            <a
+              href="tel:+79803211542"
+              className="text-accent-blue font-medium hover:underline"
+            >
+              +7 (980) 321-15-42
+            </a>
+            {", "}
+            <a
+              href="tel:+79107372485"
+              className="text-accent-blue font-medium hover:underline"
+            >
+              +7 (910) 737-24-85
+            </a>
+          </p>
+          <p className="mt-2 text-sm text-muted leading-relaxed">
+            Email: {" "}
             <a
               href="mailto:maxsteel31@bk.ru?subject=Резюме"
               className="text-accent-blue font-medium hover:underline"
             >
               maxsteel31@bk.ru
-            </a>{" "}
-            — мы рассмотрим вашу кандидатуру при появлении новых позиций.
+            </a>
           </p>
         </div>
       </main>
