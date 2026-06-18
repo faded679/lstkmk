@@ -18,12 +18,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     // Turbopack имеет встроенное разделение чанков
   },
-  // Экспериментальные фичи для оптимизации
-  serverExternalPackages: ["better-sqlite3"],
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ["framer-motion", "@phosphor-icons/react"],
-  },
+  // Экспериментальные фичи временно отключены
+  // serverExternalPackages: ["better-sqlite3"],
+  // experimental: {
+  //   optimizeCss: true,
+  //   optimizePackageImports: ["framer-motion", "@phosphor-icons/react"],
+  // },
 };
 
 export default nextConfig;
