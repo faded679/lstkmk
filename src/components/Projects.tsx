@@ -27,7 +27,7 @@ const projects: Project[] = [
     duration: "2021 год",
     description:
       "Коровник 32,6×57,6 м с трёхпролётной системой и аэрационным коньком. Проектирование с учётом технологии содержания КРС.",
-    image: "/korovnik.png",
+    image: "/korovnik.webp",
     size: "32,6 × 57,6 м",
     type: "Коровник",
     frame: "ЛСТК",
@@ -53,7 +53,7 @@ const projects: Project[] = [
     duration: "38 дней",
     description:
       "Хранилище для картофеля на базе быстровозводимого каркаса ЛСТК. Промышленное сельхозсооружение.",
-    image: "/kartofel.png",
+    image: "/kartofel.webp",
     size: "18 × 90 м",
     type: "Сельхозхранилище",
     frame: "ЛСТК",
@@ -79,7 +79,7 @@ const projects: Project[] = [
     duration: "21 день",
     description:
       "Многоместная автомойка шириной 9 м, длиной 24 м. Металлокаркас из высококачественной стали с антикоррозийным покрытием.",
-    image: "/moyka.png",
+    image: "/moyka.webp",
     size: "9 × 24 м",
     type: "Автомойка",
     frame: "ЛСТК",
@@ -94,7 +94,7 @@ const projects: Project[] = [
     duration: "42 дня",
     description:
       "Тёплый склад для хранения товарно-материальных ценностей. Ворота для заезда фуры, естественное освещение.",
-    image: "/sklad-pomeshenie.png",
+    image: "/sklad-pomeshenie.webp",
     size: "30 × 60 м",
     type: "Склад",
     frame: "ЛСТК",

@@ -29,7 +29,7 @@ const mapProjects: MapProject[] = [
     duration: "2021 год",
     type: "Коровник",
     description: "Коровник 32,6×57,6 м с трёхпролётной системой и аэрационным коньком.",
-    image: "/korovnik.png",
+    image: "/korovnik.webp",
     coords: [51.0193, 36.7269],
   },
   {
@@ -53,7 +53,7 @@ const mapProjects: MapProject[] = [
     duration: "38 дней",
     type: "Сельхозхранилище",
     description: "Хранилище для картофеля на базе быстровозводимого каркаса ЛСТК.",
-    image: "/kartofel.png",
+    image: "/kartofel.webp",
     coords: [50.7481, 36.1833],
   },
   {
@@ -77,7 +77,7 @@ const mapProjects: MapProject[] = [
     duration: "21 день",
     type: "Автомойка",
     description: "Многоместная автомойка. Металлокаркас с антикоррозийным покрытием.",
-    image: "/moyka.png",
+    image: "/moyka.webp",
     coords: [51.2963, 37.8422],
   },
   {
@@ -89,7 +89,7 @@ const mapProjects: MapProject[] = [
     duration: "42 дня",
     type: "Склад",
     description: "Тёплый склад для хранения товарно-материальных ценностей.",
-    image: "/sklad-pomeshenie.png",
+    image: "/sklad-pomeshenie.webp",
     coords: [50.5957, 36.5872],
   },
 ];
