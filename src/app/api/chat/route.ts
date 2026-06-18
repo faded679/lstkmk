@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { saveUserMessage } from "@/lib/db";
+import { getClientIp, getUserAgent } from "@/lib/request-meta";
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_URL = "https://api.deepseek.com/chat/completions";
@@ -74,11 +76,34 @@ function getFallback(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json();
+    const { message, sessionId } = await request.json();
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "Сообщение обязательно" }, { status: 400 });
     }
+
+    // Лог пользовательского сообщения (fire-and-forget, не блокирует)
+    saveUserMessage({
+      source: "chat",
+      content: message,
+      sessionId: typeof sessionId === "string" ? sessionId : null,
+      ip: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
+    // Push to mctender (fire-and-forget)
+    const mcUrl = process.env.MCTENDER_CHAT_URL || "http://127.0.0.1:8080/api/chat-messages/from-makstal";
+    fetch(mcUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: message,
+        source: "chat",
+        session_id: typeof sessionId === "string" ? sessionId : "",
+        ip: getClientIp(request),
+        user_agent: getUserAgent(request),
+      }),
+    }).catch(() => {});
 
     // Safety check
     if (!checkSafety(message)) {

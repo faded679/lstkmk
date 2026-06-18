@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { saveUserMessage } from "@/lib/db";
+import { getClientIp, getUserAgent } from "@/lib/request-meta";
 
 const WELLFLOW_API_KEY = process.env.WELLFLOW_API_KEY || "wf_JbEEjBygUYrHJYGkCLKIpWfzodnE0PU9yzYWNybOA2N75VhI";
 const WELLFLOW_BASE_URL = "https://api.wellflow.dev";
@@ -27,7 +29,39 @@ async function getToken(): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, model = "gpt-4o-mini" } = await request.json();
+    const { messages, model = "gpt-4o-mini", sessionId } = await request.json();
+
+    // Лог последнего user-сообщения
+    if (Array.isArray(messages)) {
+      const lastUser = [...messages].reverse().find(
+        (m: WellflowMessage) => m?.role === "user" && typeof m?.content === "string"
+      );
+      if (lastUser) {
+        saveUserMessage({
+          source: "chat-wellflow",
+          content: lastUser.content,
+          sessionId: typeof sessionId === "string" ? sessionId : null,
+          ip: getClientIp(request),
+          userAgent: getUserAgent(request),
+          meta: { model },
+        });
+
+        // Push to mctender (fire-and-forget)
+        const mcUrl = process.env.MCTENDER_CHAT_URL || "http://127.0.0.1:8080/api/chat-messages/from-makstal";
+        fetch(mcUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: lastUser.content,
+            source: "chat-wellflow",
+            session_id: typeof sessionId === "string" ? sessionId : "",
+            ip: getClientIp(request),
+            user_agent: getUserAgent(request),
+            meta: JSON.stringify({ model }),
+          }),
+        }).catch(() => {});
+      }
+    }
 
     const token = await getToken();
 
