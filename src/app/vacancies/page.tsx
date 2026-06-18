@@ -38,41 +38,110 @@ export default function VacanciesPage() {
           initial={reduce ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14"
+          className="mt-14 space-y-10"
         >
-          <h2 className="text-xl font-semibold text-foreground mb-6">
-            Открытые вакансии
-          </h2>
+          {/* Офис и управление */}
+          <div>
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-accent-blue/10 flex items-center justify-center text-accent-blue text-sm">📋</span>
+              Офис и управление
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Менеджер по продажам",
+                "Инженер-конструктор",
+                "Кладовщик",
+              ].map((vacancy) => (
+                <div
+                  key={vacancy}
+                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-medium text-foreground">{vacancy}</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    Все условия — на собеседовании
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              "Сварщики",
-              "Токарь-фрезеровщик",
-              "Сборщики металлоконструкций",
-              "Слесарь",
-              "Разнорабочий",
-              "Инженер-строитель",
-              "Бригадир монтажников",
-              "Монтажники металлоконструкций",
-              "Бетонщики",
-              "Инженер-конструктор",
-              "Менеджер по продажам",
-              "Кладовщик",
-              "Оператор станка ЧПУ",
-              "Механик по ремонту станков",
-              "Водитель манипулятора",
-              "Электрик",
-            ].map((vacancy) => (
-              <div
-                key={vacancy}
-                className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
-              >
-                <h3 className="font-medium text-foreground">{vacancy}</h3>
-                <p className="mt-2 text-sm text-muted">
-                  Все условия — на собеседовании
-                </p>
-              </div>
-            ))}
+          {/* Производство */}
+          <div>
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-accent-orange/10 flex items-center justify-center text-accent-orange text-sm">🏭</span>
+              Производство
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Сварщики",
+                "Токарь-фрезеровщик",
+                "Сборщики металлоконструкций",
+                "Слесарь",
+                "Оператор станка ЧПУ",
+                "Механик по ремонту станков",
+              ].map((vacancy) => (
+                <div
+                  key={vacancy}
+                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-medium text-foreground">{vacancy}</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    Все условия — на собеседовании
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Монтаж и строительство */}
+          <div>
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600 text-sm">🚧</span>
+              Монтаж и строительство
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Бригадир монтажников",
+                "Монтажники металлоконструкций",
+                "Бетонщики",
+                "Инженер-строитель",
+                "Электрик",
+                "Водитель манипулятора",
+              ].map((vacancy) => (
+                <div
+                  key={vacancy}
+                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-medium text-foreground">{vacancy}</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    Все условия — на собеседовании
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Общие */}
+          <div>
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 text-sm">🔧</span>
+              Общие вакансии
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Разнорабочий",
+              ].map((vacancy) => (
+                <div
+                  key={vacancy}
+                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-medium text-foreground">{vacancy}</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    Все условия — на собеседовании
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
