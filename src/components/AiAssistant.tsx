@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash } from "@phosphor-icons/react";
+import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
 
 interface Message {
@@ -31,8 +31,61 @@ async function getAIResponse(message: string): Promise<string> {
     const data = await response.json();
     return data.reply;
   } catch {
-    return "Извините, произошла ошибка. Позвоните нам: +7 (980) 321-15-42 — инженер ответит на все вопросы.";
+    return "Извините, произошла ошибка. Оставьте номер — менеджер перезвонит в ближайшую минуту.";
   }
+}
+
+function CallbackForm() {
+  const [phone, setPhone] = useState("");
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const p = phone.trim();
+    if (!p || loading) return;
+    setLoading(true);
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: p, comment: "Обратный звонок из чата" }),
+      });
+      setSent(true);
+    } catch {
+      setSent(true);
+    }
+    setLoading(false);
+  };
+
+  if (sent) {
+    return (
+      <div className="mt-2 flex items-center gap-2 text-xs text-green-600 bg-green-50 rounded-lg px-3 py-2">
+        <Check size={14} weight="bold" />
+        Менеджер перезвонит в ближайшую минуту
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="mt-2 flex gap-1.5">
+      <input
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        placeholder="+7 (___) ___-__-__"
+        type="tel"
+        className="flex-1 h-8 px-2.5 text-xs bg-white border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+      />
+      <button
+        type="submit"
+        disabled={!phone.trim() || loading}
+        className="h-8 px-3 flex items-center gap-1.5 text-xs bg-accent-blue text-white rounded-lg disabled:opacity-40 hover:bg-accent-blue/90 transition-colors whitespace-nowrap"
+      >
+        {loading ? <CircleNotch size={12} className="animate-spin" /> : <Phone size={12} weight="bold" />}
+        Перезвоните
+      </button>
+    </form>
+  );
 }
 
 export default function AiAssistant() {
@@ -42,6 +95,7 @@ export default function AiAssistant() {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [callbackShownAt, setCallbackShownAt] = useState<Set<number>>(new Set([0]));
   const scrollRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<VoiceController | null>(null);
   const baseInputRef = useRef<string>("");
@@ -85,12 +139,15 @@ export default function AiAssistant() {
     const text = input.trim();
     if (!text || loading) return;
 
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    const nextMessages = [...messages, { role: "user" as const, content: text }];
+    setMessages(nextMessages);
     setInput("");
     setLoading(true);
 
     const reply = await getAIResponse(text);
-    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    const withReply = [...nextMessages, { role: "assistant" as const, content: reply }];
+    setMessages(withReply);
+    setCallbackShownAt((prev) => new Set([...prev, withReply.length - 1]));
     setLoading(false);
   };
 
@@ -104,7 +161,7 @@ export default function AiAssistant() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] bg-white rounded-xl border border-border shadow-xl overflow-hidden flex flex-col"
-            style={{ height: 520 }}
+            style={{ height: 540 }}
           >
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-accent-blue text-white">
               <div className="flex items-center gap-2.5">
@@ -129,21 +186,30 @@ export default function AiAssistant() {
               className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
             >
               {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${
-                    msg.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
+                <div key={i}>
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
-                      msg.role === "user"
-                        ? "bg-accent-blue text-white rounded-br-sm"
-                        : "bg-slate-100 text-foreground rounded-bl-sm"
+                    className={`flex ${
+                      msg.role === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
-                    {msg.content}
+                    <div
+                      className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                        msg.role === "user"
+                          ? "bg-accent-blue text-white rounded-br-sm"
+                          : "bg-slate-100 text-foreground rounded-bl-sm"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
                   </div>
+                  {msg.role === "assistant" && callbackShownAt.has(i) && (
+                    <div className="pl-1 pr-8">
+                      <p className="text-[11px] text-muted mt-2 mb-1">
+                        Оставьте номер — менеджер перезвонит в ближайшую минуту:
+                      </p>
+                      <CallbackForm />
+                    </div>
+                  )}
                 </div>
               ))}
               {loading && (
