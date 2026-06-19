@@ -13,6 +13,7 @@ import {
   Microphone,
   MicrophoneSlash,
 } from "@phosphor-icons/react";
+import { createVoice, type VoiceController } from "@/lib/voice-input";
 
 const TelegramIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -80,26 +81,28 @@ export default function Contacts() {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recognitionRef = useRef<any>(null);
+  const voiceRef = useRef<VoiceController | null>(null);
+  const baseInputRef = useRef<string>("");
 
-  const stopListening = () => { recognitionRef.current?.stop(); setListening(false); };
+  const stopListening = () => { voiceRef.current?.stop(); };
 
   const toggleListening = () => {
-    if (typeof window === "undefined") return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) { alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome."); return; }
     if (listening) { stopListening(); return; }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rec: any = new SR();
-    rec.lang = "ru-RU"; rec.interimResults = false;
-    rec.onresult = (e: any) => { const t = e.results[0][0].transcript; setInput((p) => p ? p + " " + t : t); };
-    rec.onerror = () => setListening(false);
-    rec.onend = () => setListening(false);
-    recognitionRef.current = rec;
-    rec.start();
+    setVoiceError(null);
+    baseInputRef.current = input ? input.trim() + " " : "";
+    const ctrl = createVoice({
+      onTranscript: (text) => setInput(baseInputRef.current + text),
+      onError: (msg) => { setVoiceError(msg); setListening(false); },
+      onEnd: () => setListening(false),
+    });
+    if (!ctrl) {
+      setVoiceError("Браузер не поддерживает голосовой ввод. Используйте Chrome или Safari.");
+      return;
+    }
+    voiceRef.current = ctrl;
+    ctrl.start();
     setListening(true);
   };
 
@@ -393,6 +396,11 @@ export default function Contacts() {
               </div>
 
               <div className="px-4 py-3 border-t border-border">
+                {voiceError && (
+                  <div className="mb-2 px-2 py-1.5 text-xs text-red-600 bg-red-50 border border-red-100 rounded">
+                    {voiceError}
+                  </div>
+                )}
                 <div className="flex gap-2">
                   <button
                     type="button"

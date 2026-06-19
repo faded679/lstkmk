@@ -11,6 +11,7 @@ import {
   Microphone,
   MicrophoneSlash,
 } from "@phosphor-icons/react";
+import { createVoice, type VoiceController } from "@/lib/voice-input";
 
 type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
 type Insulation = "none" | "proflist" | "sandwich";
@@ -105,29 +106,30 @@ export default function Calculator() {
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
   const [chatListening, setChatListening] = useState(false);
+  const [chatVoiceError, setChatVoiceError] = useState<string | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chatRecognitionRef = useRef<any>(null);
+  const voiceRef = useRef<VoiceController | null>(null);
+  const baseInputRef = useRef<string>("");
 
   const stopChatListening = () => {
-    chatRecognitionRef.current?.stop();
-    setChatListening(false);
+    voiceRef.current?.stop();
   };
 
   const toggleChatListening = () => {
-    if (typeof window === "undefined") return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) { alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome."); return; }
     if (chatListening) { stopChatListening(); return; }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rec: any = new SR();
-    rec.lang = "ru-RU"; rec.interimResults = false;
-    rec.onresult = (e: any) => { const t = e.results[0][0].transcript; setChatInput((p) => p ? p + " " + t : t); };
-    rec.onerror = () => setChatListening(false);
-    rec.onend = () => setChatListening(false);
-    chatRecognitionRef.current = rec;
-    rec.start();
+    setChatVoiceError(null);
+    baseInputRef.current = chatInput ? chatInput.trim() + " " : "";
+    const ctrl = createVoice({
+      onTranscript: (text) => setChatInput(baseInputRef.current + text),
+      onError: (msg) => { setChatVoiceError(msg); setChatListening(false); },
+      onEnd: () => setChatListening(false),
+    });
+    if (!ctrl) {
+      setChatVoiceError("Браузер не поддерживает голосовой ввод. Используйте Chrome или Safari.");
+      return;
+    }
+    voiceRef.current = ctrl;
+    ctrl.start();
     setChatListening(true);
   };
 
@@ -526,6 +528,11 @@ export default function Calculator() {
               </div>
 
               <div className="px-3 py-2.5 border-t border-border shrink-0">
+                {chatVoiceError && (
+                  <div className="mb-2 px-2 py-1.5 text-[11px] text-red-600 bg-red-50 border border-red-100 rounded">
+                    {chatVoiceError}
+                  </div>
+                )}
                 <div className="flex gap-2">
                   <button
                     type="button"

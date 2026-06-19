@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash } from "@phosphor-icons/react";
+import { createVoice, type VoiceController } from "@/lib/voice-input";
 
 interface Message {
   role: "user" | "assistant";
@@ -40,9 +41,10 @@ export default function AiAssistant() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recognitionRef = useRef<any>(null);
+  const voiceRef = useRef<VoiceController | null>(null);
+  const baseInputRef = useRef<string>("");
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -51,34 +53,30 @@ export default function AiAssistant() {
   }, [messages]);
 
   const stopListening = () => {
-    recognitionRef.current?.stop();
-    setListening(false);
+    voiceRef.current?.stop();
   };
 
   const toggleListening = () => {
-    if (typeof window === "undefined") return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      alert("Ваш браузер не поддерживает голосовой ввод. Используйте Chrome.");
-      return;
-    }
     if (listening) {
       stopListening();
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rec: any = new SR();
-    rec.lang = "ru-RU";
-    rec.interimResults = false;
-    rec.onresult = (e: any) => {
-      const transcript = e.results[0][0].transcript;
-      setInput((prev) => (prev ? prev + " " + transcript : transcript));
-    };
-    rec.onerror = () => setListening(false);
-    rec.onend = () => setListening(false);
-    recognitionRef.current = rec;
-    rec.start();
+    setVoiceError(null);
+    baseInputRef.current = input ? input.trim() + " " : "";
+    const ctrl = createVoice({
+      onTranscript: (text) => setInput(baseInputRef.current + text),
+      onError: (msg) => {
+        setVoiceError(msg);
+        setListening(false);
+      },
+      onEnd: () => setListening(false),
+    });
+    if (!ctrl) {
+      setVoiceError("Браузер не поддерживает голосовой ввод. Используйте Chrome или Safari.");
+      return;
+    }
+    voiceRef.current = ctrl;
+    ctrl.start();
     setListening(true);
   };
 
@@ -160,6 +158,11 @@ export default function AiAssistant() {
               )}
             </div>
 
+            {voiceError && (
+              <div className="px-4 py-2 text-xs text-red-600 bg-red-50 border-t border-red-100">
+                {voiceError}
+              </div>
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
