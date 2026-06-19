@@ -10,5 +10,15 @@ const nextConfig = {
     // Отключаем streaming для стабильности
     streamingMetadata: false,
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.lstkmk.ru" }],
+        destination: "https://lstkmk.ru/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 export default nextConfig;
