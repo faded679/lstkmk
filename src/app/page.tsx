@@ -6,6 +6,7 @@ import Process from "@/components/Process";
 import Certifications from "@/components/Certifications";
 import Projects from "@/components/Projects";
 import ProjectsMap from "@/components/ProjectsMap";
+import Stats from "@/components/Stats";
 import Testimonials from "@/components/Testimonials";
 import ClientMarquee from "@/components/ClientMarquee";
 import Calculator from "@/components/Calculator";
@@ -131,12 +132,13 @@ export default function Home() {
       <main>
         <HeroVideo />
         <Calculator />
+        <Stats />
         <About />
         <FactoryBanner />
-        <Process />
-        <Certifications />
         <Projects />
         <ProjectsMap />
+        <Process />
+        <Certifications />
         <Testimonials />
         <ClientMarquee />
         <Contacts />
