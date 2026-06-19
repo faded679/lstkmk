@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check } from "@phosphor-icons/react";
+import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check, ChatTeardropDots } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
 
 interface Message {
@@ -95,7 +95,7 @@ export default function AiAssistant() {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
-  const [callbackShownAt, setCallbackShownAt] = useState<Set<number>>(new Set([0]));
+  const [hintDismissed, setHintDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<VoiceController | null>(null);
   const baseInputRef = useRef<string>("");
@@ -147,7 +147,6 @@ export default function AiAssistant() {
     const reply = await getAIResponse(text);
     const withReply = [...nextMessages, { role: "assistant" as const, content: reply }];
     setMessages(withReply);
-    setCallbackShownAt((prev) => new Set([...prev, withReply.length - 1]));
     setLoading(false);
   };
 
@@ -202,14 +201,6 @@ export default function AiAssistant() {
                       {msg.content}
                     </div>
                   </div>
-                  {msg.role === "assistant" && callbackShownAt.has(i) && (
-                    <div className="pl-1 pr-8">
-                      <p className="text-[11px] text-muted mt-2 mb-1">
-                        Оставьте номер — менеджер перезвонит в ближайшую минуту:
-                      </p>
-                      <CallbackForm />
-                    </div>
-                  )}
                 </div>
               ))}
               {loading && (
@@ -222,6 +213,12 @@ export default function AiAssistant() {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Постоянная форма обратного звонка */}
+            <div className="px-4 py-2.5 border-t border-border bg-slate-50">
+              <p className="text-[11px] text-muted mb-1.5">Нужен звонок? Оставьте номер — перезвоним за минуту:</p>
+              <CallbackForm />
             </div>
 
             {voiceError && (
@@ -266,18 +263,53 @@ export default function AiAssistant() {
         )}
       </AnimatePresence>
 
-      <motion.button
-        onClick={() => setOpen(!open)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center rounded-full shadow-lg transition-colors ${
-          open
-            ? "bg-slate-700 text-white"
-            : "bg-accent-blue text-white"
-        }`}
-      >
-        {open ? <X size={22} weight="bold" /> : <Robot size={24} weight="bold" />}
-      </motion.button>
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        {/* Hint bubble */}
+        <AnimatePresence>
+          {!open && !hintDismissed && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.9 }}
+              transition={{ delay: 1.5, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="relative bg-white border border-border rounded-xl shadow-lg px-4 py-3 max-w-[200px] cursor-pointer"
+              onClick={() => setOpen(true)}
+            >
+              <button
+                onClick={(e) => { e.stopPropagation(); setHintDismissed(true); }}
+                className="absolute -top-2 -right-2 w-5 h-5 bg-slate-400 hover:bg-slate-500 text-white rounded-full flex items-center justify-center transition-colors"
+              >
+                <X size={10} weight="bold" />
+              </button>
+              <div className="flex items-center gap-2 mb-1">
+                <ChatTeardropDots size={16} className="text-accent-blue flex-shrink-0" weight="fill" />
+                <span className="text-xs font-semibold text-foreground">Спросите ИИ-помощника</span>
+              </div>
+              <p className="text-[11px] text-muted leading-tight">Цены, сроки, расчёт — отвечу сразу</p>
+              {/* Arrow */}
+              <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white border-r border-b border-border rotate-45" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Main button */}
+        <div className="relative">
+          {/* Pulse ring — только когда закрыто */}
+          {!open && (
+            <span className="absolute inset-0 rounded-full bg-accent-blue/30 animate-ping" />
+          )}
+          <motion.button
+            onClick={() => { setOpen(!open); setHintDismissed(true); }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative w-14 h-14 flex items-center justify-center rounded-full shadow-lg transition-colors ${
+              open ? "bg-slate-700 text-white" : "bg-accent-blue text-white"
+            }`}
+          >
+            {open ? <X size={22} weight="bold" /> : <Robot size={24} weight="bold" />}
+          </motion.button>
+        </div>
+      </div>
     </>
   );
 }
