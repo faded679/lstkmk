@@ -5,6 +5,43 @@ import { motion, AnimatePresence } from "motion/react";
 import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check, ChatTeardropDots } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
 
+function linkify(text: string): React.ReactNode[] {
+  // Matches: full URLs (http/https) OR site-relative paths starting with /
+  // Path stops at whitespace or sentence punctuation.
+  const re = /(https?:\/\/[^\s]+|\/[a-zA-Z0-9#/_-]+)/g;
+  const parts: React.ReactNode[] = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let key = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    let url = m[0];
+    // Strip trailing punctuation that isn't part of URL
+    const trailing = url.match(/[.,;:!?)]+$/);
+    let tail = "";
+    if (trailing) {
+      tail = trailing[0];
+      url = url.slice(0, -tail.length);
+    }
+    const href = url.startsWith("http") ? url : url;
+    parts.push(
+      <a
+        key={key++}
+        href={href}
+        target={url.startsWith("http") ? "_blank" : undefined}
+        rel={url.startsWith("http") ? "noopener noreferrer" : undefined}
+        className="text-accent-blue underline hover:opacity-80"
+      >
+        {url}
+      </a>
+    );
+    if (tail) parts.push(tail);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -198,7 +235,7 @@ export default function AiAssistant() {
                           : "bg-slate-100 text-foreground rounded-bl-sm"
                       }`}
                     >
-                      {msg.content}
+                      {msg.role === "assistant" ? linkify(msg.content) : msg.content}
                     </div>
                   </div>
                 </div>
