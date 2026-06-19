@@ -134,9 +134,9 @@ export default function Home() {
         <Calculator />
         <Stats />
         <FactoryBanner />
+        <About />
         <Projects />
         <ProjectsMap />
-        <About />
         <Process />
         <Certifications />
         <Testimonials />
