@@ -31,7 +31,7 @@ async function getAIResponse(message: string): Promise<string> {
     const data = await response.json();
     return data.reply;
   } catch {
-    return "Извините, произошла ошибка. Оставьте номер — менеджер перезвонит в ближайшую минуту.";
+    return "Извините, произошла ошибка. Попробуйте калькулятор на /#calculator или посмотрите проекты на /#projects.";
   }
 }
 
