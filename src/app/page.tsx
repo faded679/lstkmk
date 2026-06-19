@@ -133,10 +133,10 @@ export default function Home() {
         <HeroVideo />
         <Calculator />
         <Stats />
-        <About />
         <FactoryBanner />
         <Projects />
         <ProjectsMap />
+        <About />
         <Process />
         <Certifications />
         <Testimonials />
