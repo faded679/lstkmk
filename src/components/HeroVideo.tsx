@@ -19,25 +19,23 @@ export default function HeroVideo() {
         </div>
         <div className="flex-1 relative min-h-0 flex items-end bg-white pb-0">
           <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center">
-            <div className="relative w-full max-w-5xl mx-auto flex items-end justify-center">
-              {/* Боковой текст слева — top / center / bottom */}
-              <div className="hidden lg:flex flex-col justify-between items-end w-32 xl:w-40 pr-4 select-none shrink-0" style={{ height: "64vh" }}>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Проектирование</span>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Производство</span>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Монтаж</span>
-              </div>
+            <div className="relative w-full max-w-5xl mx-auto" style={{ height: "80vh" }}>
+              {/* Ангар — занимает всю высоту контейнера, прибит к низу */}
               <img
                 src="/newherophoto.png"
                 alt="Готовый ангар из металлоконструкций"
-                className="w-full object-contain object-bottom"
-                style={{ maxHeight: "64vh", marginBottom: "-2px" }}
+                className="absolute bottom-0 left-0 right-0 mx-auto w-full object-contain object-bottom"
+                style={{ maxHeight: "80vh" }}
               />
-              {/* Боковой текст справа — top / center / bottom */}
-              <div className="hidden lg:flex flex-col justify-between items-start w-32 xl:w-40 pl-4 select-none shrink-0" style={{ height: "64vh" }}>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">Под ключ</span>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">45 дней</span>
-                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">14 лет опыта</span>
-              </div>
+              {/* Боковой текст слева — абсолютно напротив крыши / середины / фундамента */}
+              <div className="hidden lg:absolute lg:block left-0 top-0 bottom-0 w-32 xl:w-40 select-none" style={{ display: "none" }} />
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ top: "10%", right: "calc(50% + 320px)" }}>Проектирование</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ top: "48%", right: "calc(50% + 320px)" }}>Производство</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ bottom: "8%", right: "calc(50% + 320px)" }}>Монтаж</span>
+              {/* Боковой текст справа */}
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ top: "10%", left: "calc(50% + 320px)" }}>Под ключ</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ top: "48%", left: "calc(50% + 320px)" }}>45 дней</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ bottom: "8%", left: "calc(50% + 320px)" }}>14 лет опыта</span>
             </div>
           </div>
         </div>
