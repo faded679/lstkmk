@@ -8,6 +8,13 @@ import Navigation from "@/components/Navigation";
 
 const knowledgeItems = [
   {
+    id: 0,
+    title: "Металлоконструкции для строительства: виды, цены, применение",
+    slug: "metallokonstrukcii",
+    description: "Полный гид по металлоконструкциям: ЛСТК vs металлокаркас, цены 2025, сроки монтажа, применение в ангарах, складах, фермах.",
+    category: "Технологии",
+  },
+  {
     id: 1,
     title: "Тип местности для строительства",
     slug: "tip-mestnosti",
