@@ -2,7 +2,7 @@ export default function HeroVideo() {
   return (
     <section className="relative bg-white">
       <div className="min-h-screen w-full flex flex-col bg-white">
-        <div className="pt-24 pb-4 px-6 lg:px-10 text-center bg-white">
+        <div className="pt-24 pb-2 px-6 lg:px-10 text-center bg-white">
           <p className="text-sm font-mono uppercase tracking-[0.18em] text-accent-orange mb-3">
             От фундамента до готового здания
           </p>
@@ -28,7 +28,7 @@ export default function HeroVideo() {
                 src="/newherophoto.png"
                 alt="Готовый ангар из металлоконструкций"
                 className="w-full object-contain object-bottom"
-                style={{ maxHeight: "62vh", marginBottom: "-2px" }}
+                style={{ maxHeight: "52vh", marginBottom: "-2px" }}
               />
               {/* Боковой текст справа */}
               <div className="hidden lg:flex flex-col justify-around items-start w-32 xl:w-40 pl-4 pb-8 select-none shrink-0 self-center">
