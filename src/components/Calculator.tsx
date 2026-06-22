@@ -336,6 +336,50 @@ export default function Calculator() {
         <line x1={ridgeA.x} y1={ridgeA.y} x2={ridgeD.x} y2={ridgeD.y}
           stroke="#2563eb" strokeWidth="1.8" />
 
+        {/* ── Вентиляционный конёк (только для сельхоз) ── */}
+        {type === "agriculture" && (() => {
+          const vH = isoH * 0.10;   // высота короба
+          const vW = isoW * 0.06;   // полуширина короба (в пикселях по ширинной оси)
+          // Конёк идёт от ridgeA до ridgeD, короб чуть уже (отступ 15% с каждого торца)
+          const margin = 0.15;
+          const rA2 = { x: ridgeA.x + (ridgeD.x - ridgeA.x) * margin, y: ridgeA.y + (ridgeD.y - ridgeA.y) * margin };
+          const rD2 = { x: ridgeA.x + (ridgeD.x - ridgeA.x) * (1 - margin), y: ridgeA.y + (ridgeD.y - ridgeA.y) * (1 - margin) };
+          // Боковые смещения — перпендикулярно оси конька (по ширинному направлению iso)
+          const dx = wxDx * vW;
+          const dy = wxDy * vW;
+          // 8 вершин короба
+          const v0 = { x: rA2.x + dx, y: rA2.y + dy };          // front-left-bottom
+          const v1 = { x: rA2.x - dx, y: rA2.y - dy };          // front-right-bottom
+          const v2 = { x: rD2.x + dx, y: rD2.y + dy };          // back-left-bottom
+          const v3 = { x: rD2.x - dx, y: rD2.y - dy };          // back-right-bottom
+          const v0t = { x: v0.x, y: v0.y - vH };
+          const v1t = { x: v1.x, y: v1.y - vH };
+          const v2t = { x: v2.x, y: v2.y - vH };
+          const v3t = { x: v3.x, y: v3.y - vH };
+          return (
+            <g>
+              {/* top */}
+              <polygon points={`${pt(v0t)} ${pt(v1t)} ${pt(v3t)} ${pt(v2t)}`}
+                fill="#bfdbfe" stroke="#2563eb" strokeWidth="1" />
+              {/* front face */}
+              <polygon points={`${pt(v0)} ${pt(v1)} ${pt(v1t)} ${pt(v0t)}`}
+                fill="#dbeafe" stroke="#2563eb" strokeWidth="0.8" />
+              {/* left face */}
+              <polygon points={`${pt(v0)} ${pt(v2)} ${pt(v2t)} ${pt(v0t)}`}
+                fill="#eff6ff" stroke="#2563eb" strokeWidth="0.8" />
+              {/* вентиляционные прорези сверху — пунктирные линии */}
+              {[0.25, 0.5, 0.75].map((t, i) => {
+                const lx = v0t.x + (v2t.x - v0t.x) * t;
+                const ly = v0t.y + (v2t.y - v0t.y) * t;
+                const rx = v1t.x + (v3t.x - v1t.x) * t;
+                const ry = v1t.y + (v3t.y - v1t.y) * t;
+                return <line key={i} x1={lx} y1={ly} x2={rx} y2={ry}
+                  stroke="#93c5fd" strokeWidth="0.7" strokeDasharray="3 2" />;
+              })}
+            </g>
+          );
+        })()}
+
         {/* ── Gate on front-right face ── */}
         {(type === "service" || type === "warehouse" || type === "small-building") && (
           <polygon
