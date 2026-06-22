@@ -12,17 +12,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    
-    - name: Install dependencies
-      run: npm install
-    
-    - name: Build
-      run: npm run build
-    
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -33,18 +22,9 @@ jobs:
           cd /var/www/lstkmk.ru
           git pull origin main
           npm install
+          rm -rf .next
           npm run build
-          # Копируем статику для standalone режима (удаляем старую чтобы не было стейл чанков)
-          rm -rf .next/standalone/.next/static
-          cp -r .next/static .next/standalone/.next/static
-          rm -rf .next/standalone/public
-          cp -r public .next/standalone/public
-          # Проверяем и создаем папку для логов
           mkdir -p /var/log/pm2
-          # Запускаем/перезапускаем через PM2 с конфигом
-          if pm2 list | grep -q "lstkmk"; then
-            pm2 reload ecosystem.config.js --env production
-          else
-            pm2 start ecosystem.config.js --env production
-          fi
+          pm2 delete lstkmk || true
+          pm2 start ecosystem.config.js --env production
           pm2 save
