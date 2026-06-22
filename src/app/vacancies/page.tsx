@@ -1,12 +1,330 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft } from "@phosphor-icons/react";
+import { useState } from "react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import { ArrowLeft, X, Briefcase, Clock, CurrencyRub, GraduationCap } from "@phosphor-icons/react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 
+type Vacancy = {
+  salary: string;
+  schedule: string;
+  education: string;
+  experience: string;
+  duties: string[];
+  conditions: string[];
+};
+
+const vacancyDetails: Record<string, Vacancy> = {
+  "Менеджер по продажам": {
+    salary: "от 60 000 ₽ + % от сделок",
+    schedule: "5/2, 09:00–18:00",
+    education: "Высшее образование (экономика, строительство, технические специальности) или 7 лет опыта в продажах",
+    experience: "Опыт в продажах B2B от 2 лет",
+    duties: [
+      "Работа с входящими заявками и холодный поиск клиентов",
+      "Консультирование по металлоконструкциям и ангарам",
+      "Подготовка коммерческих предложений",
+      "Ведение сделок до подписания договора",
+    ],
+    conditions: [
+      "Официальное трудоустройство по ТК РФ",
+      "Оклад + % от закрытых сделок без потолка",
+      "CRM-система, все инструменты предоставляем",
+      "Карьерный рост до руководителя отдела",
+    ],
+  },
+  "Инженер-конструктор": {
+    salary: "от 80 000 ₽",
+    schedule: "5/2, 09:00–18:00",
+    education: "Высшее техническое образование (строительство, металлоконструкции, машиностроение) или 7 лет опыта",
+    experience: "Опыт проектирования металлоконструкций от 3 лет",
+    duties: [
+      "Разработка КМ и КМД для ангаров и производственных зданий",
+      "Расчёт нагрузок, подбор сечений профилей",
+      "Работа в Tekla Structures / AutoCAD",
+      "Согласование с производством и монтажом",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Современное ПО, лицензии предоставляем",
+      "Интересные крупные проекты",
+      "Возможность профессионального роста",
+    ],
+  },
+  "Кладовщик": {
+    salary: "от 40 000 ₽",
+    schedule: "5/2 или 2/2",
+    education: "Среднее специальное или высшее; опыт на складе от 1 года",
+    experience: "Опыт работы на складе металлопроката приветствуется",
+    duties: [
+      "Приёмка и отгрузка металлопроката и готовых конструкций",
+      "Ведение складского учёта в 1С",
+      "Контроль остатков, инвентаризация",
+      "Работа с погрузчиком (удостоверение — плюс)",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Стабильная зарплата без задержек",
+      "Спецодежда за счёт компании",
+      "Дружный коллектив",
+    ],
+  },
+  "Сварщики": {
+    salary: "от 70 000 ₽ (сдельно — выше)",
+    schedule: "5/2 или вахта на объектах",
+    education: "Среднее специальное; удостоверение сварщика обязательно",
+    experience: "Опыт сварки МИГ/МАГ, ручная дуговая; металлоконструкции — плюс",
+    duties: [
+      "Сварка металлоконструкций на производстве",
+      "Работа по чертежам КМД",
+      "Контроль качества сварных швов",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Сдельная оплата — зарабатывай больше при высокой выработке",
+      "Спецодежда и СИЗ за счёт компании",
+      "Возможность выезда на монтаж с доп. оплатой",
+    ],
+  },
+  "Токарь-фрезеровщик": {
+    salary: "от 65 000 ₽",
+    schedule: "5/2, 08:00–17:00",
+    education: "Среднее специальное (токарное/фрезерное дело)",
+    experience: "Опыт на токарном и фрезерном станке от 2 лет",
+    duties: [
+      "Токарная и фрезерная обработка деталей по чертежам",
+      "Контроль точности обработки",
+      "Обслуживание станков",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Современное оборудование",
+      "Стабильная загрузка",
+      "Спецодежда за счёт компании",
+    ],
+  },
+  "Сборщики металлоконструкций": {
+    salary: "от 60 000 ₽",
+    schedule: "5/2 или вахта",
+    education: "Среднее специальное; опыт сборки МК от 1 года",
+    experience: "Умение читать чертежи, работа с болтовыми соединениями",
+    duties: [
+      "Сборка каркасов зданий из ЛСТК по чертежам",
+      "Болтовые и сварные соединения",
+      "Работа в бригаде на производстве и выезды на монтаж",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Доп. оплата за монтажные выезды",
+      "Спецодежда и страховка",
+    ],
+  },
+  "Слесарь": {
+    salary: "от 55 000 ₽",
+    schedule: "5/2, 08:00–17:00",
+    education: "Среднее специальное (слесарное дело)",
+    experience: "Слесарные работы по металлу от 1 года",
+    duties: [
+      "Слесарная обработка и подгонка деталей",
+      "Работа с металлопрокатом",
+      "Сборка узлов и конструкций",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Стабильная зарплата",
+      "Спецодежда и СИЗ",
+    ],
+  },
+  "Оператор станка ЧПУ": {
+    salary: "от 70 000 ₽",
+    schedule: "5/2 или сменный",
+    education: "Среднее специальное (ЧПУ, мехобработка) или 7 лет опыта на ЧПУ",
+    experience: "Опыт работы на станках с ЧПУ от 2 лет, знание G-кода",
+    duties: [
+      "Настройка и управление станком ЧПУ",
+      "Загрузка управляющих программ",
+      "Контроль качества деталей",
+      "Техническое обслуживание станка",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Современные станки",
+      "Обучение при необходимости",
+      "Стабильный заказ",
+    ],
+  },
+  "Механик по ремонту станков": {
+    salary: "от 65 000 ₽",
+    schedule: "5/2, 08:00–17:00",
+    education: "Среднее специальное или высшее техническое (механика, ремонт оборудования) или 7 лет опыта",
+    experience: "Ремонт и обслуживание металлообрабатывающего оборудования от 3 лет",
+    duties: [
+      "ТО и ремонт токарных, фрезерных, сварочных станков",
+      "Диагностика неисправностей",
+      "Ведение ремонтного журнала",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Оснащённая инструментальная база",
+      "Стабильная нагрузка",
+    ],
+  },
+  "Бригадир монтажников": {
+    salary: "от 90 000 ₽ + вахтовые",
+    schedule: "Вахта / выезды на объекты",
+    education: "Среднее специальное или высшее строительное или 7 лет опыта в монтаже МК",
+    experience: "Опыт монтажа металлоконструкций от 5 лет, опыт руководства бригадой",
+    duties: [
+      "Организация и контроль работы монтажной бригады",
+      "Монтаж каркасов зданий из ЛСТК",
+      "Приёмка материала на объекте",
+      "Ведение исполнительной документации",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Вахтовые надбавки + компенсация проезда",
+      "Питание и проживание на объекте",
+      "Высокий доход при стабильной загрузке",
+    ],
+  },
+  "Монтажники металлоконструкций": {
+    salary: "от 65 000 ₽ + вахтовые",
+    schedule: "Вахта / выезды на объекты",
+    education: "Среднее общее; удостоверение верхолаза / монтажника приветствуется",
+    experience: "Монтаж металлоконструкций или строительных конструкций от 1 года",
+    duties: [
+      "Монтаж несущего каркаса зданий",
+      "Укладка кровли и обшивки сэндвич-панелями",
+      "Работа с болтовыми соединениями на высоте",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Вахтовые надбавки",
+      "Питание и проживание за счёт компании",
+      "СИЗ и страховка",
+    ],
+  },
+  "Бетонщики": {
+    salary: "от 55 000 ₽ + вахтовые",
+    schedule: "Вахта / выезды",
+    education: "Среднее общее; опыт бетонных работ от 1 года",
+    experience: "Опыт работы с бетоном: заливка, виброуплотнение",
+    duties: [
+      "Заливка фундаментов и полов",
+      "Работа с опалубкой",
+      "Виброуплотнение бетонной смеси",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Вахтовые надбавки",
+      "Проживание и питание на объекте",
+    ],
+  },
+  "Инженер-строитель": {
+    salary: "от 80 000 ₽",
+    schedule: "5/2 + выезды на объекты",
+    education: "Высшее строительное образование или 7 лет опыта в строительстве промышленных зданий",
+    experience: "Опыт строительства производственных / промышленных зданий от 3 лет",
+    duties: [
+      "Технический надзор за монтажом на объектах",
+      "Проверка соответствия работ проекту",
+      "Ведение исполнительной документации",
+      "Взаимодействие с заказчиком и субподрядчиками",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Компенсация ГСМ / командировочные",
+      "Интересные объекты по всей России",
+      "Карьерный рост",
+    ],
+  },
+  "Электрик": {
+    salary: "от 65 000 ₽",
+    schedule: "5/2 + выезды",
+    education: "Среднее специальное (электрика); удостоверение группы допуска не ниже III",
+    experience: "Монтаж электрики в промышленных объектах от 2 лет",
+    duties: [
+      "Монтаж электропроводки в производственных зданиях",
+      "Подключение щитового оборудования",
+      "Монтаж освещения",
+      "Сдача объектов в эксплуатацию",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Командировочные при выездах",
+      "Инструмент и СИЗ предоставляем",
+    ],
+  },
+  "Водитель манипулятора": {
+    salary: "от 70 000 ₽",
+    schedule: "5/2 + выезды на объекты",
+    education: "Водительское удостоверение категории C + удостоверение оператора КМУ",
+    experience: "Опыт работы на манипуляторе от 2 лет",
+    duties: [
+      "Перевозка и погрузо-разгрузочные работы с металлоконструкциями",
+      "Работа на объектах строительства",
+      "Техническое обслуживание ТС",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Топливо за счёт компании",
+      "Командировочные при выездах",
+      "Новая техника",
+    ],
+  },
+  "Разнорабочий": {
+    salary: "от 40 000 ₽",
+    schedule: "5/2 или 2/2",
+    education: "Среднее общее; опыт не обязателен",
+    experience: "Физическая выносливость, ответственность",
+    duties: [
+      "Вспомогательные работы на производстве и стройке",
+      "Погрузка и разгрузка материалов",
+      "Уборка и поддержание порядка на территории",
+    ],
+    conditions: [
+      "Официальное трудоустройство",
+      "Стабильная зарплата без задержек",
+      "Спецодежда",
+      "Обучение на месте",
+    ],
+  },
+};
+
+type Group = { title: string; emoji: string; color: string; vacancies: string[] };
+
+const groups: Group[] = [
+  {
+    title: "Офис и управление",
+    emoji: "📋",
+    color: "bg-accent-blue/10 text-accent-blue",
+    vacancies: ["Менеджер по продажам", "Инженер-конструктор", "Кладовщик"],
+  },
+  {
+    title: "Производство",
+    emoji: "🏭",
+    color: "bg-accent-orange/10 text-accent-orange",
+    vacancies: ["Сварщики", "Токарь-фрезеровщик", "Сборщики металлоконструкций", "Слесарь", "Оператор станка ЧПУ", "Механик по ремонту станков"],
+  },
+  {
+    title: "Монтаж и строительство",
+    emoji: "🚧",
+    color: "bg-green-100 text-green-600",
+    vacancies: ["Бригадир монтажников", "Монтажники металлоконструкций", "Бетонщики", "Инженер-строитель", "Электрик", "Водитель манипулятора"],
+  },
+  {
+    title: "Общие вакансии",
+    emoji: "🔧",
+    color: "bg-slate-100 text-slate-600",
+    vacancies: ["Разнорабочий"],
+  },
+];
+
 export default function VacanciesPage() {
   const reduce = useReducedMotion();
+  const [selected, setSelected] = useState<string | null>(null);
+  const vacancy = selected ? vacancyDetails[selected] : null;
 
   return (
     <div className="min-h-screen bg-white">
@@ -40,97 +358,29 @@ export default function VacanciesPage() {
           transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           className="mt-14 space-y-10"
         >
-          {/* Офис и управление */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-accent-blue/10 flex items-center justify-center text-accent-blue text-sm">📋</span>
-              Офис и управление
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                "Менеджер по продажам",
-                "Инженер-конструктор",
-                "Кладовщик",
-              ].map((vacancy) => (
-                <div
-                  key={vacancy}
-                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
-                >
-                  <h3 className="font-medium text-foreground">{vacancy}</h3>
-                </div>
-              ))}
+          {groups.map((group) => (
+            <div key={group.title}>
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${group.color}`}>
+                  {group.emoji}
+                </span>
+                {group.title}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {group.vacancies.map((name) => (
+                  <button
+                    key={name}
+                    onClick={() => setSelected(name)}
+                    className="text-left p-5 rounded-lg border border-border bg-white hover:shadow-md hover:border-accent-blue/40 transition-all duration-200 group"
+                  >
+                    <h3 className="font-medium text-foreground group-hover:text-accent-blue transition-colors">{name}</h3>
+                    <p className="text-xs text-muted mt-1">{vacancyDetails[name]?.salary ?? ""}</p>
+                    <span className="mt-3 inline-block text-xs text-accent-blue font-medium">Подробнее →</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Производство */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-accent-orange/10 flex items-center justify-center text-accent-orange text-sm">🏭</span>
-              Производство
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                "Сварщики",
-                "Токарь-фрезеровщик",
-                "Сборщики металлоконструкций",
-                "Слесарь",
-                "Оператор станка ЧПУ",
-                "Механик по ремонту станков",
-              ].map((vacancy) => (
-                <div
-                  key={vacancy}
-                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
-                >
-                  <h3 className="font-medium text-foreground">{vacancy}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Монтаж и строительство */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600 text-sm">🚧</span>
-              Монтаж и строительство
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                "Бригадир монтажников",
-                "Монтажники металлоконструкций",
-                "Бетонщики",
-                "Инженер-строитель",
-                "Электрик",
-                "Водитель манипулятора",
-              ].map((vacancy) => (
-                <div
-                  key={vacancy}
-                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
-                >
-                  <h3 className="font-medium text-foreground">{vacancy}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Общие */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 text-sm">🔧</span>
-              Общие вакансии
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                "Разнорабочий",
-              ].map((vacancy) => (
-                <div
-                  key={vacancy}
-                  className="p-5 rounded-lg border border-border bg-white hover:shadow-md transition-shadow"
-                >
-                  <h3 className="font-medium text-foreground">{vacancy}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </motion.div>
 
         <div className="mt-12 p-6 rounded-lg bg-slate-50 border border-border">
@@ -138,32 +388,137 @@ export default function VacanciesPage() {
             Связаться по вакансиям
           </p>
           <p className="text-sm text-muted leading-relaxed">
-            Телефон: {" "}
-            <a
-              href="tel:+79803211542"
-              className="text-accent-blue font-medium hover:underline"
-            >
+            Телефон:{" "}
+            <a href="tel:+79803211542" className="text-accent-blue font-medium hover:underline">
               +7 (980) 321-15-42
             </a>
             {", "}
-            <a
-              href="tel:+79107372485"
-              className="text-accent-blue font-medium hover:underline"
-            >
+            <a href="tel:+79107372485" className="text-accent-blue font-medium hover:underline">
               +7 (910) 737-24-85
             </a>
           </p>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Email: {" "}
-            <a
-              href="mailto:maxsteel31@bk.ru?subject=Резюме"
-              className="text-accent-blue font-medium hover:underline"
-            >
+            Email:{" "}
+            <a href="mailto:maxsteel31@bk.ru?subject=Резюме" className="text-accent-blue font-medium hover:underline">
               maxsteel31@bk.ru
             </a>
           </p>
         </div>
       </main>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selected && vacancy && (
+          <>
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm"
+              onClick={() => setSelected(null)}
+            />
+            <motion.div
+              key="modal"
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.97 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto pointer-events-auto">
+                <div className="flex items-start justify-between p-6 border-b border-border">
+                  <div>
+                    <h2 className="text-xl font-bold text-foreground">{selected}</h2>
+                    <p className="text-accent-blue font-semibold mt-1">{vacancy.salary}</p>
+                  </div>
+                  <button
+                    onClick={() => setSelected(null)}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors shrink-0 ml-4"
+                  >
+                    <X size={16} weight="bold" />
+                  </button>
+                </div>
+
+                <div className="p-6 space-y-5">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-start gap-2">
+                      <Clock size={16} className="text-muted mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted">График</p>
+                        <p className="text-sm font-medium text-foreground">{vacancy.schedule}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CurrencyRub size={16} className="text-muted mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted">Зарплата</p>
+                        <p className="text-sm font-medium text-foreground">{vacancy.salary}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg">
+                    <GraduationCap size={16} className="text-accent-blue mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted mb-0.5">Образование / опыт</p>
+                      <p className="text-sm text-foreground">{vacancy.education}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <Briefcase size={16} className="text-muted mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted mb-0.5">Требуемый опыт</p>
+                      <p className="text-sm text-foreground">{vacancy.experience}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-semibold text-foreground mb-2">Обязанности</p>
+                    <ul className="space-y-1.5">
+                      {vacancy.duties.map((d, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent-blue mt-1.5 shrink-0" />
+                          {d}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-semibold text-foreground mb-2">Условия</p>
+                    <ul className="space-y-1.5">
+                      {vacancy.conditions.map((c, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-2 border-t border-border flex flex-col sm:flex-row gap-2">
+                    <a
+                      href="tel:+79803211542"
+                      className="flex-1 py-2.5 rounded-lg bg-accent-blue text-white text-sm font-medium text-center hover:bg-accent-blue/90 transition-colors"
+                    >
+                      Позвонить
+                    </a>
+                    <a
+                      href={`mailto:maxsteel31@bk.ru?subject=Резюме — ${selected}`}
+                      className="flex-1 py-2.5 rounded-lg border border-border text-sm font-medium text-center text-foreground hover:border-accent-blue/40 transition-colors"
+                    >
+                      Отправить резюме
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
