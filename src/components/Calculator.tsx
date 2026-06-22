@@ -230,9 +230,11 @@ export default function Calculator() {
 
     // Scale proportionally: at max value = MAX_*, at min value = ~40% of MAX_*
     const MIN_RATIO = 0.4;
-    const isoW = MAX_W * (MIN_RATIO + (1 - MIN_RATIO) * (width  / maxW));
-    const isoL = MAX_L * (MIN_RATIO + (1 - MIN_RATIO) * (length / maxL));
-    const isoH = MAX_H * (MIN_RATIO + (1 - MIN_RATIO) * (height / maxH));
+    // Agriculture gets scaled down so it fits compactly
+    const agriScale = type === "agriculture" ? 0.72 : 1.0;
+    const isoW = MAX_W * (MIN_RATIO + (1 - MIN_RATIO) * (width  / maxW)) * agriScale;
+    const isoL = MAX_L * (MIN_RATIO + (1 - MIN_RATIO) * (length / maxL)) * agriScale;
+    const isoH = MAX_H * (MIN_RATIO + (1 - MIN_RATIO) * (height / maxH)) * agriScale;
 
     // Isometric projection angles: 30° for both axes
     const wxDx = -Math.cos(Math.PI / 6);
@@ -260,7 +262,7 @@ export default function Calculator() {
 
     // Roof ridge — runs along the "length" axis at mid-width, above top layer
     const roofRise = type === "agriculture"
-      ? isoW * 0.30   // arched/tall for agriculture
+      ? isoW * 0.22   // чуть ниже чем раньше — здание компактнее
       : isoW * 0.18;  // standard pitched roof
 
     // Ridge points: midpoint of A2↔B2 and D2↔C2, elevated
@@ -341,9 +343,9 @@ export default function Calculator() {
           const vH = isoH * 0.10;   // высота короба
           const vW = isoW * 0.06;   // полуширина короба (в пикселях по ширинной оси)
           // Конёк идёт от ridgeA до ridgeD, короб чуть уже (отступ 15% с каждого торца)
-          const margin = 0.15;
-          const rA2 = { x: ridgeA.x + (ridgeD.x - ridgeA.x) * margin, y: ridgeA.y + (ridgeD.y - ridgeA.y) * margin };
-          const rD2 = { x: ridgeA.x + (ridgeD.x - ridgeA.x) * (1 - margin), y: ridgeA.y + (ridgeD.y - ridgeA.y) * (1 - margin) };
+          // конёк на всю длину крыши без отступов
+          const rA2 = ridgeA;
+          const rD2 = ridgeD;
           // Боковые смещения — перпендикулярно оси конька (по ширинному направлению iso)
           const dx = wxDx * vW;
           const dy = wxDy * vW;
