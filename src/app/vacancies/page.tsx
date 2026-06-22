@@ -337,12 +337,14 @@ export default function VacanciesPage() {
   const [resumeForm, setResumeForm] = useState<ResumeForm>({ name: "", phone: "", city: "", experience: "", comment: "" });
   const [resumeSending, setResumeSending] = useState(false);
   const [resumeSent, setResumeSent] = useState(false);
+  const [resumeAgreed, setResumeAgreed] = useState(false);
 
   function closeModal() {
     setSelected(null);
     setShowResume(false);
     setResumeSent(false);
     setResumeForm({ name: "", phone: "", city: "", experience: "", comment: "" });
+    setResumeAgreed(false);
   }
 
   async function submitResume(e: React.FormEvent) {
@@ -657,9 +659,22 @@ export default function VacanciesPage() {
                           className="w-full px-3 py-2 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors resize-none"
                         />
                       </div>
+                      <label className="flex items-start gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={resumeAgreed}
+                          onChange={(e) => setResumeAgreed(e.target.checked)}
+                          className="mt-0.5 w-4 h-4 rounded border-border accent-accent-blue flex-shrink-0 cursor-pointer"
+                        />
+                        <span className="text-[11px] text-muted leading-relaxed">
+                          Я согласен(а) с{" "}
+                          <a href="/privacy" target="_blank" className="text-accent-blue hover:underline">политикой обработки персональных данных</a>
+                          {" "}и даю согласие на обработку моих персональных данных в соответствии с Федеральным законом № 152-ФЗ
+                        </span>
+                      </label>
                       <button
                         type="submit"
-                        disabled={resumeSending}
+                        disabled={resumeSending || !resumeAgreed}
                         className="w-full py-2.5 rounded-lg bg-accent-blue text-white text-sm font-medium hover:bg-accent-blue/90 transition-colors disabled:opacity-50"
                       >
                         {resumeSending ? "Отправляем..." : "Отправить резюме"}
