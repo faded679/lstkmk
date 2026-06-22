@@ -374,8 +374,7 @@ export default function VacanciesPage() {
                     className="text-left p-5 rounded-lg border border-border bg-white hover:shadow-md hover:border-accent-blue/40 transition-all duration-200 group"
                   >
                     <h3 className="font-medium text-foreground group-hover:text-accent-blue transition-colors">{name}</h3>
-                    <p className="text-xs text-muted mt-1">{vacancyDetails[name]?.salary ?? ""}</p>
-                    <span className="mt-3 inline-block text-xs text-accent-blue font-medium">Подробнее →</span>
+                    <span className="mt-3 inline-block text-xs text-accent-blue font-medium">Условия и требования →</span>
                   </button>
                 ))}
               </div>
@@ -431,7 +430,6 @@ export default function VacanciesPage() {
                 <div className="flex items-start justify-between p-6 border-b border-border">
                   <div>
                     <h2 className="text-xl font-bold text-foreground">{selected}</h2>
-                    <p className="text-accent-blue font-semibold mt-1">{vacancy.salary}</p>
                   </div>
                   <button
                     onClick={() => setSelected(null)}
@@ -446,15 +444,16 @@ export default function VacanciesPage() {
                     <div className="flex items-start gap-2">
                       <Clock size={16} className="text-muted mt-0.5 shrink-0" />
                       <div>
-                        <p className="text-xs text-muted">График</p>
+                        <p className="text-xs text-muted">График работы</p>
                         <p className="text-sm font-medium text-foreground">{vacancy.schedule}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
                       <CurrencyRub size={16} className="text-muted mt-0.5 shrink-0" />
                       <div>
-                        <p className="text-xs text-muted">Зарплата</p>
+                        <p className="text-xs text-muted">Заработная плата</p>
                         <p className="text-sm font-medium text-foreground">{vacancy.salary}</p>
+                        <p className="text-[11px] text-muted mt-0.5">обсуждается на собеседовании</p>
                       </div>
                     </div>
                   </div>
