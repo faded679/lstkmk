@@ -19,20 +19,24 @@ export default function HeroVideo() {
         </div>
         <div className="flex-1 relative min-h-0 flex items-end bg-white pb-0">
           <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center">
-            <div className="relative w-full max-w-4xl mx-auto flex items-end justify-center">
-              {/* Боковой текст слева — выровнен по высоте ангара */}
-              <div className="hidden lg:flex flex-col justify-around items-end w-32 xl:w-40 pr-4 pb-8 select-none shrink-0 self-center">
-                {["Проектирование", "Производство", "Монтаж"].map((label) => <span key={label} className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">{label}</span>)}
+            <div className="relative w-full max-w-5xl mx-auto flex items-end justify-center">
+              {/* Боковой текст слева — top / center / bottom */}
+              <div className="hidden lg:flex flex-col justify-between items-end w-32 xl:w-40 pr-4 select-none shrink-0" style={{ height: "64vh" }}>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Проектирование</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Производство</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight">Монтаж</span>
               </div>
               <img
                 src="/newherophoto.png"
                 alt="Готовый ангар из металлоконструкций"
                 className="w-full object-contain object-bottom"
-                style={{ maxHeight: "52vh", marginBottom: "-2px" }}
+                style={{ maxHeight: "64vh", marginBottom: "-2px" }}
               />
-              {/* Боковой текст справа */}
-              <div className="hidden lg:flex flex-col justify-around items-start w-32 xl:w-40 pl-4 pb-8 select-none shrink-0 self-center">
-                {["Под ключ", "45 дней", "14 лет опыта"].map((label) => <span key={label} className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">{label}</span>)}
+              {/* Боковой текст справа — top / center / bottom */}
+              <div className="hidden lg:flex flex-col justify-between items-start w-32 xl:w-40 pl-4 select-none shrink-0" style={{ height: "64vh" }}>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">Под ключ</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">45 дней</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight">14 лет опыта</span>
               </div>
             </div>
           </div>
