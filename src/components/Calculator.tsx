@@ -213,127 +213,164 @@ export default function Calculator() {
   const formatPrice = (n: number) =>
     new Intl.NumberFormat("ru-RU").format(Math.round(n));
 
-  // SVG building sketch — front + side projections with dynamic viewBox
+  // SVG building sketch — isometric 3D view with fixed viewBox
   const BuildingSketch = () => {
-    // Visual scale to normalize building sizes across types
-    const visualScale: Record<BuildingType, number> = {
-      "small-building": 6,  // Small buildings need much larger scale to fill space
-      warehouse: 1.8,
-      agriculture: 1.2,
-      service: 3.5,
-    };
-    const baseScale = visualScale[type];
+    const VW = 400;
+    const VH = 280;
 
-    // Scale factors (px per meter) — adjusted for large buildings
-    const scaleW = Math.min(6 * baseScale, (200 * baseScale) / Math.max(width, 6));
-    const scaleL = Math.min(2.5 * baseScale, (160 * baseScale) / Math.max(length, 12));
-    const scaleH = Math.min(15, 160 / Math.max(height, 4));
+    // Max possible values for current building type → used for normalisation
+    const maxW = Math.max(...cfg.widths);
+    const maxL = cfg.lengthMax;
+    const maxH = Math.max(...cfg.heights);
 
-    const margin = 20;
-    const gap = 40;
+    // Visual extents at maximum values
+    const MAX_W = 130;
+    const MAX_L = 150;
+    const MAX_H = 120;
 
-    // Front view (shows width × height)
-    const fw = width * scaleW;
-    const fh = height * scaleH;
-    const fx = margin;
-    const fy = margin + 30 + fh * 0.3; // roof space
-    const fRoof = type === "agriculture" ? fy - fw * 0.25 : fy - Math.min(30, fh * 0.3);
+    // Scale proportionally: at max value = MAX_*, at min value = ~40% of MAX_*
+    const MIN_RATIO = 0.4;
+    const isoW = MAX_W * (MIN_RATIO + (1 - MIN_RATIO) * (width  / maxW));
+    const isoL = MAX_L * (MIN_RATIO + (1 - MIN_RATIO) * (length / maxL));
+    const isoH = MAX_H * (MIN_RATIO + (1 - MIN_RATIO) * (height / maxH));
 
-    // Side view (shows length × height)
-    const sl = length * scaleL;
-    const sh = height * scaleH;
-    const sx = fx + fw + gap;
-    const sy = margin + 30 + sh * 0.3;
-    const sRoof = type === "agriculture" ? sy - sl * 0.15 : sy - Math.min(30, sh * 0.3);
+    // Isometric projection angles: 30° for both axes
+    const wxDx = -Math.cos(Math.PI / 6);
+    const wxDy =  Math.sin(Math.PI / 6);
+    const lxDx =  Math.cos(Math.PI / 6);
+    const lxDy =  Math.sin(Math.PI / 6);
 
-    // Dynamic viewBox size
-    const svgW = Math.max(400, sx + sl + margin);
-    const svgH = Math.max(260, margin + 30 + Math.max(fh, sh) * 1.5 + 40);
+    // Fixed origin — never moves regardless of dimensions
+    const ox = VW / 2;
+    const oy = VH - 32;
 
-    // Common styles
-    const strokeWall = { stroke: "currentColor", strokeWidth: 1.5, className: "text-slate-400" };
-    const strokeRoof = { stroke: "currentColor", strokeWidth: 2, className: "text-accent-blue" };
-    const strokeDetail = { stroke: "currentColor", strokeWidth: 1, className: "text-slate-400" };
+    // Key vertices (bottom layer)
+    const A = { x: ox,                          y: oy };                         // front-bottom (origin)
+    const B = { x: ox + isoW * wxDx,            y: oy + isoW * wxDy };           // left-bottom
+    const C = { x: ox + isoW * wxDx + isoL * lxDx, y: oy + isoW * wxDy + isoL * lxDy }; // back-bottom
+    const D = { x: ox + isoL * lxDx,            y: oy + isoL * lxDy };           // right-bottom
 
-    // Front view roof shape
-    const frontRoofPath = type === "agriculture"
-      ? `M${fx} ${fy} Q${fx + fw / 2} ${fRoof} ${fx + fw} ${fy}`
-      : `M${fx} ${fy} L${fx + fw / 2} ${fRoof} L${fx + fw} ${fy}`;
+    // Top layer (shift up by isoH)
+    const A2 = { x: A.x, y: A.y - isoH };
+    const B2 = { x: B.x, y: B.y - isoH };
+    const C2 = { x: C.x, y: C.y - isoH };
+    const D2 = { x: D.x, y: D.y - isoH };
 
-    // Side view roof shape
-    const sideRoofPath = type === "agriculture"
-      ? `M${sx} ${sy} L${sx + sl} ${sy}`
-      : `M${sx} ${sy} L${sx + sl / 2} ${sRoof} L${sx + sl} ${sy}`;
+    // Roof ridge — runs along the "length" axis at mid-width, above top layer
+    const roofRise = type === "agriculture"
+      ? isoW * 0.30   // arched/tall for agriculture
+      : isoW * 0.18;  // standard pitched roof
+
+    // Ridge points: midpoint of A2↔B2 and D2↔C2, elevated
+    const ridgeA = { x: (A2.x + B2.x) / 2, y: (A2.y + B2.y) / 2 - roofRise };
+    const ridgeD = { x: (D2.x + C2.x) / 2, y: (D2.y + C2.y) / 2 - roofRise };
+
+    const pt = (p: { x: number; y: number }) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+
+    // Gate on the front face (A–D bottom, A2–D2 top)
+    const gateW = isoL * 0.28;
+    const gateH = isoH * 0.40;
+    const gateCx = (A.x + D.x) / 2;
+    const gateCy = (A.y + D.y) / 2;
+    const gO  = { x: gateCx - gateW / 2 * lxDx, y: gateCy - gateW / 2 * lxDy };
+    const gO2 = { x: gO.x,  y: gO.y - gateH };
+    const gD  = { x: gO.x  + gateW * lxDx, y: gO.y  + gateW * lxDy };
+    const gD2 = { x: gD.x,  y: gD.y - gateH };
 
     return (
-      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-full" fill="none">
-        {/* === FRONT VIEW (width × height) === */}
-        <text x={fx} y={20} className="text-[11px] fill-slate-500 font-medium">Фасад (Ш×В)</text>
+      <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full" fill="none">
 
-        {/* Walls */}
-        <rect x={fx} y={fy} width={fw} height={fh} rx="1" fill="none" {...strokeWall} />
+        {/* ── Bottom face (ground outline, dashed) ── */}
+        <polygon
+          points={`${pt(A)} ${pt(B)} ${pt(C)} ${pt(D)}`}
+          stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="4 3" fill="none"
+        />
 
-        {/* Roof */}
-        <path d={frontRoofPath} fill="none" {...strokeRoof} />
-        {type !== "agriculture" && (
-          <line x1={fx + fw / 2} y1={fRoof} x2={fx + fw / 2} y2={fy} stroke="currentColor" strokeWidth={0.5} className="text-slate-300" strokeDasharray="3 2" />
+        {/* ── Left face (width × height) ── */}
+        <polygon
+          points={`${pt(A)} ${pt(B)} ${pt(B2)} ${pt(A2)}`}
+          fill="#f1f5f9" stroke="#94a3b8" strokeWidth="1.2"
+        />
+
+        {/* ── Right face (length × height) ── */}
+        <polygon
+          points={`${pt(A)} ${pt(D)} ${pt(D2)} ${pt(A2)}`}
+          fill="#e8eef6" stroke="#94a3b8" strokeWidth="1.2"
+        />
+
+        {/* ── Back-left face (hidden, light stroke only) ── */}
+        <polygon
+          points={`${pt(B)} ${pt(C)} ${pt(C2)} ${pt(B2)}`}
+          fill="#f8fafc" stroke="#cbd5e1" strokeWidth="0.8"
+        />
+
+        {/* ── Back-right face ── */}
+        <polygon
+          points={`${pt(D)} ${pt(C)} ${pt(C2)} ${pt(D2)}`}
+          fill="#f0f4fa" stroke="#cbd5e1" strokeWidth="0.8"
+        />
+
+        {/* ── Roof left slope ── */}
+        <polygon
+          points={`${pt(A2)} ${pt(B2)} ${pt(ridgeA)}`}
+          fill="#dbeafe" stroke="#3b82f6" strokeWidth="1.5"
+        />
+        {/* ── Roof right slope ── */}
+        <polygon
+          points={`${pt(A2)} ${pt(D2)} ${pt(ridgeD)} ${pt(ridgeA)}`}
+          fill="#eff6ff" stroke="#3b82f6" strokeWidth="1.5"
+        />
+        {/* ── Roof back slopes ── */}
+        <polygon
+          points={`${pt(B2)} ${pt(C2)} ${pt(ridgeD)} ${pt(ridgeA)}`}
+          fill="#dbeafe" stroke="#3b82f6" strokeWidth="1"
+        />
+        <polygon
+          points={`${pt(D2)} ${pt(C2)} ${pt(ridgeD)}`}
+          fill="#eff6ff" stroke="#3b82f6" strokeWidth="1"
+        />
+
+        {/* ── Ridge line ── */}
+        <line x1={ridgeA.x} y1={ridgeA.y} x2={ridgeD.x} y2={ridgeD.y}
+          stroke="#2563eb" strokeWidth="1.8" />
+
+        {/* ── Gate on front-right face ── */}
+        {(type === "service" || type === "warehouse" || type === "small-building") && (
+          <polygon
+            points={`${pt(gO)} ${pt(gD)} ${pt(gD2)} ${pt(gO2)}`}
+            fill="#bfdbfe" stroke="#3b82f6" strokeWidth="1"
+          />
         )}
 
-        {/* Columns/pillars for larger buildings */}
-        {fw > 100 && Array.from({ length: Math.max(2, Math.floor(fw / 80)) }).map((_, i) => (
-          <line
-            key={`col-${i}`}
-            x1={fx + (i + 1) * (fw / (Math.floor(fw / 80) + 1))}
-            y1={fy}
-            x2={fx + (i + 1) * (fw / (Math.floor(fw / 80) + 1))}
-            y2={fy + fh}
-            stroke="currentColor"
-            strokeWidth={0.5}
-            className="text-slate-300"
-            strokeDasharray="4 2"
-          />
-        ))}
+        {/* ── Vertical edge lines for clarity ── */}
+        <line x1={A.x} y1={A.y} x2={A2.x} y2={A2.y} stroke="#94a3b8" strokeWidth="1.2" />
+        <line x1={D.x} y1={D.y} x2={D2.x} y2={D2.y} stroke="#94a3b8" strokeWidth="1.2" />
+        <line x1={B.x} y1={B.y} x2={B2.x} y2={B2.y} stroke="#94a3b8" strokeWidth="0.8" />
 
-        {/* Door/gate for service/agriculture */}
-        {(type === "service" || type === "agriculture" || type === "warehouse") && (
-          <rect
-            x={fx + fw * 0.35}
-            y={fy + fh - Math.min(40, fh * 0.35)}
-            width={fw * 0.3}
-            height={Math.min(40, fh * 0.35)}
-            rx="1"
-            fill="none"
-            {...strokeDetail}
-          />
-        )}
+        {/* ── Dimension labels ── */}
+        {/* Width label — along left-bottom edge */}
+        <text
+          x={(A.x + B.x) / 2 - 8} y={(A.y + B.y) / 2 + 4}
+          textAnchor="middle" className="text-[9px] fill-slate-500 font-mono"
+        >{width}м</text>
 
-        {/* Width dimension label */}
-        <line x1={fx} y1={fy + fh + 8} x2={fx + fw} y2={fy + fh + 8} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <line x1={fx} y1={fy + fh + 4} x2={fx} y2={fy + fh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <line x1={fx + fw} y1={fy + fh + 4} x2={fx + fw} y2={fy + fh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <text x={fx + fw / 2} y={fy + fh + 18} textAnchor="middle" className="text-[9px] fill-slate-500">{width}м</text>
+        {/* Length label — along right-bottom edge */}
+        <text
+          x={(A.x + D.x) / 2 + 8} y={(A.y + D.y) / 2 + 4}
+          textAnchor="middle" className="text-[9px] fill-slate-500 font-mono"
+        >{length}м</text>
 
-        {/* === SIDE VIEW (length × height) === */}
-        <text x={sx} y={20} className="text-[11px] fill-slate-500 font-medium">Боковой (Д×В)</text>
+        {/* Height label — along front-left vertical edge */}
+        <text
+          x={A.x - 8} y={(A.y + A2.y) / 2}
+          textAnchor="end" dominantBaseline="middle"
+          className="text-[9px] fill-slate-500 font-mono"
+        >{height}м</text>
 
-        {/* Walls */}
-        <rect x={sx} y={sy} width={sl} height={sh} rx="1" fill="none" {...strokeWall} />
-
-        {/* Roof */}
-        <path d={sideRoofPath} fill="none" {...strokeRoof} />
-
-        {/* Length dimension label */}
-        <line x1={sx} y1={sy + sh + 8} x2={sx + sl} y2={sy + sh + 8} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <line x1={sx} y1={sy + sh + 4} x2={sx} y2={sy + sh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <line x1={sx + sl} y1={sy + sh + 4} x2={sx + sl} y2={sy + sh + 12} stroke="currentColor" strokeWidth={0.5} className="text-slate-400" />
-        <text x={sx + sl / 2} y={sy + sh + 18} textAnchor="middle" className="text-[9px] fill-slate-500">{length}м</text>
-
-        {/* Height labels on both views */}
-        <text x={fx - 5} y={fy + fh / 2} textAnchor="end" className="text-[9px] fill-slate-500">{height}м</text>
-        <text x={sx - 5} y={sy + sh / 2} textAnchor="end" className="text-[9px] fill-slate-500">{height}м</text>
-
-        {/* Dimensions info at bottom */}
-        <text x={svgW / 2} y={svgH - 2} textAnchor="middle" className="text-[10px] fill-slate-400 font-mono">{width}×{length}×{height} м</text>
+        {/* Dimension summary */}
+        <text x={VW / 2} y={VH - 6} textAnchor="middle"
+          className="text-[10px] fill-slate-400 font-mono"
+        >{width}×{length}×{height} м</text>
       </svg>
     );
   };
