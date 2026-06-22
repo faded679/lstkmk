@@ -427,10 +427,6 @@ export default function VacanciesPage() {
             <a href="tel:+79803211542" className="text-accent-blue font-medium hover:underline">
               +7 (980) 321-15-42
             </a>
-            {", "}
-            <a href="tel:+79107372485" className="text-accent-blue font-medium hover:underline">
-              +7 (910) 737-24-85
-            </a>
           </p>
           <p className="mt-2 text-sm text-muted leading-relaxed">
             Email:{" "}
