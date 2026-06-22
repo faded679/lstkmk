@@ -321,10 +321,46 @@ const groups: Group[] = [
   },
 ];
 
+type ResumeForm = {
+  name: string;
+  phone: string;
+  city: string;
+  experience: string;
+  comment: string;
+};
+
 export default function VacanciesPage() {
   const reduce = useReducedMotion();
   const [selected, setSelected] = useState<string | null>(null);
   const vacancy = selected ? vacancyDetails[selected] : null;
+  const [showResume, setShowResume] = useState(false);
+  const [resumeForm, setResumeForm] = useState<ResumeForm>({ name: "", phone: "", city: "", experience: "", comment: "" });
+  const [resumeSending, setResumeSending] = useState(false);
+  const [resumeSent, setResumeSent] = useState(false);
+
+  function closeModal() {
+    setSelected(null);
+    setShowResume(false);
+    setResumeSent(false);
+    setResumeForm({ name: "", phone: "", city: "", experience: "", comment: "" });
+  }
+
+  async function submitResume(e: React.FormEvent) {
+    e.preventDefault();
+    setResumeSending(true);
+    try {
+      await fetch("/api/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vacancy: selected, ...resumeForm }),
+      });
+      setResumeSent(true);
+    } catch {
+      // silent
+    } finally {
+      setResumeSending(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -416,7 +452,7 @@ export default function VacanciesPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm"
-              onClick={() => setSelected(null)}
+              onClick={closeModal}
             />
             <motion.div
               key="modal"
@@ -432,7 +468,7 @@ export default function VacanciesPage() {
                     <h2 className="text-xl font-bold text-foreground">{selected}</h2>
                   </div>
                   <button
-                    onClick={() => setSelected(null)}
+                    onClick={closeModal}
                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors shrink-0 ml-4"
                   >
                     <X size={16} weight="bold" />
@@ -505,13 +541,98 @@ export default function VacanciesPage() {
                     >
                       Позвонить
                     </a>
-                    <a
-                      href={`mailto:maxsteel31@bk.ru?subject=Резюме — ${selected}`}
+                    <button
+                      onClick={() => setShowResume(true)}
                       className="flex-1 py-2.5 rounded-lg border border-border text-sm font-medium text-center text-foreground hover:border-accent-blue/40 transition-colors"
                     >
                       Отправить резюме
-                    </a>
+                    </button>
                   </div>
+
+                  {/* Resume form */}
+                  <AnimatePresence>
+                    {showResume && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden"
+                      >
+                        {resumeSent ? (
+                          <div className="pt-4 text-center">
+                            <p className="text-sm font-semibold text-green-600 mb-1">Резюме отправлено!</p>
+                            <p className="text-xs text-muted">Мы свяжемся с вами в ближайшее время.</p>
+                          </div>
+                        ) : (
+                          <form onSubmit={submitResume} className="pt-4 space-y-3">
+                            <p className="text-sm font-semibold text-foreground">Заявка на вакансию</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div>
+                                <label className="text-xs text-muted mb-1 block">ФИО *</label>
+                                <input
+                                  required
+                                  type="text"
+                                  placeholder="Иванов Иван Иванович"
+                                  value={resumeForm.name}
+                                  onChange={e => setResumeForm(f => ({ ...f, name: e.target.value }))}
+                                  className="w-full h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs text-muted mb-1 block">Телефон *</label>
+                                <input
+                                  required
+                                  type="tel"
+                                  placeholder="+7 (900) 000-00-00"
+                                  value={resumeForm.phone}
+                                  onChange={e => setResumeForm(f => ({ ...f, phone: e.target.value }))}
+                                  className="w-full h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs text-muted mb-1 block">Город проживания</label>
+                                <input
+                                  type="text"
+                                  placeholder="Белгород"
+                                  value={resumeForm.city}
+                                  onChange={e => setResumeForm(f => ({ ...f, city: e.target.value }))}
+                                  className="w-full h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs text-muted mb-1 block">Опыт работы</label>
+                                <input
+                                  type="text"
+                                  placeholder="3 года, ООО Стройгруп"
+                                  value={resumeForm.experience}
+                                  onChange={e => setResumeForm(f => ({ ...f, experience: e.target.value }))}
+                                  className="w-full h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-xs text-muted mb-1 block">Дополнительно</label>
+                              <textarea
+                                rows={2}
+                                placeholder="Любая дополнительная информация о себе..."
+                                value={resumeForm.comment}
+                                onChange={e => setResumeForm(f => ({ ...f, comment: e.target.value }))}
+                                className="w-full px-3 py-2 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors resize-none"
+                              />
+                            </div>
+                            <button
+                              type="submit"
+                              disabled={resumeSending}
+                              className="w-full py-2.5 rounded-lg bg-accent-blue text-white text-sm font-medium hover:bg-accent-blue/90 transition-colors disabled:opacity-50"
+                            >
+                              {resumeSending ? "Отправляем..." : "Отправить"}
+                            </button>
+                          </form>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </motion.div>
