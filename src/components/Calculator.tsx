@@ -242,7 +242,7 @@ export default function Calculator() {
 
     // Fixed origin — never moves regardless of dimensions
     const ox = VW / 2;
-    const oy = VH - 32;
+    const oy = VH - 70;
 
     // Key vertices (bottom layer)
     const A = { x: ox,                          y: oy };                         // front-bottom (origin)
