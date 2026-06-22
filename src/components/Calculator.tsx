@@ -240,9 +240,14 @@ export default function Calculator() {
     const lxDx =  Math.cos(Math.PI / 6);
     const lxDy =  Math.sin(Math.PI / 6);
 
-    // Fixed origin — never moves regardless of dimensions
+    // Dynamic origin — front-bottom corner placed so the lowest point of the
+    // base rhombus stays within the canvas (with 18px bottom margin)
+    const bottomMargin = 18;
+    // The lowest point of the base is max(isoW * wxDy, isoL * lxDy, isoW*wxDy + isoL*lxDy)
+    // which is always isoW*wxDy + isoL*lxDy (back-bottom vertex C)
+    const maxDropBelow = isoW * wxDy + isoL * lxDy;
     const ox = VW / 2;
-    const oy = VH - 110;
+    const oy = VH - bottomMargin - maxDropBelow;
 
     // Key vertices (bottom layer)
     const A = { x: ox,                          y: oy };                         // front-bottom (origin)
