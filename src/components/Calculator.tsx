@@ -271,7 +271,7 @@ export default function Calculator() {
 
     const pt = (p: { x: number; y: number }) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
 
-    // Gate on the front face (A–D bottom, A2–D2 top)
+    // Ворота на правой грани (A–D) — для склада/малых зданий
     const gateW = isoL * 0.28;
     const gateH = isoH * 0.40;
     const gateCx = (A.x + D.x) / 2;
@@ -280,6 +280,20 @@ export default function Calculator() {
     const gO2 = { x: gO.x,  y: gO.y - gateH };
     const gD  = { x: gO.x  + gateW * lxDx, y: gO.y  + gateW * lxDy };
     const gD2 = { x: gD.x,  y: gD.y - gateH };
+
+    // Гаражные ворота на передней грани (A–B) для service
+    // Занимают ~60% ширины грани, высота ~80% стены
+    const garageGateW = isoW * 0.60;
+    const garageGateH = isoH * 0.80;
+    const ggCx = (A.x + B.x) / 2;
+    const ggCy = (A.y + B.y) / 2;
+    const gg0  = { x: ggCx - garageGateW / 2 * wxDx, y: ggCy - garageGateW / 2 * wxDy };
+    const gg0t = { x: gg0.x,  y: gg0.y - garageGateH };
+    const gg1  = { x: gg0.x  + garageGateW * wxDx, y: gg0.y  + garageGateW * wxDy };
+    const gg1t = { x: gg1.x,  y: gg1.y - garageGateH };
+    // середина ворот (разделитель двух створок)
+    const ggMid  = { x: (gg0.x  + gg1.x)  / 2, y: (gg0.y  + gg1.y)  / 2 };
+    const ggMidt = { x: (gg0t.x + gg1t.x) / 2, y: (gg0t.y + gg1t.y) / 2 };
 
     return (
       <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full" fill="none">
@@ -382,12 +396,35 @@ export default function Calculator() {
           );
         })()}
 
-        {/* ── Gate on front-right face ── */}
-        {(type === "service" || type === "warehouse" || type === "small-building") && (
+        {/* ── Gate on front-right face (склад / малые) ── */}
+        {(type === "warehouse" || type === "small-building") && (
           <polygon
             points={`${pt(gO)} ${pt(gD)} ${pt(gD2)} ${pt(gO2)}`}
             fill="#bfdbfe" stroke="#3b82f6" strokeWidth="1"
           />
+        )}
+
+        {/* ── Гаражные ворота на левой грани (A–B) для автосервиса ── */}
+        {type === "service" && (
+          <g>
+            {/* фон ворот */}
+            <polygon
+              points={`${pt(gg0)} ${pt(gg1)} ${pt(gg1t)} ${pt(gg0t)}`}
+              fill="#bfdbfe" stroke="#2563eb" strokeWidth="1.2"
+            />
+            {/* вертикальный разделитель — две створки */}
+            <line x1={ggMid.x} y1={ggMid.y} x2={ggMidt.x} y2={ggMidt.y}
+              stroke="#2563eb" strokeWidth="1" />
+            {/* горизонтальные секции (3 линии) */}
+            {[0.25, 0.5, 0.75].map((t, i) => {
+              const lx = gg0.x + (gg0t.x - gg0.x) * t;
+              const ly = gg0.y + (gg0t.y - gg0.y) * t;
+              const rx = gg1.x + (gg1t.x - gg1.x) * t;
+              const ry = gg1.y + (gg1t.y - gg1.y) * t;
+              return <line key={i} x1={lx} y1={ly} x2={rx} y2={ry}
+                stroke="#93c5fd" strokeWidth="0.8" />;
+            })}
+          </g>
         )}
 
         {/* ── Vertical edge lines for clarity ── */}
