@@ -23,7 +23,7 @@ export default function HeroVideo() {
           </div>
           <div className="relative flex-1 min-w-0 bg-white flex items-center justify-center">
             <img
-              src="/frames2/frame_0152.webp"
+              src="/newherologo.png"
               alt="Готовый ангар из металлоконструкций"
               className="max-w-full max-h-full object-contain"
             />
