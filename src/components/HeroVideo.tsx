@@ -29,13 +29,13 @@ export default function HeroVideo() {
               />
               {/* Боковой текст слева — абсолютно напротив крыши / середины / фундамента */}
               <div className="hidden lg:absolute lg:block left-0 top-0 bottom-0 w-32 xl:w-40 select-none" style={{ display: "none" }} />
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ top: "22%", right: "calc(50% + 460px)" }}>Проектирование</span>
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ top: "55%", right: "calc(50% + 460px)" }}>Производство</span>
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight" style={{ top: "88%", right: "calc(50% + 460px)" }}>Монтаж</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "22%", right: "calc(50% + 460px)" }}>Проектирование</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "55%", right: "calc(50% + 460px)" }}>Производство</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "88%", right: "calc(50% + 460px)" }}>Монтаж</span>
               {/* Боковой текст справа */}
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ top: "22%", left: "calc(50% + 460px)" }}>Под ключ</span>
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ top: "55%", left: "calc(50% + 460px)" }}>45 дней</span>
-              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight" style={{ top: "88%", left: "calc(50% + 460px)" }}>14 лет опыта</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight whitespace-nowrap" style={{ top: "22%", left: "calc(50% + 460px)" }}>Под ключ</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight whitespace-nowrap" style={{ top: "55%", left: "calc(50% + 460px)" }}>45 дней</span>
+              <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-left leading-tight whitespace-nowrap" style={{ top: "88%", left: "calc(50% + 460px)" }}>14 лет опыта</span>
             </div>
           </div>
         </div>
