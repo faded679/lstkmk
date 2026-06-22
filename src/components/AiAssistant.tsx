@@ -5,9 +5,25 @@ import { motion, AnimatePresence } from "motion/react";
 import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check, ChatTeardropDots } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
 
+const LINK_LABELS: Record<string, string> = {
+  "/#calculator": "🧮 Калькулятор",
+  "/#projects":   "📁 Наши проекты",
+  "/#contacts":   "📞 Контакты",
+  "/knowledge/":  "📚 База знаний",
+  "/knowledge":   "📚 База знаний",
+};
+
+function getLinkLabel(url: string): string {
+  if (LINK_LABELS[url]) return LINK_LABELS[url];
+  if (url.startsWith("/knowledge")) return "📚 База знаний";
+  if (url.startsWith("https://t.me")) return "Telegram";
+  if (url.startsWith("https://vk.com")) return "ВКонтакте";
+  if (url.startsWith("https://www.instagram.com")) return "Instagram";
+  if (url.startsWith("https://www.youtube.com") || url.startsWith("https://youtube.com")) return "YouTube";
+  return url;
+}
+
 function linkify(text: string): React.ReactNode[] {
-  // Matches: full URLs (http/https) OR site-relative paths starting with /
-  // Path stops at whitespace or sentence punctuation.
   const re = /(https?:\/\/[^\s]+|\/[a-zA-Z0-9#/_-]+)/g;
   const parts: React.ReactNode[] = [];
   let last = 0;
@@ -16,23 +32,23 @@ function linkify(text: string): React.ReactNode[] {
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) parts.push(text.slice(last, m.index));
     let url = m[0];
-    // Strip trailing punctuation that isn't part of URL
     const trailing = url.match(/[.,;:!?)]+$/);
     let tail = "";
     if (trailing) {
       tail = trailing[0];
       url = url.slice(0, -tail.length);
     }
-    const href = url.startsWith("http") ? url : url;
+    const label = getLinkLabel(url);
+    const isExternal = url.startsWith("http");
     parts.push(
       <a
         key={key++}
-        href={href}
-        target={url.startsWith("http") ? "_blank" : undefined}
-        rel={url.startsWith("http") ? "noopener noreferrer" : undefined}
-        className="text-accent-blue underline hover:opacity-80"
+        href={url}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className="inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-full bg-accent-blue/10 text-accent-blue text-xs font-medium hover:bg-accent-blue/20 transition-colors no-underline whitespace-nowrap"
       >
-        {url}
+        {label}
       </a>
     );
     if (tail) parts.push(tail);
