@@ -38,6 +38,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/knowledge/`,   lastModified: now, changeFrequency: "daily",   priority: 0.9 },
     { url: `${BASE}/vacancies/`,   lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/privacy/`,     lastModified: now, changeFrequency: "yearly",  priority: 0.4 },
+    { url: `${BASE}/stroitelstvo-angarov-belgorod/`,           lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/angar-pod-klyuch-cena/`,                   lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/metallokonstrukcii-belgorod-cena/`,        lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/stroitelstvo-skladov-iz-metallokonstrukcij/`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/bystrovozvodimye-zdaniya-cena/`,           lastModified: now, changeFrequency: "weekly", priority: 0.9 },
   ];
 
   const articleEntries: MetadataRoute.Sitemap = discoverSlugs("articles").map((slug) => ({
