@@ -23,7 +23,7 @@ echo "Build..."
 npm run build
 
 echo "Start PM2..."
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.js --force
 pm2 save
 
 echo "=== Deploy complete ==="
