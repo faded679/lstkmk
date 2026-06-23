@@ -3,6 +3,13 @@
 import { motion, useReducedMotion, useInView, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef } from "react";
 
+const stats = [
+  { num: 250, suffix: "+", label: "Объектов построено" },
+  { num: 14, suffix: "", label: "Лет на рынке" },
+  { num: 45, suffix: "", label: "Дней средний срок" },
+  { num: 15000, suffix: "", label: "м² в месяц" },
+] as const;
+
 function AnimatedCounter({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -21,15 +28,10 @@ function AnimatedCounter({ to, suffix = "" }: { to: number; suffix?: string }) {
     });
   }, [spring, suffix]);
 
-  return <span ref={ref}>0{suffix}</span>;
+  // Рендерим реальное число статически для SSR/SEO,
+  // JS-анимация перезапишет textContent после гидрации
+  return <span ref={ref}>{to.toLocaleString("ru-RU") + suffix}</span>;
 }
-
-const stats = [
-  { num: 250, suffix: "+", label: "Объектов построено" },
-  { num: 14, suffix: "", label: "Лет на рынке" },
-  { num: 45, suffix: "", label: "Дней средний срок" },
-  { num: 15000, suffix: "", label: "м² в месяц" },
-];
 
 export default function Stats() {
   const reduce = useReducedMotion();
@@ -52,7 +54,7 @@ export default function Stats() {
               className="text-center py-8 border-t-2 border-accent-orange"
             >
               <div className="text-3xl md:text-5xl font-bold tracking-tight text-foreground tabular-nums">
-                {reduce ? `${stat.num}${stat.suffix}` : (
+                {reduce ? `${stat.num.toLocaleString("ru-RU")}${stat.suffix}` : (
                   <AnimatedCounter to={stat.num} suffix={stat.suffix} />
                 )}
               </div>

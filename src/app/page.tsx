@@ -13,6 +13,7 @@ import Calculator from "@/components/Calculator";
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import FaqSchema from "@/components/FaqSchema";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -128,6 +129,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
+      <FaqSchema />
       <Navigation />
       <main>
         <HeroVideo />

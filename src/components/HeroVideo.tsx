@@ -7,7 +7,7 @@ export default function HeroVideo() {
             От фундамента до готового здания
           </p>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-none text-foreground">
-            Строим быстрее,<br className="hidden sm:block" /> чем вы думаете
+            Быстровозводимые здания<br className="hidden sm:block" /> из металлоконструкций
           </h1>
           <p className="mt-3 text-base md:text-lg text-muted leading-relaxed">
             Полный цикл строительства из металлоконструкций. Проект, производство, монтаж.

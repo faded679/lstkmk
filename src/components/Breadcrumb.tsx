@@ -2,56 +2,61 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import breadcrumbTitles from "@/data/breadcrumbs.json";
 
 interface BreadcrumbItem {
   label: string;
   href: string;
 }
 
-const breadcrumbMap: Record<string, BreadcrumbItem[]> = {
-  "/articles/": [{ label: "Главная", href: "/" }, { label: "Статьи", href: "/articles/" }],
-  "/articles/lstk-vs-goryachekatanyj-prokat/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "ЛСТК или горячекатаный прокат", href: "/articles/lstk-vs-goryachekatanyj-prokat/" },
-  ],
-  "/articles/podgotovka-ploshchadki/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "Подготовка площадки", href: "/articles/podgotovka-ploshchadki/" },
-  ],
-  "/articles/sendvich-paneli-obzor/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "Сэндвич-панели", href: "/articles/sendvich-paneli-obzor/" },
-  ],
-  "/articles/ventilyaciya-v-proizvodstvennyh-zdaniyah/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "Вентиляция", href: "/articles/ventilyaciya-v-proizvodstvennyh-zdaniyah/" },
-  ],
-  "/articles/preimushchestva-lstk-stroitelstva/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "Преимущества ЛСТК", href: "/articles/preimushchestva-lstk-stroitelstva/" },
-  ],
-  "/articles/antikorrozijnaya-zashchita/": [
-    { label: "Главная", href: "/" },
-    { label: "Статьи", href: "/articles/" },
-    { label: "Антикоррозийная защита", href: "/articles/antikorrozijnaya-zashchita/" },
-  ],
-  "/vacancies/": [{ label: "Главная", href: "/" }, { label: "Вакансии", href: "/vacancies/" }],
-  "/privacy/": [{ label: "Главная", href: "/" }, { label: "Политика конфиденциальности", href: "/privacy/" }],
+const sectionNames: Record<string, string> = {
+  articles: "Статьи",
+  knowledge: "База знаний",
+  vacancies: "Вакансии",
+  privacy: "Политика конфиденциальности",
+  configurator: "Калькулятор",
 };
 
 export default function Breadcrumb() {
   const pathname = usePathname();
-  
+
   // Не показываем на главной
   if (pathname === "/") return null;
-  
-  const items = breadcrumbMap[pathname];
-  if (!items) return null;
+
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length === 0) return null;
+
+  const items: BreadcrumbItem[] = [
+    { label: "Главная", href: "/" },
+  ];
+
+  let accumulatedPath = "";
+  for (let i = 0; i < segments.length; i++) {
+    accumulatedPath += "/" + segments[i];
+    const isLast = i === segments.length - 1;
+    const href = accumulatedPath + "/";
+
+    let label: string;
+
+    if (i === 0 && sectionNames[segments[i]]) {
+      // Раздел первого уровня
+      label = sectionNames[segments[i]];
+      if (!isLast) {
+        items.push({ label, href });
+        continue;
+      }
+    } else if (i === 0) {
+      label = sectionNames[segments[i]] ?? segments[i];
+    } else {
+      // Подстраница — ищем в JSON-маппинге
+      const key = href as keyof typeof breadcrumbTitles;
+      label = breadcrumbTitles[key] ?? segments[i].replace(/-/g, " ");
+    }
+
+    items.push({ label, href });
+  }
+
+  if (items.length <= 1) return null;
 
   // Schema.org BreadcrumbList JSON-LD
   const breadcrumbSchema = {
@@ -67,13 +72,10 @@ export default function Breadcrumb() {
 
   return (
     <>
-      {/* Schema.org микроразметка */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      
-      {/* Визуальная навигация */}
       <nav aria-label="breadcrumb" className="py-3 px-6 lg:px-10 bg-slate-50 border-b border-border">
         <ol className="flex flex-wrap items-center gap-2 text-sm text-muted max-w-[1400px] mx-auto">
           {items.map((item, index) => (
