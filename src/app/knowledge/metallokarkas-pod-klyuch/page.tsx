@@ -66,7 +66,7 @@ export default function Page() {
 
           <h2 className="text-xl font-bold text-foreground mt-8 mb-4">Стоимость металлокаркаса под ключ</h2>
           <p className="mb-4">
-            Цена строительства на металлокаркасе стартует от <strong>18 000 ₽/м²</strong>. В стоимость входят проектирование, изготовление конструкций, фундамент, монтаж, кровля и стеновое покрытие. Для проектов в Белгороде и области — актуальные расценки на металлокаркас в разделе <Link href="/metallokonstrukcii-belgorod-cena/" className="text-accent-blue hover:underline">металлоконструкции Белгород цена</Link>.
+            Цена строительства на металлокаркасе стартует от <strong>5 600 ₽/м²</strong>. В стоимость входят проектирование, изготовление конструкций, фундамент, монтаж, кровля и стеновое покрытие. Для проектов в Белгороде и области — актуальные расценки на металлокаркас в разделе <Link href="/metallokonstrukcii-belgorod-cena/" className="text-accent-blue hover:underline">металлоконструкции Белгород цена</Link>.
           </p>
 
           <div className="overflow-x-auto my-6">
@@ -78,9 +78,9 @@ export default function Page() {
                 </tr>
               </thead>
               <tbody>
-                <tr><td className="border border-slate-300 px-4 py-2">Склад на металлокаркасе</td><td className="border border-slate-300 px-4 py-2">от 18 000 ₽</td></tr>
-                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Производственный цех</td><td className="border border-slate-300 px-4 py-2">от 22 000 ₽</td></tr>
-                <tr><td className="border border-slate-300 px-4 py-2">Здание с краном 20 т</td><td className="border border-slate-300 px-4 py-2">от 30 000 ₽</td></tr>
+                <tr><td className="border border-slate-300 px-4 py-2">Склад на металлокаркасе</td><td className="border border-slate-300 px-4 py-2">от 4 500 ₽</td></tr>
+                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Производственный цех</td><td className="border border-slate-300 px-4 py-2">от 5 600 ₽</td></tr>
+                <tr><td className="border border-slate-300 px-4 py-2">Здание с краном 20 т</td><td className="border border-slate-300 px-4 py-2">от 4 800 ₽</td></tr>
               </tbody>
             </table>
           </div>
@@ -108,7 +108,7 @@ export default function Page() {
               <tbody>
                 <tr><td className="border border-slate-300 px-4 py-2">Пролёт</td><td className="border border-slate-300 px-4 py-2">30–60+ м</td><td className="border border-slate-300 px-4 py-2">до 24 м</td></tr>
                 <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Нагрузка</td><td className="border border-slate-300 px-4 py-2">Высокая</td><td className="border border-slate-300 px-4 py-2">Средняя</td></tr>
-                <tr><td className="border border-slate-300 px-4 py-2">Цена</td><td className="border border-slate-300 px-4 py-2">от 18 000 ₽/м²</td><td className="border border-slate-300 px-4 py-2">от 4 500 ₽/м²</td></tr>
+                <tr><td className="border border-slate-300 px-4 py-2">Цена</td><td className="border border-slate-300 px-4 py-2">от 5 600 ₽/м²</td><td className="border border-slate-300 px-4 py-2">от 4 500 ₽/м²</td></tr>
                 <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Сроки</td><td className="border border-slate-300 px-4 py-2">90–180 дней</td><td className="border border-slate-300 px-4 py-2">45–60 дней</td></tr>
               </tbody>
             </table>

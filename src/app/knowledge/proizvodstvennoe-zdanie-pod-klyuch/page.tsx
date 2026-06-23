@@ -66,7 +66,7 @@ export default function Page() {
 
           <h2 className="text-xl font-bold text-foreground mt-8 mb-4">Стоимость производственного здания</h2>
           <p className="mb-4">
-            Цена строительства производственного здания из ЛСТК под ключ — от <strong>11 000 ₽/м²</strong>. Для зданий с кранами и повышенными нагрузками — от <strong>18 000 ₽/м²</strong>.
+            Цена строительства производственного здания из ЛСТК под ключ — от <strong>5 600 ₽/м²</strong>. Для зданий с кранами и повышенными нагрузками — от <strong>4 800 ₽/м²</strong>.
           </p>
 
           <div className="overflow-x-auto my-6">
@@ -78,10 +78,10 @@ export default function Page() {
                 </tr>
               </thead>
               <tbody>
-                <tr><td className="border border-slate-300 px-4 py-2">Цех ЛСТК без крана</td><td className="border border-slate-300 px-4 py-2">от 11 000 ₽</td></tr>
-                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Цех с кран-балкой 5 т</td><td className="border border-slate-300 px-4 py-2">от 14 000 ₽</td></tr>
-                <tr><td className="border border-slate-300 px-4 py-2">Цех с мостовым краном 10+ т</td><td className="border border-slate-300 px-4 py-2">от 22 000 ₽</td></tr>
-                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Тяжёлый металлокаркас</td><td className="border border-slate-300 px-4 py-2">от 25 000 ₽</td></tr>
+                <tr><td className="border border-slate-300 px-4 py-2">Цех ЛСТК без крана</td><td className="border border-slate-300 px-4 py-2">от 5 600 ₽</td></tr>
+                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Цех с кран-балкой 5 т</td><td className="border border-slate-300 px-4 py-2">от 4 800 ₽</td></tr>
+                <tr><td className="border border-slate-300 px-4 py-2">Цех с мостовым краном 10+ т</td><td className="border border-slate-300 px-4 py-2">от 4 800 ₽</td></tr>
+                <tr className="bg-slate-50"><td className="border border-slate-300 px-4 py-2">Тяжёлый металлокаркас</td><td className="border border-slate-300 px-4 py-2">от 5 600 ₽</td></tr>
               </tbody>
             </table>
           </div>

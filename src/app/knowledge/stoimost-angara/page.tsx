@@ -5,7 +5,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
   title: "Стоимость ангара из металлоконструкций 2025 | МАКСТИЛ",
-  description: "Сколько стоит построить ангар под ключ в 2025 году. Цены от 4 500 ₽/м² за холодный ангар, от 9 000 ₽/м² утепленный. Расчёт сметы.",
+  description: "Сколько стоит построить ангар под ключ в 2025 году. Цены от 4 500 ₽/м² за холодный ангар, от 5 600 ₽/м² утепленный. Расчёт сметы.",
   keywords: ["стоимость ангара", "цена ангара", "сколько стоит ангар", "ангар под ключ цена"],
   openGraph: {
     title: "Стоимость ангара из металлоконструкций 2025",
@@ -41,8 +41,8 @@ export default function Page() {
               <h3 className="text-lg font-semibold mb-4">Цены за м² под ключ</h3>
               <ul className="space-y-2 text-muted">
                 <li className="flex justify-between"><span>Холодный ангар (профнастил):</span> <strong>от 4 500 ₽/м²</strong></li>
-                <li className="flex justify-between"><span>Утепленный склад (минвата 100мм):</span> <strong>от 9 000 ₽/м²</strong></li>
-                <li className="flex justify-between"><span>Производственный цех (ПИР 150мм):</span> <strong>от 11 000 ₽/м²</strong></li>
+                <li className="flex justify-between"><span>Утепленный склад (минвата 100мм):</span> <strong>от 5 600 ₽/м²</strong></li>
+                <li className="flex justify-between"><span>Производственный цех (ПИР 150мм):</span> <strong>от 5 600 ₽/м²</strong></li>
               </ul>
             </div>
 
