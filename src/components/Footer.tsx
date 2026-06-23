@@ -32,7 +32,7 @@ export default function Footer() {
   return (
     <footer className="py-10 bg-white border-t border-slate-200 text-foreground">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
           <div>
             <img src="/logo-makstil-new.png" alt="МАКСТИЛ" className="h-12 w-auto object-contain mb-3" />
             <p className="text-sm text-slate-400 leading-relaxed max-w-[30ch]">
@@ -88,6 +88,42 @@ export default function Footer() {
               <li>
                 <a href="#" className="hover:text-foreground transition-colors">
                   Торговые центры
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-foreground mb-3">Регионы</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li>
+                <a href="/metallokonstrukcii-kursk/" className="hover:text-foreground transition-colors">
+                  Курск и область
+                </a>
+              </li>
+              <li>
+                <a href="/metallokonstrukcii-voronezh/" className="hover:text-foreground transition-colors">
+                  Воронеж и область
+                </a>
+              </li>
+              <li>
+                <a href="/metallokonstrukcii-orel/" className="hover:text-foreground transition-colors">
+                  Орёл и область
+                </a>
+              </li>
+              <li>
+                <a href="/metallokonstrukcii-lipeck/" className="hover:text-foreground transition-colors">
+                  Липецк и область
+                </a>
+              </li>
+              <li>
+                <a href="/metallokonstrukcii-lnr/" className="hover:text-foreground transition-colors">
+                  ЛНР
+                </a>
+              </li>
+              <li>
+                <a href="/metallokonstrukcii-dnr/" className="hover:text-foreground transition-colors">
+                  ДНР
                 </a>
               </li>
             </ul>
