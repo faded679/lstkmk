@@ -79,7 +79,7 @@ export default function Page() {
 
           <h2 className="text-xl font-bold text-foreground mt-8 mb-4">Сколько стоит склад 1000 м²</h2>
           <p className="mb-4">
-            Стоимость склада 1000 м² из ЛСТК под ключ стартует от <strong>4 500 000 ₽</strong> за холодный вариант и от <strong>9 000 000 ₽</strong> за тёплый с сэндвич-панелями. Цена зависит от утепления, типа ворот, полов и инженерных систем.
+            Стоимость склада 1000 м² из ЛСТК под ключ стартует от <strong>4 500 000 ₽</strong> за холодный вариант и от <strong>9 000 000 ₽</strong> за тёплый с сэндвич-панелями. Цена зависит от утепления, типа ворот, полов и инженерных систем. Подробнее о строительстве складов из металлоконструкций — на странице <Link href="/stroitelstvo-skladov-iz-metallokonstrukcij/" className="text-accent-blue hover:underline">строительство складов из металлоконструкций под ключ</Link>.
           </p>
 
           <div className="overflow-x-auto my-6">

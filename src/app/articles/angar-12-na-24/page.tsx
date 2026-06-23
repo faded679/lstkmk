@@ -82,6 +82,9 @@ export default function ArticlePage() {
             </div>
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Что входит в «под ключ»</h2>
+            <p className="text-muted leading-relaxed mb-4">
+              Под ключ означает, что заказчик получает готовое к эксплуатации здание без дополнительных подрядчиков. Подробнее о ценах и комплектации «под ключ» — в разделе <Link href="/angar-pod-klyuch-cena/" className="text-accent-blue hover:underline">ангар под ключ цена</Link>.
+            </p>
             <ul className="list-disc list-inside space-y-2 text-muted mb-6">
               <li>Проектирование и изготовление металлокаркаса</li>
               <li>Доставка на объект</li>
@@ -126,7 +129,7 @@ export default function ArticlePage() {
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Итог</h2>
             <p className="text-muted leading-relaxed mb-6">
-              Ангар 12×24 м — оптимальный старт для малого бизнеса. Холодный вариант с фундаментом обойдётся в 1,8–2,5 млн ₽, тёплый с полом — 3,0–4,0 млн ₽. Срок — 1 месяц.
+              Ангар 12×24 м — оптимальный старт для малого бизнеса. Холодный вариант с фундаментом обойдётся в 1,8–2,5 млн ₽, тёплый с полом — 3,0–4,0 млн ₽. Срок — 1 месяц. Для объектов в Белгородской области актуальные цены и комплектации представлены в разделе <Link href="/stroitelstvo-angarov-belgorod/" className="text-accent-blue hover:underline">строительство ангаров в Белгороде</Link>.
             </p>
           </div>
 

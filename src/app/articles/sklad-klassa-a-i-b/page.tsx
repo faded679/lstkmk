@@ -102,6 +102,9 @@ export default function ArticlePage() {
             </p>
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Стоимость строительства склада разных классов</h2>
+            <p className="text-muted leading-relaxed mb-4">
+              Итоговая цена зависит от класса, площади и комплектации. Подробный разбор строительства складов из металлоконструкций под ключ — на странице <Link href="/stroitelstvo-skladov-iz-metallokonstrukcij/" className="text-accent-blue hover:underline">строительство складов из металлоконструкций</Link>.
+            </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm text-muted border-collapse">
                 <thead>

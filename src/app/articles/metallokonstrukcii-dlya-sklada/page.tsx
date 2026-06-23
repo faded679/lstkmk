@@ -98,6 +98,9 @@ export default function ArticlePage() {
             </ul>
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Цена металлоконструкций для склада</h2>
+            <p className="text-muted leading-relaxed mb-4">
+              Если склад проектируется в Белгородской области, стоит ориентироваться на местного производителя. Актуальные цены на металлоконструкции в регионе — в разделе <Link href="/metallokonstrukcii-belgorod-cena/" className="text-accent-blue hover:underline">металлоконструкции Белгород цена</Link>.
+            </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm text-muted border-collapse">
                 <thead>

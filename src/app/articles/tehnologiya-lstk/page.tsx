@@ -356,7 +356,7 @@ export default function LSTKTechnologyArticle() {
 
           <p>
             Технология ЛСТК — оптимальный выбор для быстровозводимых зданий площадью от 50 м² 
-            с требованиями к скорости и экономии фундамента.
+            с требованиями к скорости и экономии фундамента. Актуальные цены на строительство быстровозводимых зданий — на странице <Link href="/bystrovozvodimye-zdaniya-cena/" className="text-accent-blue hover:underline">быстровозводимые здания цена за м²</Link>.
           </p>
 
           <div className="grid md:grid-cols-2 gap-4 my-6">
