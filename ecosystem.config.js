@@ -19,10 +19,11 @@ module.exports = {
     out_file: '/var/log/pm2/lstkmk-out.log',
     error_file: '/var/log/pm2/lstkmk-error.log',
     log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-    // Перезапуск при нехватке памяти
-    kill_timeout: 5000,
+    // Graceful shutdown и предотвращение бесконечных рестартов
+    kill_timeout: 10000,
     listen_timeout: 10000,
-    // Graceful reload
     shutdown_with_message: true,
+    min_uptime: '10s',
+    max_restarts: 3,
   }]
 };
