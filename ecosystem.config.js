@@ -2,8 +2,10 @@ module.exports = {
   apps: [{
     name: 'lstkmk',
     cwd: '/var/www/lstkmk.ru',
-    script: '.next/standalone/server.js',
+    script: 'npm',
+    args: 'run start',
     instances: 1,
+    exec_mode: 'fork',
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',

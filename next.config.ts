@@ -2,7 +2,6 @@
 const nextConfig = {
   distDir: ".next",
   trailingSlash: true,
-  output: "standalone",
   images: {
     formats: ["image/webp"],
     unoptimized: false,
