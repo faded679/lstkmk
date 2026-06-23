@@ -32,7 +32,7 @@ export default function LandingPage() {
     description: "Производство и продажа металлоконструкций ЛСТК в Белгороде. Цена за тонну, проектирование, доставка, монтаж.",
     url: "https://lstkmk.ru/metallokonstrukcii-belgorod-cena/",
     telephone: "+7 (980) 321-15-42",
-    email: "info@lstkmk.ru",
+    email: "maxsteel31@bk.ru",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Белгород",

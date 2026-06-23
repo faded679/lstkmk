@@ -32,7 +32,7 @@ export default function LandingPage() {
     description: "Проектирование, производство и монтаж ангаров, складов и быстровозводимых зданий в Белгороде и области.",
     url: "https://lstkmk.ru/stroitelstvo-angarov-belgorod/",
     telephone: "+7 (980) 321-15-42",
-    email: "info@lstkmk.ru",
+    email: "maxsteel31@bk.ru",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Белгород",
@@ -274,7 +274,7 @@ export default function LandingPage() {
                   Рассчитать онлайн
                 </a>
                 <p className="text-xs text-muted mt-4 text-center">
-                  Или пишите на <a href="mailto:info@lstkmk.ru" className="text-accent-blue hover:underline">info@lstkmk.ru</a>
+                  Или пишите на <a href="mailto:maxsteel31@bk.ru" className="text-accent-blue hover:underline">maxsteel31@bk.ru</a>
                 </p>
               </div>
             </aside>

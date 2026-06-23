@@ -5,7 +5,7 @@ import FaqSchema from "@/components/FaqSchema";
 export const metadata: Metadata = {
   title: "Металлоконструкции в ДНР под ключ цена | МАКСТИЛ",
   description:
-    "Проектирование, производство и монтаж металлоконструкций в ДНР. Ангары, склады, сельхозздания и объекты восстановления. Цены от 12 000 ₽/м². Узнайте стоимость — оставьте заявку.",
+    "Проектирование, производство и монтаж металлоконструкций в ДНР. Ангары, склады, сельхозздания и объекты восстановления. Цены от 4 500 ₽/м². Узнайте стоимость — оставьте заявку.",
   keywords: [
     "металлоконструкции в ДНР",
     "металлоконструкции ДНР цена",
@@ -33,7 +33,7 @@ export default function LandingPage() {
     description: "Проектирование, производство и монтаж металлоконструкций, складов, ангаров и объектов восстановления в ДНР.",
     url: "https://lstkmk.ru/metallokonstrukcii-dnr/",
     telephone: "+7 (980) 321-15-42",
-    email: "info@lstkmk.ru",
+    email: "maxsteel31@bk.ru",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Донецк",
@@ -41,7 +41,7 @@ export default function LandingPage() {
       addressCountry: "RU",
     },
     areaServed: "Донецк, ДНР",
-    priceRange: "от 12 000 ₽/м²",
+    priceRange: "от 4 500 ₽/м²",
   };
 
   const stats = [
@@ -52,10 +52,10 @@ export default function LandingPage() {
   ];
 
   const priceTable = [
-    { type: "Каркас ЛСТК", price: "от 12 000 ₽/м²", includes: "Колонны, фермы, связи, прогоны" },
-    { type: "Металлокаркас под ключ", price: "от 18 000 ₽/м²", includes: "Каркас, кровля, ограждение, монтаж" },
-    { type: "Конструкции с кран-балкой", price: "от 22 000 ₽/м²", includes: "Усиленный каркас, кран, монтаж" },
-    { type: "Сельхоз металлоконструкции", price: "от 11 000 ₽/м²", includes: "Каркас, кровля, ограждение" },
+    { type: "Склад / производство", price: "от 4 500 ₽/м²", includes: "Каркас ЛСТК, профлист, кровля, монтаж. Цена за м² при площади от 4000 м²." },
+    { type: "Сельхоз здания", price: "от 4 600 ₽/м²", includes: "Каркас, кровля, ограждение, монтаж. Коровники, зернохранилища, фермы." },
+    { type: "Автосервис / гараж", price: "от 4 800 ₽/м²", includes: "Каркас, ворота, кровля, монтаж. СТО, мойки, шиномонтажи, гаражи." },
+    { type: "Малые здания до 300 м²", price: "от 5 600 ₽/м²", includes: "Хозблоки, павильоны, бытовки, небольшие мастерские." },
   ];
 
   const advantages = [
@@ -104,7 +104,7 @@ export default function LandingPage() {
                 Металлоконструкции в ДНР под ключ
               </h1>
               <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-8">
-                Проектируем, производим и монтируем металлоконструкции для складов, ангаров, сельхозобъектов и восстановления в ДНР. Цены от 12 000 ₽/м², срок от 45 дней, гарантия 5 лет.
+                Проектируем, производим и монтируем металлоконструкции для складов, ангаров, сельхозобъектов и восстановления в ДНР. Цены от 4 500 ₽/м², срок от 45 дней, гарантия 5 лет.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
@@ -275,7 +275,7 @@ export default function LandingPage() {
                   Рассчитать онлайн
                 </a>
                 <p className="text-xs text-muted mt-4 text-center">
-                  Или пишите на <a href="mailto:info@lstkmk.ru" className="text-accent-blue hover:underline">info@lstkmk.ru</a>
+                  Или пишите на <a href="mailto:maxsteel31@bk.ru" className="text-accent-blue hover:underline">maxsteel31@bk.ru</a>
                 </p>
               </div>
             </aside>

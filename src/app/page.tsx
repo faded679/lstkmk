@@ -69,7 +69,7 @@ const localBusinessSchema = {
     opens: "09:00",
     closes: "18:00",
   },
-  email: "info@lstkmk.ru",
+  email: "maxsteel31@bk.ru",
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Строительные услуги",
