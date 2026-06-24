@@ -64,6 +64,11 @@ export default function Footer() {
                   Строительство под ключ
                 </a>
               </li>
+              <li>
+                <a href="/stroitelstvo-cehov-lstk/" className="hover:text-foreground transition-colors">
+                  Строительство цехов из ЛСТК
+                </a>
+              </li>
             </ul>
           </div>
 

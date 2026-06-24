@@ -43,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/metallokonstrukcii-belgorod-cena/`,        lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/stroitelstvo-skladov-iz-metallokonstrukcij/`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/bystrovozvodimye-zdaniya-cena/`,           lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/stroitelstvo-cehov-lstk/`,                 lastModified: now, changeFrequency: "weekly", priority: 0.9 },
   ];
 
   const articleEntries: MetadataRoute.Sitemap = discoverSlugs("articles").map((slug) => ({
