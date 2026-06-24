@@ -201,7 +201,7 @@ export default function Contacts() {
               { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (960) 632-20-61", sub: "Бесплатно по России", href: "tel:+79606322061" },
               { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: null, copyEmail: true },
               { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, Белгородский район, г. Белгород, с. Репное, ул. Автодорожная, 2", href: "https://yandex.ru/maps/?text=Белгородская+область,+Белгородский+район,+г.+Белгород,+с.+Репное,+ул.+Автодорожная,+2" },
-              { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 9:00–18:00" },
+              { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 8:00–17:00" },
             ].map(({ icon: Icon, color, label, value, sub, href, copyEmail: isCopy }) => (
               <div key={label} className="flex items-start gap-4 bg-white rounded-xl p-4 border border-border">
                 <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-${color}/10`}>
