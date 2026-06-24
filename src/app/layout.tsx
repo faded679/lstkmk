@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import Breadcrumb from "@/components/Breadcrumb";
 import AiAssistant from "@/components/AiAssistant";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -109,6 +110,7 @@ export default function RootLayout({
       <body>
         <Breadcrumb />
         {children}
+        <Footer />
         <AiAssistant />
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-KR3X1J843D" strategy="afterInteractive" />

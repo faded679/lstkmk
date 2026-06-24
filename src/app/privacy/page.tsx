@@ -1,5 +1,4 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Политика конфиденциальности — МАКСТИЛ",
@@ -171,7 +170,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

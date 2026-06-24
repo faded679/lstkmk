@@ -11,7 +11,6 @@ import Testimonials from "@/components/Testimonials";
 import ClientMarquee from "@/components/ClientMarquee";
 import Calculator from "@/components/Calculator";
 import Contacts from "@/components/Contacts";
-import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import FaqSchema from "@/components/FaqSchema";
 
@@ -145,7 +144,6 @@ export default function Home() {
         <ClientMarquee />
         <Contacts />
       </main>
-      <Footer />
       <CookieBanner />
     </>
   );
