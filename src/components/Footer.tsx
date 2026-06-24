@@ -69,6 +69,11 @@ export default function Footer() {
                   Строительство цехов из ЛСТК
                 </a>
               </li>
+              <li>
+                <a href="/bystrovozvodimye-angary/" className="hover:text-foreground transition-colors">
+                  Быстровозводимые ангары
+                </a>
+              </li>
             </ul>
           </div>
 
