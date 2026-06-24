@@ -5,6 +5,9 @@ import Script from "next/script";
 import Breadcrumb from "@/components/Breadcrumb";
 import AiAssistant from "@/components/AiAssistant";
 import Footer from "@/components/Footer";
+import OrganizationSchema from "@/components/OrganizationSchema";
+import WebSiteSchema from "@/components/WebSiteSchema";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -90,7 +93,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -108,6 +111,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
+        <OrganizationSchema />
+        <WebSiteSchema />
+        <BreadcrumbSchema />
         <Breadcrumb />
         {children}
         <Footer />

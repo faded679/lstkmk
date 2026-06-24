@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import FaqSchema from "@/components/FaqSchema";
+import ServiceSchema from "@/components/ServiceSchema";
 
 export const metadata: Metadata = {
   title: "Металлоконструкции Белгород цена за тонну | МАКСТИЛ",
@@ -25,6 +26,13 @@ export const metadata: Metadata = {
 };
 
 export default function LandingPage() {
+  const serviceSchema = {
+    name: "Металлоконструкции в Белгороде",
+    description: "Производство и продажа металлоконструкций ЛСТК в Белгороде. Цена за тонну, проектирование, доставка, монтаж.",
+    priceRange: "от 95 000 ₽/тонну",
+    areaServed: "Белгород, Белгородская область, ЦФО, РФ",
+  };
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -89,6 +97,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
+      <ServiceSchema {...serviceSchema} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <FaqSchema />
 

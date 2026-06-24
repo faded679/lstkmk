@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import FaqSchema from "@/components/FaqSchema";
+import ServiceSchema from "@/components/ServiceSchema";
 
 export const metadata: Metadata = {
   title: "Металлоконструкции в Курске и области под ключ | МАКСТИЛ",
@@ -25,6 +26,13 @@ export const metadata: Metadata = {
 };
 
 export default function LandingPage() {
+  const serviceSchema = {
+    name: "МАКСТИЛ — металлоконструкции в Курске",
+    description: "Металлоконструкции в Курске и Курской области. Цены, сроки, гарантия. Заявка онлайн.",
+    priceRange: "от 4 500 ₽/м²",
+    areaServed: "Курск, Курская область, ЦФО, РФ",
+  };
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -88,6 +96,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
+      <ServiceSchema {...serviceSchema} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <FaqSchema />
 
