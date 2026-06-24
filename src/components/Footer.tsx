@@ -74,6 +74,11 @@ export default function Footer() {
                   Быстровозводимые ангары
                 </a>
               </li>
+              <li>
+                <a href="/garazh-iz-lstk-cena/" className="hover:text-foreground transition-colors">
+                  Гараж из ЛСТК цена
+                </a>
+              </li>
             </ul>
           </div>
 
