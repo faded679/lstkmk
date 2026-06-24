@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import ArticleSchema from "@/components/ArticleSchema";
+import ArticleSchemaWrapper from "@/components/ArticleSchemaWrapper";
 import breadcrumbs from "@/data/breadcrumbs.json";
 
 export const metadata: Metadata = {
@@ -26,22 +25,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ArticlesLayout({
+export default function ArticlesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-invoke-path") || headersList.get("x-matched-path") || "/articles/";
-
-  const isArticlePage = pathname !== "/articles/" && pathname.startsWith("/articles/");
-  const title = (breadcrumbs as Record<string, string>)[pathname] || "Статья о металлоконструкциях";
-  const description = `Полезная статья на тему: ${title}. Проектирование, производство и строительство быстровозводимых зданий из ЛСТК.`;
-  const url = `https://lstkmk.ru${pathname}`;
-
   return (
     <>
-      {isArticlePage && <ArticleSchema title={title} description={description} url={url} />}
+      <ArticleSchemaWrapper
+        basePath="/articles"
+        baseTitle="Статья о металлоконструкциях"
+        breadcrumbs={breadcrumbs as Record<string, string>}
+      />
       {children}
     </>
   );

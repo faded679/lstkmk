@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import ArticleSchema from "@/components/ArticleSchema";
+import ArticleSchemaWrapper from "@/components/ArticleSchemaWrapper";
 import breadcrumbs from "@/data/breadcrumbs.json";
 
 export const metadata: Metadata = {
@@ -24,22 +23,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function KnowledgeLayout({
+export default function KnowledgeLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-invoke-path") || headersList.get("x-matched-path") || "/knowledge/";
-
-  const isKnowledgePage = pathname !== "/knowledge/" && pathname.startsWith("/knowledge/");
-  const title = (breadcrumbs as Record<string, string>)[pathname] || "Справочный материал по ЛСТК";
-  const description = `Справочный материал на тему: ${title}. Проектирование, производство и строительство быстровозводимых зданий из ЛСТК.`;
-  const url = `https://lstkmk.ru${pathname}`;
-
   return (
     <>
-      {isKnowledgePage && <ArticleSchema title={title} description={description} url={url} />}
+      <ArticleSchemaWrapper
+        basePath="/knowledge"
+        baseTitle="Справочный материал по ЛСТК"
+        breadcrumbs={breadcrumbs as Record<string, string>}
+      />
       {children}
     </>
   );
