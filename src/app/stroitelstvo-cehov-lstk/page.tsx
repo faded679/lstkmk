@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import LeadForm from "@/components/LeadForm";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Clock,
   Coins,
@@ -53,44 +54,6 @@ export default function CehLandingPage() {
     priceRange: "от 4 500 ₽/м²",
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Можно ли поставить мостовой кран в цехе из ЛСТК?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Каркас ЛСТК может быть рассчитан на крановые нагрузки до 20 т и более. Мы усиливаем фермы, колонны и фундамент под конкретную грузоподъёмность и тип крана. Это заранее закладывается в проект КМ/КМД.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Нужно ли разрешение на строительство цеха?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для большинства быстровозводимых цехов площадью до 1 500 м² и высотой до 20 м достаточно уведомления о начале строительства по 152-ФЗ. Для крупных и ответственных объектов требуется разрешение на строительство. Мы готовим документацию и помогаем согласовать проект.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Чем ЛСТК-цех отличается от цеха из сэндвич-панелей?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "ЛСТК — это несущий каркас, а сэндвич-панели — это ограждающие конструкции. Цех из ЛСТК может быть облицован сэндвич-панелями, профлистом или комбинированным фасадом. Технология ЛСТК выигрывает по скорости монтажа, весу и стоимости фундамента.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какая минимальная и максимальная площадь цеха?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Минимальная экономически целесообразная площадь — от 200–300 м². Максимальная практически не ограничена: строим цеха и заводы площадью 5 000–10 000 м² и более. Пролёты без промежуточных колонн — до 30–36 м.",
-        },
-      },
-    ],
-  };
 
   const workshopTypes = [
     {
@@ -182,7 +145,7 @@ export default function CehLandingPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         {/* HERO */}

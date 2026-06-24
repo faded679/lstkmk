@@ -32,7 +32,7 @@ export default function Footer() {
   return (
     <footer className="py-10 bg-white border-t border-slate-200 text-foreground">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 mb-10">
           <div>
             <img src="/logo-makstil-new.png" alt="МАКСТИЛ" className="h-12 w-auto object-contain mb-3" />
             <p className="text-sm text-slate-400 leading-relaxed max-w-[30ch]">
@@ -80,16 +80,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/chertezhi-km/" className="hover:text-foreground transition-colors">
-                  Чертежи КМ
-                </a>
-              </li>
-              <li>
-                <a href="/chertezhi-kmd/" className="hover:text-foreground transition-colors">
-                  Чертежи КМД
-                </a>
-              </li>
-              <li>
                 <a href="/stroitelstvo-zavoda-pod-klyuch/" className="hover:text-foreground transition-colors">
                   Строительство завода под ключ
                 </a>
@@ -97,6 +87,42 @@ export default function Footer() {
               <li>
                 <a href="/angar-iz-sendvich-panelej-cena/" className="hover:text-foreground transition-colors">
                   Ангар из сэндвич-панелей
+                </a>
+              </li>
+              <li>
+                <a href="/sklad-pod-klyuch-cena/" className="hover:text-foreground transition-colors">
+                  Склад под ключ цена
+                </a>
+              </li>
+              <li>
+                <a href="/stroitelstvo-torgovogo-centra/" className="hover:text-foreground transition-colors">
+                  Строительство торгового центра
+                </a>
+              </li>
+              <li>
+                <a href="/sportivnyj-kompleks-iz-metallokonstrukcij/" className="hover:text-foreground transition-colors">
+                  Спортивный комплекс из металлоконструкций
+                </a>
+              </li>
+              <li>
+                <a href="/kalkulyator-angara/" className="hover:text-foreground transition-colors">
+                  Калькулятор стоимости ангара
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-foreground mb-3">Справочник</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li>
+                <a href="/chertezhi-km/" className="hover:text-foreground transition-colors">
+                  Чертежи КМ
+                </a>
+              </li>
+              <li>
+                <a href="/chertezhi-kmd/" className="hover:text-foreground transition-colors">
+                  Чертежи КМД
                 </a>
               </li>
               <li>

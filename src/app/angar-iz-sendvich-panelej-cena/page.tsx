@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import LeadForm from "@/components/LeadForm";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Thermometer,
   Snowflake,
@@ -53,44 +54,6 @@ export default function AngarSendvichPage() {
     priceRange: "от 5 600 ₽/м²",
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Сколько стоит ангар из сэндвич-панелей за м²?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Цена ангара из сэндвич-панелей зависит от площади и типа. По калькулятору МАКСТИЛ: от 5 600 ₽/м² для больших площадей до 9 400 ₽/м² для малых. Точная цена рассчитывается после замеров и технического задания.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какой срок строительства ангара из сэндвич-панелей?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Срок строительства ангара из сэндвич-панелей — от 2 до 4 недель в зависимости от площади. Ангар 500 м² строится за 2–3 недели, 1 000 м² — за 3–4 недели.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какая толщина сэндвич-панелей нужна для ангара?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для умеренного климата достаточно 100 мм. Для холодных регионов и круглогодичного отопления — 150–200 мм. Толщина влияет на теплозащиту и конечную цену.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Можно ли строить ангар из сэндвич-панелей зимой?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Каркас ЛСТК собирается на болтовых соединениях без сварки. Монтаж сэндвич-панелей также возможен при отрицательных температурах. Главное — правильная герметизация стыков.",
-        },
-      },
-    ],
-  };
 
   const sizes = [
     { size: "100 м²", price: "от 5 600 ₽/м²", total: "от 560 000 ₽", desc: "Малый склад, гараж, мастерская." },
@@ -138,7 +101,7 @@ export default function AngarSendvichPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">

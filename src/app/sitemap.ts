@@ -52,6 +52,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/uzly-sendvich-panelej/`,                     lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/vetrovoj-rajon/`,                            lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/angar-iz-sendvich-panelej-cena/`,             lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/sklad-pod-klyuch-cena/`,                      lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/stroitelstvo-torgovogo-centra/`,              lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/sportivnyj-kompleks-iz-metallokonstrukcij/`,  lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/kalkulyator-angara/`,                          lastModified: now, changeFrequency: "weekly", priority: 0.9 },
   ];
 
   const articleEntries: MetadataRoute.Sitemap = discoverSlugs("articles").map((slug) => ({

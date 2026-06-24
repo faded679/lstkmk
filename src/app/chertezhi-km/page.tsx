@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Blueprint,
   CheckCircle,
@@ -28,35 +29,19 @@ export const metadata: Metadata = {
 };
 
 export default function ChertezhiKmPage() {
-  const faqSchema = {
+  const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Чем КМ отличается от КМД?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "КМ — это конструктивные решения металлоконструкций: схемы расположения, нагрузки, принципиальные узлы. КМД — деталировочные чертежи для изготовления: каждая деталь с размерами, отверстиями и маркировкой. КМ делается перед КМД.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Кто разрабатывает чертежи КМ?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Чертежи КМ разрабатывают проектные организации и конструкторские отделы застройщиков с допуском СРО. В МАКСТИЛ разработку КМ и КМД ведут инженеры-конструкторы с опытом проектирования быстровозводимых зданий.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Сколько стоит разработка КМ?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Стоимость разработки КМ зависит от площади, сложности и наличия исходных данных. В среднем для ангара или цеха площадью 1 000 м² — от 50 000 до 150 000 ₽. Точную цену рассчитываем после технического задания.",
-        },
-      },
-    ],
+    "@type": "Service",
+    name: "Разработка чертежей КМ",
+    description: "Конструктивные решения металлоконструкций для ангаров, складов, цехов и быстровозводимых зданий. Работаем по всей России.",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "МАКСТИЛ",
+      telephone: "+7 (960) 632-20-61",
+      address: { "@type": "PostalAddress", addressLocality: "Белгород", addressCountry: "RU" },
+    },
+    areaServed: "Россия",
+    priceRange: "от 50 000 ₽",
   };
 
   const composition = [
@@ -101,7 +86,8 @@ export default function ChertezhiKmPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">

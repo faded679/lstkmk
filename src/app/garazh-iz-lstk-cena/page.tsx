@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import LeadForm from "@/components/LeadForm";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Clock,
   Coins,
@@ -51,44 +52,6 @@ export default function GarazhLandingPage() {
     priceRange: "от 7 800 ₽/м²",
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Нужно ли разрешение на строительство гаража из ЛСТК?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для гаража площадью до 500 м² и высотой до 20 м на ИЖС достаточно уведомления о начале строительства по 152-ФЗ. Для крупных гаражных комплексов и на коммерческих землях может потребоваться разрешение. Мы помогаем подготовить документацию.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Можно ли сделать смотровую яму в гараже из ЛСТК?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Смотровая яма или эстакада монтируются на этапе фундамента. Важно учесть гидроизоляцию и вентиляцию. Возможно также оборудование подкранового пути, подъёмника и рабочей ямы.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какой фундамент лучше для гаража из ЛСТК?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для лёгкого гаража из ЛСТК подходит мелкозаглублённая ленточная основа или плита. Плита предпочтительнее для мастерских и при наличии ямы — даёт ровный пол и высокую нагрузку. Лента — экономичнее для хранения автомобилей.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Сколько служит гараж из ЛСТК?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Срок службы оцинкованного каркаса ЛСТК — от 50 лет. Ограждающие конструкции (профлист, сэндвич-панели) при правильной эксплуатации служат 25–50 лет. Гарантия МАКСТИЛ на конструкции — 5 лет.",
-        },
-      },
-    ],
-  };
 
   const prices = [
     {
@@ -171,7 +134,7 @@ export default function GarazhLandingPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         {/* HERO */}

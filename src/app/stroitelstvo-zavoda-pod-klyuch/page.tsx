@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import LeadForm from "@/components/LeadForm";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Clock,
   Coins,
@@ -52,44 +53,6 @@ export default function ZavodLandingPage() {
     priceRange: "от 4 500 ₽/м²",
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Нужно ли разрешение на строительство завода?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да, для производственных зданий и заводов требуется разрешение на строительство. Мы готовим проектную документацию, проходим экспертизу и помогаем получить разрешение.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Можно ли установить кран-балку в заводе из металлоконструкций?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Каркас металлоконструкций может быть рассчитан на мостовые и подвесные краны грузоподъёмностью от 5 до 50 т. Крановые нагрузки закладываются на этапе КМ.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какие пролёты возможны для завода?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Стандартные пролёты — 12, 18, 24, 30 м. Без промежуточных колонн возможны пролёты до 36 м. Для больших пролётов используются фермы и балочные клетки.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какие сроки строительства завода?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Сроки зависят от площади и сложности. Цех 1 000 м² — 6–8 недель, завод 5 000 м² — 3–4 месяца. Проектирование и согласование добавляют 1–2 месяца.",
-        },
-      },
-    ],
-  };
 
   const types = [
     {
@@ -161,7 +124,7 @@ export default function ZavodLandingPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Blueprint,
   Pencil,
@@ -32,35 +33,19 @@ export const metadata: Metadata = {
 };
 
 export default function ChertezhiKmdPage() {
-  const faqSchema = {
+  const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Кмд что это в строительстве?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "КМД — это конструкции металлические деталировочные, раздел проектной документации с чертежами каждой детали для изготовления. В КМД указываются размеры, отверстия, сечения, маркировка, сварные швы и ведомости метизов.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Сколько стоят чертежи КМД?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Стоимость КМД зависит от количества деталей и площади здания. Для ангара или цеха площадью 1 000 м² — от 100 000 до 250 000 ₽. Точную цену рассчитываем после КМ и технического задания.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Можно ли заказать КМД без КМ?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Теоретически можно, но не рекомендуется. КМД — это детализация КМ. Если КМ отсутствует, его придётся разработать заново или создать по существующим схемам, что увеличивает сроки и стоимость.",
-        },
-      },
-    ],
+    "@type": "Service",
+    name: "Разработка чертежей КМД",
+    description: "Деталировочные чертежи металлоконструкций для производства и монтажа. Работаем по всей России.",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "МАКСТИЛ",
+      telephone: "+7 (960) 632-20-61",
+      address: { "@type": "PostalAddress", addressLocality: "Белгород", addressCountry: "RU" },
+    },
+    areaServed: "Россия",
+    priceRange: "от 100 000 ₽",
   };
 
   const composition = [
@@ -112,7 +97,8 @@ export default function ChertezhiKmdPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">

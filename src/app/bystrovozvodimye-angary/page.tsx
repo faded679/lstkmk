@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import LeadForm from "@/components/LeadForm";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Clock,
   Coins,
@@ -55,44 +56,6 @@ export default function BystrovozvodimyeAngaryPage() {
     priceRange: "от 4 500 ₽/м²",
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Чем быстровозводимый ангар отличается от капитального?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Быстровозводимый ангар собирается из готовых заводских элементов на болтовых соединениях без сварки на площадке. Это в 2–3 раза быстрее и дешевле капитального строительства, не требует массивного фундамента и легко расширяется или переносится.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Нужно ли разрешение на строительство быстровозводимого ангара?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для большинства ангаров площадью до 1 500 м² и высотой до 20 м достаточно уведомления по 152-ФЗ. Для крупных и ответственных объектов оформляется разрешение на строительство. Мы помогаем подготовить документацию.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Можно ли утеплить ангар после строительства?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Холодный ангар из ЛСТК можно дооснастить сэндвич-панелями, утеплить кровлю, установить отопление и вентиляцию. Каркас ЛСТК легко адаптируется под изменение комплектации.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Какая максимальная высота быстровозводимого ангара?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Стандартная высота в коньке — 6–12 м. При необходимости проектируем ангары высотой до 15 м и более для размещения кран-балок, погрузчиков и крупногабаритной техники.",
-        },
-      },
-    ],
-  };
 
   const types = [
     {
@@ -177,7 +140,7 @@ export default function BystrovozvodimyeAngaryPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         {/* HERO */}

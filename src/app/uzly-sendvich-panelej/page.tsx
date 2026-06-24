@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
+import FaqSchema from "@/components/FaqSchema";
 import {
   ArrowsInLineHorizontal,
   ArrowsInLineVertical,
@@ -35,35 +36,19 @@ export const metadata: Metadata = {
 };
 
 export default function UzlySendvichPanelejPage() {
-  const faqSchema = {
+  const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Какой шаг саморезов для сэндвич-панелей?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Стандартный шаг саморезов — 500–700 мм по длине панели. В зонах углов, окон, ворот и подкрановых путей шаг уменьшается до 300–400 мм. Всегда следуйте технологической карте производителя панелей.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Нужны ли термопрокладки при креплении сэндвич-панелей?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Терморазделительные прокладки устанавливаются под шайбы саморезов, чтобы избежать мостиков холода и конденсата на металлическом крепеже. Особенно важно для тёплых зданий.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Как герметизировать стыки сэндвич-панелей?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Для герметизации используются заводские замки панелей, бутиловые ленты, полиуретановые герметики и уплотнительные профили. Вертикальные стыки рекомендуется дополнительно проклеивать паропроницаемой лентой.",
-        },
-      },
-    ],
+    "@type": "Service",
+    name: "Монтаж сэндвич-панелей и узлы крепления",
+    description: "Типовые решения и схемы узлов крепления сэндвич-панелей для стен и кровли. Работаем по всей России.",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "МАКСТИЛ",
+      telephone: "+7 (960) 632-20-61",
+      address: { "@type": "PostalAddress", addressLocality: "Белгород", addressCountry: "RU" },
+    },
+    areaServed: "Россия",
+    priceRange: "по запросу",
   };
 
   const nodes = [
@@ -116,7 +101,8 @@ export default function UzlySendvichPanelejPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">

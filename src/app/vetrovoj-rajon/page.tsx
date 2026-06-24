@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
+import FaqSchema from "@/components/FaqSchema";
 import {
   Wind,
   MapPin,
@@ -32,35 +33,19 @@ export const metadata: Metadata = {
 };
 
 export default function VetrovojRajonPage() {
-  const faqSchema = {
+  const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Как узнать ветровой район участка?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ветровой район определяется по СП 20.13330.2016 «Нагрузки и воздействия». Можно использовать карту приложения Е или таблицу по ближайшему крупному городу. Для точного расчёта нужны координаты участка и тип местности.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Что будет, если не учесть ветровую нагрузку?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Недоучёт ветровой нагрузки может привести к деформации ферм, срыву кровли, повреждению ограждений и аварийному состоянию здания. Правильный расчёт — обязательное условие безопасности.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Отличается ли ветровая нагрузка для ангаров и жилых домов?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Да. Для быстровозводимых зданий с большими пролётами и высотой ветровая нагрузка может быть критичнее, чем для жилых домов. Также важны форма здания, наличие скатов кровли и расположение в условиях местности.",
-        },
-      },
-    ],
+    "@type": "Service",
+    name: "Расчёт ветровой нагрузки и ветровой район",
+    description: "Определение ветрового района по СП 20.13330 и расчёт ветровой нагрузки на здания из металлоконструкций. Работаем по всей России.",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "МАКСТИЛ",
+      telephone: "+7 (960) 632-20-61",
+      address: { "@type": "PostalAddress", addressLocality: "Белгород", addressCountry: "RU" },
+    },
+    areaServed: "Россия",
+    priceRange: "бесплатно при проектировании",
   };
 
   const districts = [
@@ -106,7 +91,8 @@ export default function VetrovojRajonPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <FaqSchema items={faq} />
 
       <main className="pt-28">
         <section className="bg-slate-900 text-white py-20 lg:py-28">
