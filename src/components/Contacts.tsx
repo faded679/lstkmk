@@ -62,7 +62,7 @@ async function getAIResponse(message: string): Promise<string> {
     return data.reply;
   } catch {
     // Fallback при ошибке API
-    return "Извините, произошла ошибка соединения. Пожалуйста, позвоните нам: +7 (980) 321-15-42 — инженер ответит на все вопросы.";
+    return "Извините, произошла ошибка соединения. Пожалуйста, позвоните нам: +7 (960) 632-20-61 — инженер ответит на все вопросы.";
   }
 }
 
@@ -198,7 +198,7 @@ export default function Contacts() {
             className="space-y-5"
           >
             {[
-              { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (980) 321-15-42", sub: "Бесплатно по России", href: "tel:+79803211542" },
+              { icon: Phone, color: "accent-blue", label: "Телефон", value: "+7 (960) 632-20-61", sub: "Бесплатно по России", href: "tel:+79606322061" },
               { icon: EnvelopeSimple, color: "accent-orange", label: "Почта", value: "maxsteel31@bk.ru", href: null, copyEmail: true },
               { icon: MapPin, color: "accent-blue", label: "Адрес", value: "Белгородская область, Белгородский район, г. Белгород, с. Репное, ул. Автодорожная, 2", href: "https://yandex.ru/maps/?text=Белгородская+область,+Белгородский+район,+г.+Белгород,+с.+Репное,+ул.+Автодорожная,+2" },
               { icon: Clock, color: "accent-orange", label: "Режим работы", value: "Пн–Пт: 9:00–18:00" },

@@ -33,7 +33,7 @@ export default function LandingPage() {
     provider: {
       "@type": "LocalBusiness",
       name: "МАКСТИЛ",
-      telephone: "+7 (980) 321-15-42",
+      telephone: "+7 (960) 632-20-61",
       address: { "@type": "PostalAddress", addressLocality: "Белгород", addressCountry: "RU" },
     },
     areaServed: "Россия",
@@ -109,10 +109,10 @@ export default function LandingPage() {
                   Рассчитать стоимость здания
                 </a>
                 <a
-                  href="tel:+79803211542"
+                  href="tel:+79606322061"
                   className="inline-flex h-12 items-center justify-center px-8 text-base font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  +7 (980) 321-15-42
+                  +7 (960) 632-20-61
                 </a>
               </div>
             </div>
@@ -246,10 +246,10 @@ export default function LandingPage() {
                   Рассчитать онлайн
                 </a>
                 <a
-                  href="tel:+79803211542"
+                  href="tel:+79606322061"
                   className="inline-flex h-12 w-full items-center justify-center px-6 text-base font-medium text-foreground border border-border rounded-lg hover:bg-white transition-colors"
                 >
-                  +7 (980) 321-15-42
+                  +7 (960) 632-20-61
                 </a>
               </div>
             </aside>
@@ -273,7 +273,7 @@ export default function LandingPage() {
                 Рассчитать стоимость
               </a>
               <a
-                href="tel:+79803211542"
+                href="tel:+79606322061"
                 className="inline-flex h-12 items-center justify-center px-8 text-base font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
               >
                 Позвонить

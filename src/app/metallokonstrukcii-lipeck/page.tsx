@@ -31,7 +31,7 @@ export default function LandingPage() {
     name: "МАКСТИЛ — металлоконструкции в Липецке",
     description: "Проектирование, производство и монтаж металлоконструкций, складов, ангаров и быстровозводимых зданий в Липецке и области.",
     url: "https://lstkmk.ru/metallokonstrukcii-lipeck/",
-    telephone: "+7 (980) 321-15-42",
+    telephone: "+7 (960) 632-20-61",
     email: "maxsteel31@bk.ru",
     address: {
       "@type": "PostalAddress",
@@ -113,10 +113,10 @@ export default function LandingPage() {
                   Рассчитать стоимость
                 </a>
                 <a
-                  href="tel:+79803211542"
+                  href="tel:+79606322061"
                   className="inline-flex h-12 items-center justify-center px-8 text-base font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  +7 (980) 321-15-42
+                  +7 (960) 632-20-61
                 </a>
               </div>
             </div>
@@ -262,7 +262,7 @@ export default function LandingPage() {
                   Оставьте номер — инженер перезвонит, уточнит задачу и рассчитает стоимость под ваш объект в Липецке.
                 </p>
                 <a
-                  href="tel:+79803211542"
+                  href="tel:+79606322061"
                   className="inline-flex h-12 w-full items-center justify-center px-6 text-base font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors mb-3"
                 >
                   Позвонить
@@ -298,10 +298,10 @@ export default function LandingPage() {
                 Рассчитать стоимость
               </a>
               <a
-                href="tel:+79803211542"
+                href="tel:+79606322061"
                 className="inline-flex h-12 items-center justify-center px-8 text-base font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
               >
-                +7 (980) 321-15-42
+                +7 (960) 632-20-61
               </a>
             </div>
           </div>

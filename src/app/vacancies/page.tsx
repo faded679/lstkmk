@@ -426,8 +426,8 @@ export default function VacanciesPage() {
           </p>
           <p className="text-sm text-muted leading-relaxed">
             Телефон:{" "}
-            <a href="tel:+79803211542" className="text-accent-blue font-medium hover:underline">
-              +7 (980) 321-15-42
+            <a href="tel:+79606322061" className="text-accent-blue font-medium hover:underline">
+              +7 (960) 632-20-61
             </a>
           </p>
           <p className="mt-2 text-sm text-muted leading-relaxed">
@@ -534,7 +534,7 @@ export default function VacanciesPage() {
 
                   <div className="pt-2 border-t border-border flex flex-col sm:flex-row gap-2">
                     <a
-                      href="tel:+79803211542"
+                      href="tel:+79606322061"
                       className="flex-1 py-2.5 rounded-lg bg-accent-blue text-white text-sm font-medium text-center hover:bg-accent-blue/90 transition-colors"
                     >
                       Позвонить

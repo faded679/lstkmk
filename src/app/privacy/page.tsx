@@ -142,7 +142,7 @@ export default function PrivacyPage() {
               </p>
               <ul className="list-disc pl-5 space-y-1 text-muted">
                 <li>По электронной почте: <a href="mailto:maxsteel31@bk.ru" className="text-accent-blue hover:underline">maxsteel31@bk.ru</a> с темой письма «Отзыв согласия на обработку ПД»</li>
-                <li>По телефону: <a href="tel:+79803211542" className="text-accent-blue hover:underline">+7 (980) 321-15-42</a></li>
+                <li>По телефону: <a href="tel:+79606322061" className="text-accent-blue hover:underline">+7 (960) 632-20-61</a></li>
                 <li>Письмом на адрес: Белгородский район, с. Репное, ул. Автодорожная, д. 2</li>
               </ul>
               <p className="text-muted mt-2">
@@ -162,7 +162,7 @@ export default function PrivacyPage() {
               <p className="text-muted">
                 ООО «ПромПрофиль» (ТМ МАКСТИЛ)<br />
                 Белгородский район, с. Репное, ул. Автодорожная, д. 2<br />
-                Тел.: <a href="tel:+79803211542" className="text-accent-blue hover:underline">+7 (980) 321-15-42</a><br />
+                Тел.: <a href="tel:+79606322061" className="text-accent-blue hover:underline">+7 (960) 632-20-61</a><br />
                 Email: <a href="mailto:maxsteel31@bk.ru" className="text-accent-blue hover:underline">maxsteel31@bk.ru</a>
               </p>
             </section>

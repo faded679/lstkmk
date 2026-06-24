@@ -75,7 +75,7 @@ export default function Page() {
             </div>
 
             <p className="text-muted leading-relaxed">
-              Проектируем СТО с учётом техрегламента. Звоните: <a href="tel:+79803211542" className="text-accent-blue font-medium">+7 (980) 321-15-42</a>
+              Проектируем СТО с учётом техрегламента. Звоните: <a href="tel:+79606322061" className="text-accent-blue font-medium">+7 (960) 632-20-61</a>
             </p>
           </div>
         </article>

@@ -83,11 +83,11 @@ export default function Navigation() {
 
           <div className="hidden lg:flex items-center gap-3">
             <a
-              href="tel:+79803211542"
+              href="tel:+79606322061"
               className="flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent-blue transition-colors whitespace-nowrap"
             >
               <Phone size={16} weight="bold" />
-              +7 (980) 321-15-42
+              +7 (960) 632-20-61
             </a>
             <Link
               href="/#calculator"
@@ -134,11 +134,11 @@ export default function Navigation() {
                 </Link>
               ))}
               <a
-                href="tel:+79803211542"
+                href="tel:+79606322061"
                 className="flex items-center gap-2 py-3 text-lg font-medium text-foreground/80"
               >
                 <Phone size={20} weight="bold" />
-                +7 (980) 321-15-42
+                +7 (960) 632-20-61
               </a>
               <Link
                 href="/#calculator"

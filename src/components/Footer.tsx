@@ -134,10 +134,10 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <a
-                  href="tel:+79803211542"
+                  href="tel:+79606322061"
                   className="hover:text-foreground transition-colors"
                 >
-                  +7 (980) 321-15-42
+                  +7 (960) 632-20-61
                 </a>
               </li>
               <li>

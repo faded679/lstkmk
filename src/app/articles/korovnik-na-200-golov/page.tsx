@@ -180,10 +180,10 @@ export default function ArticlePage() {
                 Рассчитать стоимость
               </a>
               <a
-                href="tel:+79803211542"
+                href="tel:+79606322061"
                 className="inline-flex h-12 items-center justify-center px-8 text-base font-medium text-foreground border border-border rounded-lg hover:bg-white transition-colors"
               >
-                +7 (980) 321-15-42
+                +7 (960) 632-20-61
               </a>
             </div>
           </div>

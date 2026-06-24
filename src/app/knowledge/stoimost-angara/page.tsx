@@ -62,7 +62,7 @@ export default function Page() {
             </p>
 
             <p className="text-muted leading-relaxed">
-              Для точной сметы нужен проект. Позвоните нам: <a href="tel:+79803211542" className="text-accent-blue font-medium">+7 (980) 321-15-42</a> — рассчитаем бесплатно. Или посмотрите актуальные цены на разделе <Link href="/angar-pod-klyuch-cena/" className="text-accent-blue hover:underline">ангар под ключ цена</Link>.
+              Для точной сметы нужен проект. Позвоните нам: <a href="tel:+79606322061" className="text-accent-blue font-medium">+7 (960) 632-20-61</a> — рассчитаем бесплатно. Или посмотрите актуальные цены на разделе <Link href="/angar-pod-klyuch-cena/" className="text-accent-blue hover:underline">ангар под ключ цена</Link>.
             </p>
           </div>
         </article>

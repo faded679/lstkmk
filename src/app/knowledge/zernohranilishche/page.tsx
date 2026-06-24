@@ -61,7 +61,7 @@ export default function Page() {
             </div>
 
             <p className="text-muted leading-relaxed">
-              Проектируем зернохранилища от 500 до 50 000 тонн. Звоните: <a href="tel:+79803211542" className="text-accent-blue font-medium">+7 (980) 321-15-42</a>
+              Проектируем зернохранилища от 500 до 50 000 тонн. Звоните: <a href="tel:+79606322061" className="text-accent-blue font-medium">+7 (960) 632-20-61</a>
             </p>
           </div>
         </article>

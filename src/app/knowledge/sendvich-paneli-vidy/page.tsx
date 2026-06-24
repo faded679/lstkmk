@@ -91,7 +91,7 @@ export default function Page() {
             </div>
 
             <p className="text-muted leading-relaxed">
-              Поможем выбрать оптимальные панели под ваш проект. Звоните: <a href="tel:+79803211542" className="text-accent-blue font-medium">+7 (980) 321-15-42</a>
+              Поможем выбрать оптимальные панели под ваш проект. Звоните: <a href="tel:+79606322061" className="text-accent-blue font-medium">+7 (960) 632-20-61</a>
             </p>
           </div>
         </article>

@@ -122,9 +122,9 @@ export default function Page() {
                 <Calculator size={18} />
                 Рассчитать стоимость
               </a>
-              <a href="tel:+79803211542" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
+              <a href="tel:+79606322061" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
                 <Phone size={18} />
-                +7 (980) 321-15-42
+                +7 (960) 632-20-61
               </a>
             </div>
           </div>

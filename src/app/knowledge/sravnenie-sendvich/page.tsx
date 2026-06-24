@@ -127,7 +127,7 @@ export default function Page() {
 <p className="mb-6">Средний срок монтажа ангара площадью 600 м² из ЛСТК с сэндвич-панелями составляет 30–45 дней с момента готовности фундамента. ППУ-панели позволяют ускорить процесс до 30%.</p>
 
 <h3 className="text-xl font-semibold mt-6 mb-3">Как выбрать оптимальный тип панели по бюджету?</h3>
-<p className="mb-6">Минимальный бюджет — ПСБ (на 25–30% дешевле минваты), универсальный выбор — минвата, премиум-решение с лучшей теплоизоляцией — ППУ (+15–20% к цене минваты). Инженеры «МАКСТИЛ» рассчитают оптимальный вариант под ваш проект — звоните +7 (980) 321-15-42.</p>
+<p className="mb-6">Минимальный бюджет — ПСБ (на 25–30% дешевле минваты), универсальный выбор — минвата, премиум-решение с лучшей теплоизоляцией — ППУ (+15–20% к цене минваты). Инженеры «МАКСТИЛ» рассчитают оптимальный вариант под ваш проект — звоните +7 (960) 632-20-61.</p>
 
           <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-xl p-6 my-8">
             <h3 className="text-lg font-semibold text-foreground mb-3">Нужна консультация?</h3>
@@ -137,9 +137,9 @@ export default function Page() {
                 <Calculator size={18} />
                 Рассчитать стоимость
               </a>
-              <a href="tel:+79803211542" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
+              <a href="tel:+79606322061" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border rounded-lg hover:bg-slate-50 transition-colors">
                 <Phone size={18} />
-                +7 (980) 321-15-42
+                +7 (960) 632-20-61
               </a>
             </div>
           </div>

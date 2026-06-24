@@ -84,7 +84,7 @@ async function getChatResponse(message: string): Promise<string> {
     const data = await res.json();
     return data.reply;
   } catch {
-    return "Извините, произошла ошибка. Позвоните нам: +7 (980) 321-15-42";
+    return "Извините, произошла ошибка. Позвоните нам: +7 (960) 632-20-61";
   }
 }
 
