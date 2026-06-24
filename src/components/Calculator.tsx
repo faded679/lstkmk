@@ -380,15 +380,15 @@ export default function Calculator() {
         <line x1={B.x} y1={B.y} x2={B2.x} y2={B2.y} stroke="#94a3b8" strokeWidth="0.8" />
 
         {/* ── Dimension labels ── */}
-        {/* Width label — along left-bottom edge */}
+        {/* Width label — along right-bottom edge */}
         <text
-          x={(A.x + B.x) / 2 - 8} y={(A.y + B.y) / 2 + 4}
+          x={(A.x + D.x) / 2 + 8} y={(A.y + D.y) / 2 + 4}
           textAnchor="middle" className="text-[9px] fill-slate-500 font-mono"
         >{width}м</text>
 
-        {/* Length label — along right-bottom edge */}
+        {/* Length label — along left-bottom edge */}
         <text
-          x={(A.x + D.x) / 2 + 8} y={(A.y + D.y) / 2 + 4}
+          x={(A.x + B.x) / 2 - 8} y={(A.y + B.y) / 2 + 4}
           textAnchor="middle" className="text-[9px] fill-slate-500 font-mono"
         >{length}м</text>
 
