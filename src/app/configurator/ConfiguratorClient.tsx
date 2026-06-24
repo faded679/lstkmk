@@ -18,8 +18,8 @@ const ThreeCanvas = dynamic(() => import("./ThreeCanvas"), {
 });
 
 export default function ConfiguratorClient() {
-  const [width, setWidth] = useState(24);
-  const [length, setLength] = useState(48);
+  const [width, setWidth] = useState(18);
+  const [length, setLength] = useState(36);
   const [height, setHeight] = useState(5);
   const [showSandwich, setShowSandwich] = useState(false);
 
