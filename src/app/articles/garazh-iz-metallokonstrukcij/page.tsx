@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     "гараж лстк цена",
     "сколько стоит гараж",
     "проект гаража",
+    "размеры железного гаража",
+    "размер гаражного бокса",
   ],
   openGraph: {
     title: "Гараж из металлоконструкций под ключ",
@@ -46,7 +48,7 @@ export default function ArticlePage() {
               Объекты
             </span>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-4">
-              Гараж из металлоконструкций
+              Гараж из металлоконструкций: размеры, цена, строительство
             </h1>
             <div className="flex items-center gap-4 text-sm text-muted">
               <span>20 июня 2026</span>
@@ -61,7 +63,20 @@ export default function ArticlePage() {
             </p>
 
             <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">
-              Размеры гаража: от 1 до 20 машин
+              Стандартные размеры железного гаража и гаражного бокса
+            </h2>
+            <p className="text-muted leading-relaxed mb-4">
+              Размеры гаражного бокса из металлоконструкций зависят от назначения. Стандартные габариты:
+            </p>
+            <ul className="list-disc list-inside space-y-1 text-muted mb-4 text-sm">
+              <li><strong>На 1 машину:</strong> 3×6 м (минимум) или 4×6 м (рекомендуемый)</li>
+              <li><strong>На 2 машины:</strong> 6×6 м или 7×7 м</li>
+              <li><strong>Высота:</strong> 2,5–3,5 м для легковых, 4–4,5 м для грузовых</li>
+              <li><strong>Размер гаражного бокса в ГСК:</strong> стандарт 3,5×6 м или 4×7 м</li>
+              <li>Возможно изготовление железного гаража любых нестандартных размеров под заказ</li>
+            </ul>
+            <h2 className="text-2xl font-bold text-foreground mt-4 mb-4">
+              Таблица размеров гаража: от 1 до 20 машин
             </h2>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm text-muted border-collapse">

@@ -11,12 +11,16 @@ export const metadata: Metadata = {
 
 const faqData = [
   {
+    question: "Какой тип местности выбрать для строительства ангара?",
+    answer: "Для ангара в сельской местности или на окраине города — чаще всего тип Б. Если объект стоит на открытом поле, у воды или на побережье — тип А с максимальной ветровой нагрузкой. Для коровника в селе подходит тип Б."
+  },
+  {
     question: "Какой тип местности выбрать для коровника?",
     answer: "Для большинства районов России подходит тип Б — открытая местность с небольшими препятствиями. В горных районах — тип В или Г."
   },
   {
     question: "Влияет ли тип местности на цену строительства?",
-    answer: "Да, чем выше ветровая нагрузка (тип А), тем мощнее требуется каркас, что увеличивает стоимость на 5-15%."
+    answer: "Да, чем выше ветровая нагрузка (тип А), тем мощнее требуется каркас, что увеличивает стоимость на 5–15%."
   }
 ];
 
@@ -59,7 +63,7 @@ export default function TipMestnostiPage() {
 
         <article>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Тип местности для строительства
+            Тип местности строительства по СП 20.13330
           </h1>
           
           <p className="text-muted mb-6">
@@ -67,43 +71,47 @@ export default function TipMestnostiPage() {
             От этого зависит расчёт несущих конструкций каркаса.
           </p>
 
-          <div className="overflow-x-auto mb-6">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 font-semibold">Тип</th>
-                  <th className="text-left py-3 font-semibold">Описание</th>
-                  <th className="text-left py-3 font-semibold">Примеры</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 font-medium">А</td>
-                  <td className="py-3 text-muted">Открытая местность</td>
-                  <td className="py-3 text-muted">Степи, поля, берега водоёмов</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 font-medium">Б</td>
-                  <td className="py-3 text-muted">Местность с препятствиями</td>
-                  <td className="py-3 text-muted">Сельхозугодья, посадки</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 font-medium">В</td>
-                  <td className="py-3 text-muted">Города и леса</td>
-                  <td className="py-3 text-muted">Населённые пункты, лесные массивы</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 font-medium">Г</td>
-                  <td className="py-3 text-muted">Горные районы до 1500м</td>
-                  <td className="py-3 text-muted">Предгорья, плато</td>
-                </tr>
-                <tr>
-                  <td className="py-3 font-medium">Д</td>
-                  <td className="py-3 text-muted">Горы выше 1500м</td>
-                  <td className="py-3 text-muted">Высокогорье</td>
-                </tr>
-              </tbody>
-            </table>
+          <h2 className="text-lg font-semibold mb-3">Типы местности A, B, C по СП 20.13330.2016</h2>
+          <div className="space-y-4 mb-6">
+            <div className="border border-border rounded-lg p-4 bg-slate-50">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl font-bold text-foreground w-8 flex-shrink-0">А</span>
+                <div>
+                  <p className="font-semibold text-foreground mb-1">Открытые пространства</p>
+                  <p className="text-sm text-muted mb-2">Открытое поле, степь, лесотундра, тундра, пустыня, берег моря, озёр и водохранилищ. Максимальное ветровое давление (k = 1,0).</p>
+                  <p className="text-xs text-muted"><strong>Примеры для ангара:</strong> строительство ангара в чистом поле, у воды, на побережье — самые жёсткие требования к каркасу.</p>
+                </div>
+              </div>
+            </div>
+            <div className="border border-border rounded-lg p-4 bg-slate-50">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl font-bold text-foreground w-8 flex-shrink-0">Б</span>
+                <div>
+                  <p className="font-semibold text-foreground mb-1">Местность с препятствиями до 10 м</p>
+                  <p className="text-sm text-muted mb-2">Равнинная и холмистая местность с препятствиями высотой 10 м и более — лесные массивы, сельхозугодья, посадки. Наиболее распространённый тип (k = 0,65).</p>
+                  <p className="text-xs text-muted"><strong>Примеры:</strong> окраина города, промзона, деревня, вахтовые посёлки, лесополосы. Типичный тип для большинства сельских ангаров и складов.</p>
+                </div>
+              </div>
+            </div>
+            <div className="border border-border rounded-lg p-4 bg-slate-50">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl font-bold text-foreground w-8 flex-shrink-0">В</span>
+                <div>
+                  <p className="font-semibold text-foreground mb-1">Плотная городская застройка</p>
+                  <p className="text-sm text-muted mb-2">Городские территории с плотной застройкой высотой свыше 25 м. Ветровое давление снижается за счёт экранирования зданиями (k = 0,4).</p>
+                  <p className="text-xs text-muted"><strong>Примеры:</strong> центр крупного города, промышленная зона в городе с многоэтажными зданиями, застройка между высотками.</p>
+                </div>
+              </div>
+            </div>
+            <div className="border border-border rounded-lg p-4 bg-slate-50">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl font-bold text-foreground w-8 flex-shrink-0">Г/Д</span>
+                <div>
+                  <p className="font-semibold text-foreground mb-1">Горные районы</p>
+                  <p className="text-sm text-muted">Г — горные районы до 1500 м (предгорья, плато). Д — высокогорье свыше 1500 м. Расчёт производится индивидуально.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="bg-slate-50 p-4 rounded-lg mb-6">

@@ -6,7 +6,7 @@ import Navigation from "@/components/Navigation";
 export const metadata: Metadata = {
   title: "Минимальный уклон кровли из сэндвич-панелей | Нормы СП",
   description: "Минимальный уклон кровли из сэндвич-панелей: 5° для панелей и 8° для профлиста. Нормы, рекомендации и последствия нарушений.",
-  keywords: ["уклон кровли сэндвич-панели", "минимальный уклон крыши ангара", "уклон кровли из профлиста", "нормы уклона кровли"],
+  keywords: ["уклон кровли сэндвич-панели", "минимальный уклон крыши ангара", "уклон кровли из профлиста", "нормы уклона кровли", "уклон кровли из сэндвич панелей сп", "минимальный уклон кровли нормы"],
 };
 
 const faqData = [
@@ -45,35 +45,56 @@ export default function UklonKrovliPage() {
             приводит к застою воды, протечкам и ускоренной коррозии.
           </p>
 
+          <p className="text-muted mb-4 text-sm">
+            Согласно нормативам СП 17.13330, минимальный уклон кровли из сэндвич панелей СП составляет 5° (около 8%) — это нижняя граница, при которой обеспечивается нормальный водоотвод и герметичность продольных стыков.
+          </p>
+          <h2 className="text-lg font-semibold mb-3">Минимальный уклон кровли по СП 17.13330: таблица</h2>
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left py-3 font-semibold">Тип покрытия</th>
                   <th className="text-left py-3 font-semibold">Мин. уклон</th>
+                  <th className="text-left py-3 font-semibold">В %</th>
                   <th className="text-left py-3 font-semibold">Рекомендуемый</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b border-border/50">
-                  <td className="py-3">Сэндвич-панель кровельная</td>
+                  <td className="py-3">Сэндвич-панели поэлементной сборки</td>
+                  <td className="py-3 font-medium">6°</td>
+                  <td className="py-3 text-muted">10–15%</td>
+                  <td className="py-3 text-muted">8–12°</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3">Сэндвич-панели с гладкой оболочкой (СП)</td>
                   <td className="py-3 font-medium">5° (8%)</td>
-                  <td className="py-3 text-muted">7-10°</td>
+                  <td className="py-3 text-muted">5–7%</td>
+                  <td className="py-3 text-muted">7–10°</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-3">Профлист с герметиком</td>
                   <td className="py-3 font-medium">5° (8%)</td>
-                  <td className="py-3 text-muted">8-12°</td>
+                  <td className="py-3 text-muted">10–15%</td>
+                  <td className="py-3 text-muted">8–12°</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-3">Профлист без герметика</td>
                   <td className="py-3 font-medium">8° (14%)</td>
-                  <td className="py-3 text-muted">10-15°</td>
+                  <td className="py-3 text-muted">10–15%</td>
+                  <td className="py-3 text-muted">10–15°</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3">Металлочерепица</td>
+                  <td className="py-3 font-medium">7°</td>
+                  <td className="py-3 text-muted">12–15%</td>
+                  <td className="py-3 text-muted">12–20°</td>
                 </tr>
                 <tr>
-                  <td className="py-3">Мембранная кровля</td>
-                  <td className="py-3 font-medium">1,5° (2,5%)</td>
-                  <td className="py-3 text-muted">3-5°</td>
+                  <td className="py-3">Рулонные материалы (мембрана)</td>
+                  <td className="py-3 font-medium">1,5°</td>
+                  <td className="py-3 text-muted">1,5–5%</td>
+                  <td className="py-3 text-muted">3–5°</td>
                 </tr>
               </tbody>
             </table>

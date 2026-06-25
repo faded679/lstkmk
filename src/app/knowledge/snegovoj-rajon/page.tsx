@@ -5,8 +5,8 @@ import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Снеговой район для строительства | Карта снеговых районов России",
-  description: "Снеговые районы I-VIII. Расчёт снеговой нагрузки на кровлю ангара и коровника по СП 131.",
-  keywords: ["снеговой район", "снеговая нагрузка", "карта снеговых районов", "расчёт снега на кровле"],
+  description: "Снеговые районы I-VIII. Расчёт снеговой нагрузки на кровлю ангара и коровника по СП 131. Таблица снеговых районов по городам: Москва, Белгород, Краснодар, Новосибирск и другие.",
+  keywords: ["снеговой район", "снеговая нагрузка", "карта снеговых районов", "расчёт снега на кровле", "снеговая нагрузка омск", "снеговой район москва", "снеговая нагрузка тюмень", "челябинск снеговой район", "пермь снеговой район"],
 };
 
 const snegData = [
@@ -20,10 +20,70 @@ const snegData = [
   { rajon: "VIII", nagruzka: "3,5+ кПа", regiony: "Север, Крайний Север" },
 ];
 
+const citiesData = [
+  { city: "Абакан", district: "III", load: "150 кг/м²" },
+  { city: "Архангельск", district: "IV", load: "200 кг/м²" },
+  { city: "Астрахань", district: "I", load: "50 кг/м²" },
+  { city: "Барнаул", district: "III", load: "150 кг/м²" },
+  { city: "Белгород", district: "II", load: "100 кг/м²" },
+  { city: "Братск", district: "III", load: "150 кг/м²" },
+  { city: "Великий Новгород", district: "II", load: "100 кг/м²" },
+  { city: "Владивосток", district: "III", load: "150 кг/м²" },
+  { city: "Волгоград", district: "II", load: "100 кг/м²" },
+  { city: "Воронеж", district: "II", load: "100 кг/м²" },
+  { city: "Екатеринбург", district: "III", load: "150 кг/м²" },
+  { city: "Иркутск", district: "III", load: "150 кг/м²" },
+  { city: "Казань", district: "III", load: "150 кг/м²" },
+  { city: "Калининград", district: "II", load: "100 кг/м²" },
+  { city: "Калуга", district: "II", load: "100 кг/м²" },
+  { city: "Кемерово", district: "III", load: "150 кг/м²" },
+  { city: "Киров", district: "III", load: "150 кг/м²" },
+  { city: "Комсомольск-на-Амуре", district: "III", load: "150 кг/м²" },
+  { city: "Краснодар", district: "I", load: "50 кг/м²" },
+  { city: "Красноярск", district: "III", load: "150 кг/м²" },
+  { city: "Курган", district: "III", load: "150 кг/м²" },
+  { city: "Курск", district: "II", load: "100 кг/м²" },
+  { city: "Липецк", district: "II", load: "100 кг/м²" },
+  { city: "Луганск", district: "II", load: "100 кг/м²" },
+  { city: "Москва", district: "II", load: "100 кг/м²" },
+  { city: "Мурманск", district: "V", load: "250 кг/м²" },
+  { city: "Нижний Новгород", district: "II", load: "100 кг/м²" },
+  { city: "Новосибирск", district: "III", load: "150 кг/м²" },
+  { city: "Омск", district: "III", load: "150 кг/м²" },
+  { city: "Орёл", district: "II", load: "100 кг/м²" },
+  { city: "Оренбург", district: "III", load: "150 кг/м²" },
+  { city: "Пенза", district: "II", load: "100 кг/м²" },
+  { city: "Пермь", district: "III", load: "150 кг/м²" },
+  { city: "Петрозаводск", district: "V", load: "250 кг/м²" },
+  { city: "Псков", district: "II", load: "100 кг/м²" },
+  { city: "Ростов-на-Дону", district: "I", load: "50 кг/м²" },
+  { city: "Рязань", district: "II", load: "100 кг/м²" },
+  { city: "Самара", district: "II", load: "100 кг/м²" },
+  { city: "Санкт-Петербург", district: "II", load: "100 кг/м²" },
+  { city: "Саратов", district: "II", load: "100 кг/м²" },
+  { city: "Смоленск", district: "II", load: "100 кг/м²" },
+  { city: "Тамбов", district: "II", load: "100 кг/м²" },
+  { city: "Тверь", district: "II", load: "100 кг/м²" },
+  { city: "Томск", district: "III", load: "150 кг/м²" },
+  { city: "Тула", district: "II", load: "100 кг/м²" },
+  { city: "Тюмень", district: "III", load: "150 кг/м²" },
+  { city: "Ульяновск", district: "II", load: "100 кг/м²" },
+  { city: "Уфа", district: "III", load: "150 кг/м²" },
+  { city: "Хабаровск", district: "III", load: "150 кг/м²" },
+  { city: "Чебоксары", district: "II", load: "100 кг/м²" },
+  { city: "Челябинск", district: "III", load: "150 кг/м²" },
+  { city: "Южно-Сахалинск", district: "IV", load: "200 кг/м²" },
+  { city: "Ярославль", district: "II", load: "100 кг/м²" },
+];
+
 const faqData = [
   {
+    question: "Какой снеговой район в Москве, Белгороде, Краснодаре?",
+    answer: "Москва — II район (100 кг/м²). Белгород — II район (100 кг/м²). Краснодар — I район (50 кг/м²). Смотрите полную таблицу городов ниже."
+  },
+  {
     question: "Какой снеговой район в Белгородской области?",
-    answer: "Белгородская область находится во II снеговом районе (0,7 кПа). Это умеренная снеговая нагрузка."
+    answer: "Белгородская область находится во II снеговом районе (100 кг/м²). Это умеренная снеговая нагрузка."
   },
   {
     question: "Влияет ли снеговой район на толщину панелей?",
@@ -96,6 +156,32 @@ export default function SnegovojRajonPage() {
             <p className="text-sm text-muted">
               <strong>Формула расчёта:</strong> S = S₀ × μ, где S₀ — нормативная нагрузка, μ — коэффициент перехода (зависит от уклона кровли).
             </p>
+          </div>
+
+          <h2 className="text-xl font-bold text-foreground mb-3">Снеговые районы по городам России</h2>
+          <p className="text-sm text-muted mb-4">
+            Ниже — снеговой район и нормативная нагрузка для 50 крупнейших городов России. Полный перечень всех регионов — на странице{" "}
+            <Link href="/snegovye-rajony-rossii/" className="text-accent-blue hover:underline">Снеговые районы России</Link>.
+          </p>
+          <div className="overflow-x-auto mb-8">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 font-semibold">Город</th>
+                  <th className="text-left py-2 font-semibold">Район</th>
+                  <th className="text-left py-2 font-semibold">Нагрузка</th>
+                </tr>
+              </thead>
+              <tbody>
+                {citiesData.map((item, i) => (
+                  <tr key={i} className="border-b border-border/40 last:border-0">
+                    <td className="py-2 font-medium">{item.city}</td>
+                    <td className="py-2 text-muted">{item.district}</td>
+                    <td className="py-2 text-muted">{item.load}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           <h2 className="text-lg font-semibold mb-3">Частые вопросы</h2>
