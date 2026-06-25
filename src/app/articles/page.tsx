@@ -609,11 +609,18 @@ export default function ArticlesPage() {
                 className="group rounded-lg border border-border bg-white hover:border-accent-blue/30 transition-all duration-300 overflow-hidden cursor-pointer h-full"
               >
                 <div className="h-48 overflow-hidden">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  <picture>
+                    <source srcSet={article.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      width={600}
+                      height={192}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </picture>
                 </div>
                 <div className="p-5">
                   <div className="flex items-center gap-3 mb-3">

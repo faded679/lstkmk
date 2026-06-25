@@ -21,12 +21,19 @@ export default function HeroVideo() {
           <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center">
             <div className="relative w-full max-w-5xl mx-auto" style={{ height: "80vh" }}>
               {/* Ангар — занимает всю высоту контейнера, прибит к низу */}
-              <img
-                src="/newherophoto.png"
-                alt="Готовый ангар из металлоконструкций"
-                className="absolute bottom-0 left-0 right-0 mx-auto w-full object-contain object-bottom"
-                style={{ maxHeight: "80vh" }}
-              />
+              <picture>
+                <source srcSet="/newherophoto.webp" type="image/webp" />
+                <img
+                  src="/newherophoto.png"
+                  alt="Готовый ангар из металлоконструкций"
+                  width={1200}
+                  height={800}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="absolute bottom-0 left-0 right-0 mx-auto w-full object-contain object-bottom"
+                  style={{ maxHeight: "80vh" }}
+                />
+              </picture>
               {/* Боковой текст слева — абсолютно напротив крыши / середины / фундамента */}
               <div className="hidden lg:absolute lg:block left-0 top-0 bottom-0 w-32 xl:w-40 select-none" style={{ display: "none" }} />
               <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "22%", right: "calc(50% + 460px)" }}>Проектирование</span>
