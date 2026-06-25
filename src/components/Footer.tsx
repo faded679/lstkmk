@@ -32,8 +32,8 @@ export default function Footer() {
   return (
     <footer className="py-10 bg-white border-t border-slate-200 text-foreground">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 mb-10">
-          <div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
+          <div className="col-span-2 md:col-span-1">
             <img src="/logo-makstil-new.png" alt="МАКСТИЛ" className="h-12 w-auto object-contain mb-3" />
             <p className="text-sm text-slate-400 leading-relaxed max-w-[30ch]">
               Проектирование, производство и монтаж быстровозводимых зданий из
@@ -44,159 +44,38 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Услуги</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Проектирование
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Производство каркасов
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Монтаж зданий
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Строительство под ключ
-                </a>
-              </li>
-              <li>
-                <a href="/stroitelstvo-cehov-lstk/" className="hover:text-foreground transition-colors">
-                  Строительство цехов из ЛСТК
-                </a>
-              </li>
-              <li>
-                <a href="/bystrovozvodimye-angary/" className="hover:text-foreground transition-colors">
-                  Быстровозводимые ангары
-                </a>
-              </li>
-              <li>
-                <a href="/garazh-iz-lstk-cena/" className="hover:text-foreground transition-colors">
-                  Гараж из ЛСТК цена
-                </a>
-              </li>
-              <li>
-                <a href="/stroitelstvo-zavoda-pod-klyuch/" className="hover:text-foreground transition-colors">
-                  Строительство завода под ключ
-                </a>
-              </li>
-              <li>
-                <a href="/angar-iz-sendvich-panelej-cena/" className="hover:text-foreground transition-colors">
-                  Ангар из сэндвич-панелей
-                </a>
-              </li>
-              <li>
-                <a href="/sklad-pod-klyuch-cena/" className="hover:text-foreground transition-colors">
-                  Склад под ключ цена
-                </a>
-              </li>
-              <li>
-                <a href="/stroitelstvo-torgovogo-centra/" className="hover:text-foreground transition-colors">
-                  Строительство торгового центра
-                </a>
-              </li>
-              <li>
-                <a href="/sportivnyj-kompleks-iz-metallokonstrukcij/" className="hover:text-foreground transition-colors">
-                  Спортивный комплекс из металлоконструкций
-                </a>
-              </li>
-              <li>
-                <a href="/kalkulyator-angara/" className="hover:text-foreground transition-colors">
-                  Калькулятор стоимости ангара
-                </a>
-              </li>
+              <li><a href="/bystrovozvodimye-angary/" className="hover:text-foreground transition-colors">Быстровозводимые ангары</a></li>
+              <li><a href="/stroitelstvo-cehov-lstk/" className="hover:text-foreground transition-colors">Строительство цехов</a></li>
+              <li><a href="/angar-iz-sendvich-panelej-cena/" className="hover:text-foreground transition-colors">Ангар из сэндвич-панелей</a></li>
+              <li><a href="/sklad-pod-klyuch-cena/" className="hover:text-foreground transition-colors">Склад под ключ</a></li>
+              <li><a href="/stroitelstvo-zavoda-pod-klyuch/" className="hover:text-foreground transition-colors">Завод под ключ</a></li>
+              <li><a href="/garazh-iz-lstk-cena/" className="hover:text-foreground transition-colors">Гараж из ЛСТК</a></li>
+              <li><a href="/kalkulyator-angara/" className="hover:text-foreground transition-colors">Калькулятор ангара</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Справочник</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <a href="/chertezhi-km/" className="hover:text-foreground transition-colors">
-                  Чертежи КМ
-                </a>
-              </li>
-              <li>
-                <a href="/chertezhi-kmd/" className="hover:text-foreground transition-colors">
-                  Чертежи КМД
-                </a>
-              </li>
-              <li>
-                <a href="/uzly-sendvich-panelej/" className="hover:text-foreground transition-colors">
-                  Узлы сэндвич-панелей
-                </a>
-              </li>
-              <li>
-                <a href="/vetrovoj-rajon/" className="hover:text-foreground transition-colors">
-                  Ветровой район
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-3">Объекты</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Склады
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Производственные цеха
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Ангары
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Торговые центры
-                </a>
-              </li>
+              <li><a href="/snegovye-rajony-rossii/" className="hover:text-foreground transition-colors">Снеговые районы</a></li>
+              <li><a href="/vetrovye-rajony-rossii/" className="hover:text-foreground transition-colors">Ветровые районы</a></li>
+              <li><a href="/tablicza-snegovyh-i-vetrovyh-rajonov-rossii/" className="hover:text-foreground transition-colors">Таблица районов</a></li>
+              <li><a href="/kalkulyator-sendvich-panelej/" className="hover:text-foreground transition-colors">Расчёт сэндвич-панелей</a></li>
+              <li><a href="/uzly-sendvich-panelej/" className="hover:text-foreground transition-colors">Узлы сэндвич-панелей</a></li>
+              <li><a href="/chertezhi-km/" className="hover:text-foreground transition-colors">Чертежи КМ/КМД</a></li>
+              <li><a href="/vetrovoj-rajon/" className="hover:text-foreground transition-colors">Ветровой район</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Регионы</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <a href="/metallokonstrukcii-kursk/" className="hover:text-foreground transition-colors">
-                  Курск и область
-                </a>
-              </li>
-              <li>
-                <a href="/metallokonstrukcii-voronezh/" className="hover:text-foreground transition-colors">
-                  Воронеж и область
-                </a>
-              </li>
-              <li>
-                <a href="/metallokonstrukcii-orel/" className="hover:text-foreground transition-colors">
-                  Орёл и область
-                </a>
-              </li>
-              <li>
-                <a href="/metallokonstrukcii-lipeck/" className="hover:text-foreground transition-colors">
-                  Липецк и область
-                </a>
-              </li>
-              <li>
-                <a href="/metallokonstrukcii-lnr/" className="hover:text-foreground transition-colors">
-                  ЛНР
-                </a>
-              </li>
-              <li>
-                <a href="/metallokonstrukcii-dnr/" className="hover:text-foreground transition-colors">
-                  ДНР
-                </a>
-              </li>
+              <li><a href="/metallokonstrukcii-kursk/" className="hover:text-foreground transition-colors">Курск</a></li>
+              <li><a href="/metallokonstrukcii-voronezh/" className="hover:text-foreground transition-colors">Воронеж</a></li>
+              <li><a href="/metallokonstrukcii-orel/" className="hover:text-foreground transition-colors">Орёл</a></li>
+              <li><a href="/metallokonstrukcii-lipeck/" className="hover:text-foreground transition-colors">Липецк</a></li>
+              <li><a href="/metallokonstrukcii-lnr/" className="hover:text-foreground transition-colors">ЛНР</a></li>
+              <li><a href="/metallokonstrukcii-dnr/" className="hover:text-foreground transition-colors">ДНР</a></li>
             </ul>
           </div>
 

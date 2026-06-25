@@ -444,6 +444,10 @@ export default function SnegovyeRajonyRossiiPage() {
                     label: "Ветровые районы России",
                   },
                   {
+                    href: "/tablicza-snegovyh-i-vetrovyh-rajonov-rossii/",
+                    label: "Таблица снеговых и ветровых районов",
+                  },
+                  {
                     href: "/articles/snegovaya-nagruzka-na-krovlyu-angara/",
                     label: "Снеговая нагрузка на кровлю ангара",
                   },

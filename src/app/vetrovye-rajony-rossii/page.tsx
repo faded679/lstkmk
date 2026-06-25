@@ -496,6 +496,10 @@ export default function VetrovyeRajonyRossiiPage() {
                     label: "Снеговые районы России",
                   },
                   {
+                    href: "/tablicza-snegovyh-i-vetrovyh-rajonov-rossii/",
+                    label: "Таблица снеговых и ветровых районов",
+                  },
+                  {
                     href: "/configurator-3d",
                     label: "3D-конфигуратор ангара",
                   },
