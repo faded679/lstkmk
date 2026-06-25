@@ -127,6 +127,7 @@ function CallbackForm() {
         onChange={(e) => setPhone(e.target.value)}
         placeholder="+7 (___) ___-__-__"
         type="tel"
+        aria-label="Телефон для обратного звонка"
         className="flex-1 h-8 px-2.5 text-xs bg-white border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
       />
       <button
@@ -227,6 +228,7 @@ export default function AiAssistant() {
               </div>
               <button
                 onClick={() => setOpen(false)}
+                aria-label="Закрыть чат"
                 className="p-1 hover:bg-white/20 rounded transition-colors"
               >
                 <X size={18} />
@@ -295,6 +297,7 @@ export default function AiAssistant() {
                     : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                 }`}
                 title={listening ? "Остановить запись" : "Голосовой ввод"}
+                aria-label={listening ? "Остановить запись" : "Голосовой ввод"}
               >
                 {listening ? <MicrophoneSlash size={18} weight="bold" /> : <Microphone size={18} weight="bold" />}
               </button>
@@ -302,11 +305,13 @@ export default function AiAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={listening ? "Говорите..." : "Спросите о ценах, сроках..."}
+                aria-label="Вопрос помощнику"
                 className="flex-1 h-10 px-3 text-sm bg-slate-50 border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
+                aria-label="Отправить сообщение"
                 className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-accent-blue text-white rounded-lg disabled:opacity-40 hover:bg-accent-blue/90 transition-colors"
               >
                 <PaperPlaneTilt size={18} weight="bold" />

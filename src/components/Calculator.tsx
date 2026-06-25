@@ -500,6 +500,7 @@ export default function Calculator() {
                       step={1}
                       value={widthIdx}
                       onChange={(e) => setWidthIdx(Number(e.target.value))}
+                      aria-label="Ширина ангара, м"
                       className="w-full accent-accent-blue"
                     />
                     <div className="mt-1 text-2xl font-bold text-foreground">
@@ -521,6 +522,7 @@ export default function Calculator() {
                   step={1}
                   value={Math.round((lengthVal - cfg.lengthMin) / cfg.lengthStep)}
                   onChange={(e) => setLengthVal(lengthFromIdx(Number(e.target.value)))}
+                  aria-label="Длина ангара, м"
                   className="w-full accent-accent-blue"
                 />
                 <div className="mt-1 text-2xl font-bold text-foreground">
@@ -547,6 +549,7 @@ export default function Calculator() {
                       step={1}
                       value={heightIdx}
                       onChange={(e) => setHeightIdx(Number(e.target.value))}
+                      aria-label="Высота ангара, м"
                       className="w-full accent-accent-blue"
                     />
                     <div className="mt-1 text-2xl font-bold text-foreground">
@@ -608,6 +611,7 @@ export default function Calculator() {
                     onClick={toggleChatListening}
                     className={`flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${chatListening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
                     title={chatListening ? "Остановить" : "Голосовой ввод"}
+                    aria-label={chatListening ? "Остановить запись" : "Голосовой ввод"}
                   >
                     {chatListening ? <MicrophoneSlash size={16} weight="bold" /> : <Microphone size={16} weight="bold" />}
                   </button>
@@ -617,11 +621,13 @@ export default function Calculator() {
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
                     placeholder={chatListening ? "Говорите..." : "Задайте вопрос..."}
+                    aria-label="Вопрос помощнику"
                     className="flex-1 h-9 px-3 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
                   />
                   <button
                     onClick={sendChatMessage}
                     disabled={!chatInput.trim() || chatLoading}
+                    aria-label="Отправить вопрос"
                     className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors disabled:opacity-40"
                   >
                     <PaperPlaneRight size={16} weight="bold" />

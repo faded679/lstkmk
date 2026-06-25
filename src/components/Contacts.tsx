@@ -417,6 +417,7 @@ export default function Contacts() {
                     onClick={toggleListening}
                     className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg transition-colors ${listening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
                     title={listening ? "Остановить" : "Голосовой ввод"}
+                    aria-label={listening ? "Остановить запись" : "Голосовой ввод"}
                   >
                     {listening ? <MicrophoneSlash size={18} weight="bold" /> : <Microphone size={18} weight="bold" />}
                   </button>
@@ -426,10 +427,12 @@ export default function Contacts() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     placeholder={listening ? "Говорите..." : "Спросите о ценах, сроках..."}
+                    aria-label="Вопрос помощнику"
                     className="flex-1 h-10 px-3.5 text-sm border border-border rounded-lg outline-none focus:border-accent-blue transition-colors"
                   />
                   <button
                     onClick={sendMessage}
+                    aria-label="Отправить вопрос"
                     className="w-10 h-10 flex items-center justify-center rounded-lg bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors"
                   >
                     <PaperPlaneRight size={18} weight="bold" />

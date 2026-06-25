@@ -41,6 +41,7 @@ export default function LeadForm({ comment }: { comment: string }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Ваше имя"
+        aria-label="Ваше имя"
         required
         className="w-full h-11 px-4 rounded-lg border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/20"
       />
@@ -49,6 +50,7 @@ export default function LeadForm({ comment }: { comment: string }) {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         placeholder="+7 (___) ___-__-__"
+        aria-label="Телефон"
         required
         className="w-full h-11 px-4 rounded-lg border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/20"
       />
