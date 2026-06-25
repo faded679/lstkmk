@@ -108,6 +108,15 @@ export default function SnegovojRajonPage() {
             ))}
           </div>
 
+          <div className="bg-slate-50 border border-border rounded-lg p-4 mb-4">
+            <p className="text-sm text-muted">
+              Нужна полная таблица с разбивкой по всем регионам РФ?{" "}
+              <Link href="/snegovye-rajony-rossii/" className="text-accent-blue hover:underline font-medium">
+                Все снеговые районы по регионам РФ →
+              </Link>
+            </p>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/knowledge/sejsmichnost/" className="inline-flex items-center gap-2 text-sm text-accent-blue hover:underline">
               Следующая статья: Сейсмичность

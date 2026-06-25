@@ -220,6 +220,20 @@ export default function VetrovojRajonPage() {
             </section>
 
             <section>
+              <div className="p-5 rounded-xl border border-accent-blue/30 bg-accent-blue/5">
+                <p className="text-sm text-muted">
+                  Нужна полная таблица ветровых районов по всем регионам РФ?{" "}
+                  <a
+                    href="/vetrovye-rajony-rossii/"
+                    className="text-accent-blue hover:underline font-medium"
+                  >
+                    Все ветровые районы по регионам РФ →
+                  </a>
+                </p>
+              </div>
+            </section>
+
+            <section>
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
                 Частые вопросы
               </h2>

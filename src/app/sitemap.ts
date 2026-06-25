@@ -51,6 +51,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/stroitelstvo-zavoda-pod-klyuch/`,             lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/uzly-sendvich-panelej/`,                     lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/vetrovoj-rajon/`,                            lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE}/snegovye-rajony-rossii/`,                    lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE}/vetrovye-rajony-rossii/`,                    lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE}/angar-iz-sendvich-panelej-cena/`,             lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/sklad-pod-klyuch-cena/`,                      lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/stroitelstvo-torgovogo-centra/`,              lastModified: now, changeFrequency: "weekly", priority: 0.9 },
