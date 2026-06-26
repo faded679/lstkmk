@@ -1,5 +1,5 @@
 import Navigation from "@/components/Navigation";
-import { Hero } from "@/components/ui/animated-hero";
+import HeroVideo from "@/components/HeroVideo";
 import About from "@/components/About";
 import FactoryBanner from "@/components/FactoryBanner";
 import Process from "@/components/Process";
@@ -131,7 +131,7 @@ export default function Home() {
       <FaqSchema />
       <Navigation />
       <main>
-        <Hero />
+        <HeroVideo />
         <Calculator />
         <Stats />
         <FactoryBanner />
