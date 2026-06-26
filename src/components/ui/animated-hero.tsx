@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Phone } from "@phosphor-icons/react";
