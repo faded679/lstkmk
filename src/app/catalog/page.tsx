@@ -260,8 +260,16 @@ export default function CatalogPage() {
                     className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
                   >
                     <Link href={`/catalog/${product.slug}`}>
-                      <div className="aspect-video bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center">
-                        <Ruler size={48} className="text-blue-300" />
+                      <div className="aspect-video bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center overflow-hidden">
+                        {product.images && product.images.length > 0 ? (
+                          <img 
+                            src={product.images[0]} 
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Ruler size={48} className="text-blue-300" />
+                        )}
                       </div>
                       <div className="p-6">
                         <div className="flex items-start justify-between mb-2">

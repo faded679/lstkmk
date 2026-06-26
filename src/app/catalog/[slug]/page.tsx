@@ -64,8 +64,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="aspect-video bg-gradient-to-br from-blue-50 to-gray-100 rounded-2xl flex items-center justify-center mb-6">
-              <Ruler size={96} className="text-blue-300" />
+            <div className="aspect-video bg-gradient-to-br from-blue-50 to-gray-100 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
+              {product.images && product.images.length > 0 ? (
+                <img 
+                  src={product.images[0]} 
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Ruler size={96} className="text-blue-300" />
+              )}
             </div>
             
             {/* Price Card */}
