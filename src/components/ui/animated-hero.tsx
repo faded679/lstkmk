@@ -9,7 +9,7 @@ import Link from "next/link";
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["ангары", "склады", "цехи", "коровники", "автомойки", "СТО"],
+    () => ["ангары", "склады", "цехи", "коровники", "автомойки", "СТО", "птичники", "свинарники", "конюшни", "овощехранилища", "зернохранилища", "теплицы", "выставочные залы", "спортзалы", "торговые павильоны", "офисы", "бытовки", "гаражи", "депо"],
     []
   );
 
@@ -71,11 +71,11 @@ function Hero() {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <a href="tel:+79606322061">
+            <Link href="/#contacts">
               <Button size="lg" className="gap-4" variant="outline">
                 Заказать звонок <Phone size={20} />
               </Button>
-            </a>
+            </Link>
             <Link href="/#calculator">
               <Button size="lg" className="gap-4">
                 Рассчитать стоимость <ArrowRight size={20} />
