@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Phone } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["быстровозводимые", "надежные", "современные", "экономичные", "долговечные"],
+    () => ["ангары", "склады", "цехи", "коровники", "автомойки", "СТО"],
     []
   );
 
@@ -28,9 +29,11 @@ function Hero() {
       <div className="container mx-auto">
         <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
           <div>
-            <Button variant="secondary" size="sm" className="gap-4">
-              Каталог проектов <ArrowRight size={16} />
-            </Button>
+            <Link href="/catalog">
+              <Button size="sm" className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
+                Каталог проектов <ArrowRight size={16} />
+              </Button>
+            </Link>
           </div>
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
@@ -68,12 +71,16 @@ function Hero() {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline">
-              Заказать звонок <Phone size={20} />
-            </Button>
-            <Button size="lg" className="gap-4">
-              Рассчитать стоимость <ArrowRight size={20} />
-            </Button>
+            <a href="tel:+79606322061">
+              <Button size="lg" className="gap-4" variant="outline">
+                Заказать звонок <Phone size={20} />
+              </Button>
+            </a>
+            <Link href="/#calculator">
+              <Button size="lg" className="gap-4">
+                Рассчитать стоимость <ArrowRight size={20} />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
