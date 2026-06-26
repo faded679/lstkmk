@@ -119,7 +119,7 @@ export default function ProductContent({ product, categories }: ProductContentPr
               </div>
 
               <a
-                href="tel:+78001009151"
+                href="tel:+79606322061"
                 className="block w-full py-3 px-4 bg-blue-600 text-white text-center rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 <Phone size={20} className="inline mr-2" />
@@ -212,11 +212,11 @@ export default function ProductContent({ product, categories }: ProductContentPr
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
-                  href="tel:+78001009151"
+                  href="tel:+79606322061"
                   className="flex items-center justify-center gap-2 py-3 px-4 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
                 >
                   <Phone size={20} />
-                  +7 (800) 100-91-51
+                  +7 (960) 632-20-61
                 </a>
                 <a
                   href="mailto:maxsteel31@bk.ru"
