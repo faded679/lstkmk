@@ -1,0 +1,325 @@
+{
+  "categories": [
+    {
+      "id": "agricultural",
+      "name": "Сельскохозяйственные здания",
+      "slug": "agricultural",
+      "subcategories": [
+        {
+          "id": "cowsheds",
+          "name": "Коровники",
+          "slug": "cowsheds"
+        },
+        {
+          "id": "calf-houses",
+          "name": "Бычатники",
+          "slug": "calf-houses"
+        },
+        {
+          "id": "poultry-houses",
+          "name": "Птичники",
+          "slug": "poultry-houses"
+        },
+        {
+          "id": "stables",
+          "name": "Конюшни",
+          "slug": "stables"
+        },
+        {
+          "id": "calf-barns",
+          "name": "Телятники",
+          "slug": "calf-barns"
+        },
+        {
+          "id": "cattle-farms",
+          "name": "Фермы и комплексы КРС",
+          "slug": "cattle-farms"
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Складские помещения и хранилища",
+      "slug": "storage",
+      "subcategories": [
+        {
+          "id": "warehouses",
+          "name": "Склады",
+          "slug": "warehouses"
+        },
+        {
+          "id": "hangars",
+          "name": "Ангары",
+          "slug": "hangars"
+        },
+        {
+          "id": "potato-storage",
+          "name": "Картофелехранилища",
+          "slug": "potato-storage"
+        },
+        {
+          "id": "fruit-storage",
+          "name": "Фруктохранилища",
+          "slug": "fruit-storage"
+        },
+        {
+          "id": "vegetable-storage",
+          "name": "Овощехранилища",
+          "slug": "vegetable-storage"
+        }
+      ]
+    },
+    {
+      "id": "industrial",
+      "name": "Промышленные и производственные здания",
+      "slug": "industrial",
+      "subcategories": [
+        {
+          "id": "industrial-buildings",
+          "name": "Промышленные здания",
+          "slug": "industrial-buildings"
+        },
+        {
+          "id": "workshops",
+          "name": "Цеха",
+          "slug": "workshops"
+        }
+      ]
+    },
+    {
+      "id": "commercial",
+      "name": "Магазины и залы",
+      "slug": "commercial",
+      "subcategories": [
+        {
+          "id": "sports-halls",
+          "name": "Спортзалы и фитнес центры",
+          "slug": "sports-halls"
+        },
+        {
+          "id": "exhibition-halls",
+          "name": "Выставочные залы",
+          "slug": "exhibition-halls"
+        },
+        {
+          "id": "shops",
+          "name": "Магазины",
+          "slug": "shops"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "name": "Здания для транспорта",
+      "slug": "transport",
+      "subcategories": [
+        {
+          "id": "car-service",
+          "name": "СТО и автосервисы",
+          "slug": "car-service"
+        },
+        {
+          "id": "garages",
+          "name": "Гаражи",
+          "slug": "garages"
+        },
+        {
+          "id": "car-washes",
+          "name": "Автомойки",
+          "slug": "car-washes"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "slug": "korovnik-32kh67-2",
+      "name": "Коровник 32х67,2м",
+      "category": "agricultural",
+      "subcategory": "cowsheds",
+      "priceMin": 5400,
+      "priceMax": 5800,
+      "priceUnit": "м²",
+      "area": 2150.4,
+      "dimensions": "32 на 67,2 метра",
+      "capacity": "150 коров",
+      "description": "ООО «ПромПрофиль» предлагает профессиональные услуги по созданию современных и эффективных решений для быстровозводимых зданий, включая коровники. Наш проект быстровозводимого здания общей площадью 2150,4 квадратных метров и металлокаркасом размером 32 на 67,2 метра может быть адаптирован к различным типам зданий, учитывая их уникальные особенности и специфику использования. Основой конструкции служат легкие металлоконструкции, такие как ЛСТК (легкие стальные тонкостенные конструкции) или ЛМК (легкие металлические конструкции), обеспечивающие прочность и долговечность здания.",
+      "features": [
+        "Высокая прочность и долговечность конструкции",
+        "Устойчивость к коррозии и влажности",
+        "Быстрота и простота монтажа",
+        "Экономичность и доступность"
+      ],
+      "images": []
+    },
+    {
+      "id": 2,
+      "slug": "korovnik-21kh71-5",
+      "name": "Коровник 21х71,5м",
+      "category": "agricultural",
+      "subcategory": "cowsheds",
+      "priceMin": 5200,
+      "priceMax": 5600,
+      "priceUnit": "м²",
+      "area": 1501.5,
+      "dimensions": "21 на 71,5 метра",
+      "capacity": "200 коров",
+      "description": "Коровник для молочного производства с металлокаркасом 21х71,5м. Оптимальное решение для ферм с поголовьем до 200 голов.",
+      "features": [
+        "Металлокаркас ЛСТК",
+        "Утепление по выбору заказчика",
+        "Вентиляционная система",
+        "Автоматизированное оборудование"
+      ],
+      "images": []
+    },
+    {
+      "id": 3,
+      "slug": "sklad-24kh24m",
+      "name": "Склад 24х24м",
+      "category": "storage",
+      "subcategory": "warehouses",
+      "priceMin": 4800,
+      "priceMax": 5200,
+      "priceUnit": "м²",
+      "area": 576,
+      "dimensions": "24 на 24 метра",
+      "capacity": null,
+      "description": "Быстровозводимый склад 24х24м для хранения различных грузов. Металлокаркас обеспечивает надежность и долговечность конструкции.",
+      "features": [
+        "Высота до потолка 6-12 метров",
+        "Возможность установки стеллажей",
+        "Ворота для грузовой техники",
+        "Пожарная безопасность"
+      ],
+      "images": []
+    },
+    {
+      "id": 4,
+      "slug": "sklad-kholodilnik-23kh36",
+      "name": "Склад-холодильник 23х36м",
+      "category": "storage",
+      "subcategory": "warehouses",
+      "priceMin": 6500,
+      "priceMax": 7200,
+      "priceUnit": "м²",
+      "area": 828,
+      "dimensions": "23 на 36 метров",
+      "capacity": null,
+      "description": "Холодильный склад для хранения скоропортящихся продуктов. Оснащен современной холодильной установкой.",
+      "features": [
+        "Холодильная установка",
+        "Теплоизоляция",
+        "Контроль температуры",
+        "Санитарные нормы"
+      ],
+      "images": []
+    },
+    {
+      "id": 5,
+      "slug": "angar-12kh20",
+      "name": "Ангар (эллинг) 12х20м",
+      "category": "storage",
+      "subcategory": "hangars",
+      "priceMin": 4500,
+      "priceMax": 4900,
+      "priceUnit": "м²",
+      "area": 240,
+      "dimensions": "12 на 20 метров",
+      "capacity": null,
+      "description": "Ангар-эллинг для хранения техники, материалов или оборудования. Компактное и экономичное решение.",
+      "features": [
+        "Быстрый монтаж",
+        "Низкая стоимость",
+        "Возможность расширения",
+        "Различные варианты обшивки"
+      ],
+      "images": []
+    },
+    {
+      "id": 6,
+      "slug": "tsekh-18kh52",
+      "name": "Цех 18х52м",
+      "category": "industrial",
+      "subcategory": "workshops",
+      "priceMin": 5500,
+      "priceMax": 6000,
+      "priceUnit": "м²",
+      "area": 936,
+      "dimensions": "18 на 52 метра",
+      "capacity": null,
+      "description": "Производственный цех для различных отраслей. Металлокаркас обеспечивает надежность и возможность размещения тяжелого оборудования.",
+      "features": [
+        "Кран-балка",
+        "Вентиляция",
+        "Освещение",
+        "Пожарная сигнализация"
+      ],
+      "images": []
+    },
+    {
+      "id": 7,
+      "slug": "proizvodstvennoe-zdanie-24kh54",
+      "name": "Производственное здание 24х54м",
+      "category": "industrial",
+      "subcategory": "industrial-buildings",
+      "priceMin": 5800,
+      "priceMax": 6300,
+      "priceUnit": "м²",
+      "area": 1296,
+      "dimensions": "24 на 54 метра",
+      "capacity": null,
+      "description": "Производственное здание для средних и крупных предприятий. Возможность зонирования пространства.",
+      "features": [
+        "Высота до 12 метров",
+        "Административные помещения",
+        "Санузлы",
+        "Подъездные пути"
+      ],
+      "images": []
+    },
+    {
+      "id": 8,
+      "slug": "sportzal-16-2kh20",
+      "name": "Спортзал 16,2х20м",
+      "category": "commercial",
+      "subcategory": "sports-halls",
+      "priceMin": 6000,
+      "priceMax": 6600,
+      "priceUnit": "м²",
+      "area": 324,
+      "dimensions": "16,2 на 20 метров",
+      "capacity": null,
+      "description": "Спортзал для фитнес-центра или спортивного клуба. Современный дизайн и функциональность.",
+      "features": [
+        "Высокие потолки",
+        "Вентиляция",
+        "Звукоизоляция",
+        "Современное освещение"
+      ],
+      "images": []
+    },
+    {
+      "id": 9,
+      "slug": "vystavochnyy-zal-20-4kh36-8",
+      "name": "Выставочный зал 20,4х36,8м",
+      "category": "commercial",
+      "subcategory": "exhibition-halls",
+      "priceMin": 5700,
+      "priceMax": 6200,
+      "priceUnit": "м²",
+      "area": 750.72,
+      "dimensions": "20,4 на 36,8 метра",
+      "capacity": null,
+      "description": "Выставочный зал для проведения выставок, конференций и мероприятий. Просторное и светлое пространство.",
+      "features": [
+        "Большая площадь остекления",
+        "Климат-контроль",
+        "Современная акустика",
+        "Парковка"
+      ],
+      "images": []
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+  { label: "Каталог", href: "/catalog", isAnchor: false },
   { label: "Калькулятор", href: "/#calculator", isAnchor: true },
   { label: "О компании", href: "/#about", isAnchor: true },
   { label: "Проекты", href: "/#projects", isAnchor: true },
