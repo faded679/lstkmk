@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, Ruler, Bank, Warehouse, Factory, Store, Car, Check, Phone, Envelope } from "@phosphor-icons/react";
+import { ArrowLeft, Ruler, Bank, Warehouse, Factory, Storefront, Car, Check, Phone, Envelope } from "@phosphor-icons/react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import catalogData from "@/data/catalog.json";
@@ -12,7 +12,7 @@ const categoryIcons: Record<string, any> = {
   agricultural: Bank,
   storage: Warehouse,
   industrial: Factory,
-  commercial: Store,
+  commercial: Storefront,
   transport: Car,
 };
 
