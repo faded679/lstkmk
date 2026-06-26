@@ -131,7 +131,7 @@ export default function RootLayout({
           `}
         </Script>
         {/* Yandex.Metrika counter 110082764 */}
-        <Script id="yandex-metrika" strategy="afterInteractive">
+        <Script id="yandex-metrika" strategy="lazyOnload">
           {`
             (function(m,e,t,r,i,k,a){
               m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
