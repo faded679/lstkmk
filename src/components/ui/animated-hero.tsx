@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Phone } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import HeroVideo from "@/components/HeroVideo";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -27,7 +28,7 @@ function Hero() {
   return (
     <div className="w-full">
       <div className="container mx-auto">
-        <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
+        <div className="flex gap-8 py-10 lg:py-20 items-center justify-center flex-col">
           <div>
             <Link href="/catalog">
               <Button size="sm" className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
@@ -63,12 +64,6 @@ function Hero() {
                 ))}
               </span>
             </h1>
-
-            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-gray-600 max-w-2xl text-center">
-              Строительство ангаров, складов, производственных цехов и сельскохозяйственных 
-              зданий под ключ. ЛСТК и металлоконструкции с гарантией качества и оптимальными 
-              сроками монтажа.
-            </p>
           </div>
           <div className="flex flex-row gap-3">
             <Link href="/#contacts">
@@ -82,6 +77,7 @@ function Hero() {
               </Button>
             </Link>
           </div>
+          <HeroVideo />
         </div>
       </div>
     </div>
