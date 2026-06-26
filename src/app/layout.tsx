@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import WebSiteSchema from "@/components/WebSiteSchema";
 import BreadcrumbSchema from "@/components/BreadcrumbSchema";
-import YandexMetrikaHit from "@/components/YandexMetrikaHit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -119,7 +118,6 @@ export default function RootLayout({
         {children}
         <Footer />
         <AiAssistant />
-        <YandexMetrikaHit />
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-KR3X1J843D" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -130,23 +128,6 @@ export default function RootLayout({
             gtag('config', 'G-KR3X1J843D');
           `}
         </Script>
-        {/* Yandex.Metrika counters 109614555 and 110082764 */}
-        <Script id="yandex-metrika" strategy="afterInteractive">
-          {`
-            (function(m,e,t,r,i,k,a){
-              m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-              m[i].l=1*new Date();
-              for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-              k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-            })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-            ym(109614555, "init", {defer:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
-            ym(109614555, "hit", location.href, {title: document.title, referer: document.referrer});
-            ym(110082764, "init", {defer:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
-            ym(110082764, "hit", location.href, {title: document.title, referer: document.referrer});
-          `}
-        </Script>
-        <noscript><div><img src="https://mc.yandex.ru/watch/109614555" style={{position:'absolute', left:'-9999px'}} alt="" /></div></noscript>
-        <noscript><div><img src="https://mc.yandex.ru/watch/110082764" style={{position:'absolute', left:'-9999px'}} alt="" /></div></noscript>
       </body>
     </html>
   );
