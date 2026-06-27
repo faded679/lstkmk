@@ -685,6 +685,12 @@ export default function Calculator() {
               >
                 Рассчитать стоимость строительства
               </a>
+              <a
+                href="/catalog"
+                className="mt-3 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+              >
+                Перейти в каталог
+              </a>
               <p className="mt-2 text-xs text-muted text-center leading-relaxed">
                 Менеджер свяжется с вами в течение 2 часов
               </p>
