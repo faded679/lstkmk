@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Phone } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import HeroVideo from "@/components/HeroVideo";
+import HeroPhoto from "@/components/HeroPhoto";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -77,7 +77,7 @@ function Hero() {
               </Button>
             </Link>
           </div>
-          <HeroVideo />
+          <HeroPhoto />
         </div>
       </div>
     </div>
