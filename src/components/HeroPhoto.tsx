@@ -1,6 +1,6 @@
 export default function HeroPhoto() {
   return (
-    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full">
+    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full mt-2">
       <div className="relative w-full max-w-5xl mx-auto" style={{ height: "70vh" }}>
         <picture>
           <source srcSet="/newherophoto.webp" type="image/webp" />
