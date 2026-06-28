@@ -28,7 +28,7 @@ function Hero() {
   return (
     <div className="w-full">
       <div className="container mx-auto">
-        <div className="flex gap-4 pt-10 lg:pt-16 pb-0 items-center justify-center flex-col">
+        <div className="flex gap-4 pt-24 lg:pt-28 pb-0 items-center justify-center flex-col">
           <div>
             <Link href="/catalog">
               <Button size="sm" className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
