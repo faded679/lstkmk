@@ -265,7 +265,7 @@ export default function CatalogPage() {
                           <img 
                             src={product.images[0]} 
                             alt={product.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover text-transparent"
                           />
                         ) : (
                           <Ruler size={48} className="text-blue-300" />
