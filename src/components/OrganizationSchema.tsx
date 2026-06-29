@@ -8,7 +8,7 @@ export default function OrganizationSchema() {
         url: "https://lstkmk.ru",
         logo: "https://lstkmk.ru/logo.png",
         telephone: "+7 (960) 632-20-61",
-        email: "info@lstkmk.ru",
+        email: "maxsteel31@bk.ru",
         address: {
           "@type": "PostalAddress",
           addressLocality: "Белгород",
@@ -26,7 +26,7 @@ export default function OrganizationSchema() {
         description: "Проектирование, производство и строительство быстровозводимых зданий из ЛСТК и металлоконструкций.",
         url: "https://lstkmk.ru",
         telephone: "+7 (960) 632-20-61",
-        email: "info@lstkmk.ru",
+        email: "maxsteel31@bk.ru",
         address: {
           "@type": "PostalAddress",
           addressLocality: "Белгород",
