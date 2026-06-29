@@ -28,7 +28,7 @@ function Hero() {
   return (
     <div className="w-full">
       <div className="container mx-auto">
-        <div className="flex gap-4 pt-24 lg:pt-28 pb-0 items-center justify-center flex-col">
+        <div className="flex gap-4 pt-24 lg:pt-28 pb-4 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
               <span className="text-accent-blue">Здания из металлоконструкций</span>
