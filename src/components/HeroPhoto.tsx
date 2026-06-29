@@ -12,7 +12,7 @@ export default function HeroPhoto() {
             fetchPriority="high"
             decoding="async"
             className="absolute bottom-0 left-0 right-0 mx-auto w-full object-contain object-bottom"
-            style={{ maxHeight: "50vh" }}
+            style={{ maxHeight: "50vh", objectPosition: "center 30%" }}
           />
         </picture>
         <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "22%", right: "calc(50% + 460px)" }}>Проектирование</span>
