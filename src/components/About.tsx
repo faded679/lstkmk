@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import {
   Lightning,
   ShieldCheck,
@@ -49,6 +50,24 @@ export default function About() {
               <br />
               <span className="text-accent-blue">за разумные сроки</span>
             </h2>
+            <div className="flex flex-wrap gap-4 mt-5">
+              <div className="text-center">
+                <div className="text-xl font-bold text-accent-orange">250+</div>
+                <div className="text-xs text-muted">объектов</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-accent-orange">14 лет</div>
+                <div className="text-xs text-muted">на рынке</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-accent-orange">45 дней</div>
+                <div className="text-xs text-muted">средний срок</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-accent-orange">15 000 м²</div>
+                <div className="text-xs text-muted">в месяц</div>
+              </div>
+            </div>
             <p className="mt-5 text-base text-muted leading-relaxed max-w-[55ch]">
               МАКСТИЛ специализируется на проектировании, производстве и монтаже
               быстровозводимых зданий из металлоконструкций. Мы строим ангары,
@@ -89,6 +108,18 @@ export default function About() {
             ))}
           </div>
         </div>
+        <div className="mt-6 rounded-lg overflow-hidden aspect-video relative">
+          <Image
+            src="/zavod.webp"
+            alt="Завод МАКСТИЛ в Белгороде"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+          />
+        </div>
+        <p className="text-xs text-muted mt-2 text-center">
+          Собственный завод в Белгороде — контроль качества без посредников
+        </p>
       </div>
     </section>
   );
