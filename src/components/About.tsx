@@ -147,7 +147,7 @@ export default function About() {
         {/* Документы и допуски */}
         <div className="mt-16">
           <h3 className="text-2xl md:text-3xl font-bold tracking-tighter text-white mb-8">
-            Работаем только <span className="text-accent-blue">в рамках закона</span>
+            Работаем только <span className="text-white">в рамках закона</span>
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {certs.map((cert, i) => (
@@ -161,14 +161,14 @@ export default function About() {
                   delay: i * 0.1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="p-4 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm"
+                className="p-3 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm"
               >
-                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center mb-3">
-                  <cert.icon size={22} weight="duotone" className="text-white" />
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mb-2">
+                  <cert.icon size={18} weight="duotone" className="text-white" />
                 </div>
-                <div className="text-lg font-bold text-white mb-1">{cert.title}</div>
-                <div className="text-sm text-white/80 leading-snug mb-2">{cert.subtitle}</div>
-                <div className="text-xs font-mono text-white/60">{cert.number}</div>
+                <div className="text-base font-bold text-white mb-1">{cert.title}</div>
+                <div className="text-xs text-white/80 leading-snug mb-1">{cert.subtitle}</div>
+                <div className="text-[10px] font-mono text-white/60">{cert.number}</div>
               </motion.div>
             ))}
           </div>
