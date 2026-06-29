@@ -60,12 +60,12 @@ function Hero() {
           </div>
           <div className="flex flex-row gap-3">
             <Link href="/#contacts">
-              <Button className="gap-4" variant="outline">
+              <Button className="gap-4 text-accent-blue border-accent-blue hover:bg-accent-blue/10" variant="outline">
                 Заказать звонок <Phone size={20} />
               </Button>
             </Link>
             <Link href="/catalog">
-              <Button className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
+              <Button className="gap-4 text-accent-blue border-accent-blue hover:bg-accent-blue/10" variant="outline">
                 Каталог проектов <ArrowRight size={20} />
               </Button>
             </Link>
