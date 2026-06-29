@@ -1,12 +1,10 @@
 import Navigation from "@/components/Navigation";
 import { Hero } from "@/components/ui/animated-hero";
 import About from "@/components/About";
-import Process from "@/components/Process";
-import Certifications from "@/components/Certifications";
 import Projects from "@/components/Projects";
+import ClientMarquee from "@/components/ClientMarquee";
 import ProjectsMap from "@/components/ProjectsMap";
 import Testimonials from "@/components/Testimonials";
-import ClientMarquee from "@/components/ClientMarquee";
 import Calculator from "@/components/Calculator";
 import Contacts from "@/components/Contacts";
 import CookieBanner from "@/components/CookieBanner";
@@ -133,11 +131,9 @@ export default function Home() {
         <Calculator />
         <About />
         <Projects />
-        <ProjectsMap />
-        <Process />
-        <Certifications />
-        <Testimonials />
         <ClientMarquee />
+        <ProjectsMap />
+        <Testimonials />
         <Contacts />
       </main>
       <CookieBanner />

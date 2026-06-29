@@ -6,6 +6,14 @@ import {
   ShieldCheck,
   Ruler,
   Clock,
+  Notebook,
+  Blueprint,
+  Factory,
+  CraneTower,
+  Key,
+  Certificate,
+  Wrench,
+  Scales,
 } from "@phosphor-icons/react";
 
 const advantages = [
@@ -31,6 +39,66 @@ const advantages = [
   },
 ];
 
+const steps = [
+  {
+    icon: Notebook,
+    number: "01",
+    title: "Заявка и консультация",
+    text: "Обсуждаем задачу, выезжаем на площадку, проводим геодезию и геологию.",
+  },
+  {
+    icon: Blueprint,
+    number: "02",
+    title: "Проектирование",
+    text: "Разрабатываем проект КМ и КМД, согласовываем с заказчиком каждый узел.",
+  },
+  {
+    icon: Factory,
+    number: "03",
+    title: "Производство",
+    text: "Изготавливаем каркас на собственном заводе с контролем качества.",
+  },
+  {
+    icon: CraneTower,
+    number: "04",
+    title: "Монтаж",
+    text: "Опытные бригады собирают здание на площадке в согласованные сроки.",
+  },
+  {
+    icon: Key,
+    number: "05",
+    title: "Сдача объекта",
+    text: "Передаём готовое здание с полным пакетом исполнительной документации.",
+  },
+];
+
+const certs = [
+  {
+    icon: Certificate,
+    title: "СРО",
+    subtitle: "Допуск к особо опасным и технически сложным объектам",
+    number: "СРО-С-016-22102010",
+  },
+  {
+    icon: Wrench,
+    title: "НАКС",
+    subtitle: "Аттестация сварочного производства",
+    number: "НАКС РД, МП, ААДП",
+  },
+  {
+    icon: Factory,
+    title: "ИСО 9001:2015",
+    subtitle: "Система менеджмента качества",
+    number: "Сертификат № RU-9001-2021",
+  },
+  {
+    icon: Scales,
+    title: "ГОСТ",
+    subtitle: "Конструкции соответствуют ГОСТ 23118-2012",
+    number: "Металлоконструкции стальные",
+  },
+];
+
 export default function About() {
   const reduce = useReducedMotion();
 
@@ -52,7 +120,7 @@ export default function About() {
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-none text-white">
               Надёжные здания
               <br />
-              <span className="text-accent-blue">за разумные сроки</span>
+              <span className="text-white">за разумные сроки</span>
             </h2>
             <div className="flex flex-wrap gap-4 mt-5">
               <div className="text-center">
@@ -108,6 +176,68 @@ export default function About() {
                   {adv.title}
                 </h3>
                 <p className="text-sm text-white/80 leading-relaxed">{adv.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Как мы работаем */}
+        <div className="mt-16">
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tighter text-white mb-8">
+            Как мы работаем
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                initial={reduce ? false : { opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{
+                  duration: 0.6,
+                  delay: i * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="p-4 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <step.icon size={22} weight="duotone" className="text-white" />
+                  </div>
+                  <div className="text-xs font-mono text-accent-orange font-bold">{step.number}</div>
+                </div>
+                <h4 className="text-sm font-semibold text-white mb-1.5">{step.title}</h4>
+                <p className="text-sm text-white/80 leading-relaxed">{step.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Документы и допуски */}
+        <div className="mt-16">
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tighter text-white mb-8">
+            Работаем только <span className="text-accent-blue">в рамках закона</span>
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {certs.map((cert, i) => (
+              <motion.div
+                key={cert.title}
+                initial={reduce ? false : { opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{
+                  duration: 0.6,
+                  delay: i * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="p-4 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm"
+              >
+                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center mb-3">
+                  <cert.icon size={22} weight="duotone" className="text-white" />
+                </div>
+                <div className="text-lg font-bold text-white mb-1">{cert.title}</div>
+                <div className="text-sm text-white/80 leading-snug mb-2">{cert.subtitle}</div>
+                <div className="text-xs font-mono text-white/60">{cert.number}</div>
               </motion.div>
             ))}
           </div>

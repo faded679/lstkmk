@@ -692,7 +692,7 @@ export default function Calculator() {
                 Перейти в каталог
               </a>
               <p className="mt-2 text-xs text-muted text-center leading-relaxed">
-                Менеджер свяжется с вами в течение 2 часов
+                Менеджер свяжется с вами в течение 15 минут
               </p>
             </div>
           </motion.div>
