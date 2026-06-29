@@ -79,7 +79,7 @@ const projects: Project[] = [
     duration: "21 день",
     description:
       "Многоместная автомойка шириной 9 м, длиной 24 м. Металлокаркас из высококачественной стали с антикоррозийным покрытием.",
-    image: "/moyka.webp",
+    image: "/moyka.png",
     size: "9 × 24 м",
     type: "Автомойка",
     frame: "ЛСТК",
