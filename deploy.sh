@@ -9,7 +9,7 @@ echo "Pull latest code..."
 git pull origin main
 
 echo "Stop PM2..."
-pm2 delete lstkmk || true
+pm2 kill || true
 
 echo "Kill stuck next-server processes..."
 pkill -9 -f "next-server" || true
