@@ -193,8 +193,8 @@ export default function ProjectsMap() {
 
         <div
           ref={mapRef}
-          className="w-full rounded-2xl overflow-hidden border border-white/10 bg-black"
-          style={{ height: "500px", filter: "grayscale(1) invert(1) contrast(1.1) brightness(0.9)" }}
+          className="w-full rounded-2xl overflow-hidden border border-border bg-slate-100"
+          style={{ height: "500px" }}
         >
           {!isVisible && (
             <div className="w-full h-full flex items-center justify-center text-muted">
