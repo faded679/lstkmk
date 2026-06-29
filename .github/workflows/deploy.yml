@@ -5,12 +5,24 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build
+      run: npm run build
       
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.3
@@ -21,10 +33,25 @@ jobs:
         script: |
           cd /var/www/lstkmk.ru
           git pull origin main
-          npm install
-          rm -rf .next
-          npm run build
-          mkdir -p /var/log/pm2
-          pm2 delete lstkmk || true
-          pm2 start ecosystem.config.js --env production
+          rm -rf .next node_modules
+          npm install --production
+
+    - name: Copy build to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: 89.111.163.48
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ".next"
+        target: "/var/www/lstkmk.ru/"
+
+    - name: Restart PM2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 89.111.163.48
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/lstkmk.ru
+          pm2 restart lstkmk || pm2 start ecosystem.config.js --env production
           pm2 save
