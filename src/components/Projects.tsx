@@ -40,7 +40,7 @@ const projects: Project[] = [
     duration: "45 дней",
     description:
       "Складское помещение для хранения яйца с галереей 12×7 м. Возможность адаптации под офисы, ангары, производства.",
-    image: "/projects/eggs.jpg",
+    image: "/projects/eggs2.jpg",
     size: "36 × 27 м",
     type: "Склад",
     frame: "ЛСТК",
@@ -66,7 +66,7 @@ const projects: Project[] = [
     duration: "35 дней",
     description:
       "Холодильный склад для хранения продукции с температурным режимом. Обшивка сэндвич-панелями с утеплителем.",
-    image: "/projects/sklad holodinik.jpg",
+    image: "/projects/skladholodos2.jpg",
     size: "40 × 60 м",
     type: "Холодильный склад",
     frame: "ЛСТК",
