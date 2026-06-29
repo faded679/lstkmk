@@ -37,7 +37,7 @@ function Hero() {
                 {titles.map((title, index) => (
                   <motion.span
                     key={index}
-                    className="absolute font-semibold"
+                    className="absolute font-semibold text-orange-500"
                     initial={{ opacity: 0, y: "-100" }}
                     transition={{ type: "spring", stiffness: 50 }}
                     animate={
@@ -60,12 +60,12 @@ function Hero() {
           </div>
           <div className="flex flex-row gap-3">
             <Link href="/#contacts">
-              <Button className="gap-4 text-black border-orange-500 hover:bg-orange-500/10" variant="outline">
+              <Button className="gap-4 text-black border-black hover:bg-black/10" variant="outline">
                 Заказать звонок <Phone size={20} />
               </Button>
             </Link>
             <Link href="/catalog">
-              <Button className="gap-4 text-black border-orange-500 hover:bg-orange-500/10" variant="outline">
+              <Button className="gap-4 text-black border-black hover:bg-black/10" variant="outline">
                 Каталог проектов <ArrowRight size={20} />
               </Button>
             </Link>
