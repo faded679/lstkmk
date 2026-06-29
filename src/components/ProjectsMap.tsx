@@ -180,13 +180,13 @@ export default function ProjectsMap() {
   }
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-slate-950">
+    <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <div className="mb-14">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-none text-white">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-none text-foreground">
             География проектов
           </h2>
-          <p className="mt-3 text-base text-white/70 max-w-lg leading-relaxed">
+          <p className="mt-3 text-base text-muted max-w-lg leading-relaxed">
             Нажмите на маркер, чтобы узнать подробнее о проекте.
           </p>
         </div>
