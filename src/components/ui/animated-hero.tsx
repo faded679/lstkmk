@@ -29,16 +29,9 @@ function Hero() {
     <div className="w-full">
       <div className="container mx-auto">
         <div className="flex gap-4 pt-24 lg:pt-28 pb-0 items-center justify-center flex-col">
-          <div>
-            <Link href="/catalog">
-              <Button size="sm" className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
-                Каталог проектов <ArrowRight size={16} />
-              </Button>
-            </Link>
-          </div>
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
-              <span className="text-blue-600">Здания из металлоконструкций</span>
+              <span className="text-accent-blue">Здания из металлоконструкций</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
                 {titles.map((title, index) => (
@@ -67,13 +60,13 @@ function Hero() {
           </div>
           <div className="flex flex-row gap-3">
             <Link href="/#contacts">
-              <Button size="lg" className="gap-4" variant="outline">
+              <Button className="gap-4" variant="outline">
                 Заказать звонок <Phone size={20} />
               </Button>
             </Link>
-            <Link href="/#calculator">
-              <Button size="lg" className="gap-4">
-                Рассчитать стоимость <ArrowRight size={20} />
+            <Link href="/catalog">
+              <Button className="gap-4 bg-orange-500 hover:bg-orange-600 text-white">
+                Каталог проектов <ArrowRight size={20} />
               </Button>
             </Link>
           </div>
