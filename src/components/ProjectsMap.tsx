@@ -92,6 +92,30 @@ const mapProjects: MapProject[] = [
     image: "/sklad-pomeshenie.webp",
     coords: [50.5957, 36.5872],
   },
+  {
+    id: 7,
+    title: "Коровник 32,6 × 57,6 м",
+    location: "Солнцевский р-н, Белгородская обл.",
+    area: "1 876 м²",
+    size: "32,6 × 57,6 м",
+    duration: "2022 год",
+    type: "Коровник",
+    description: "Коровник на 200 голов с трёхпролётной системой и аэрационным коньком.",
+    image: "/projects/korovnik.jpg",
+    coords: [50.92, 36.45],
+  },
+  {
+    id: 8,
+    title: "СТО 18 × 8 м",
+    location: "Белгородский р-н",
+    area: "144 м²",
+    size: "18 × 8 м",
+    duration: "28 дней",
+    type: "СТО",
+    description: "Станция технического обслуживания с металлокаркасом и антикоррозийным покрытием.",
+    image: "/projects/sto18x8.png",
+    coords: [50.72, 36.62],
+  },
 ];
 
 declare global {
