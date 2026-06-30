@@ -94,14 +94,14 @@ const mapProjects: MapProject[] = [
   },
   {
     id: 7,
-    title: "Коровник 32,6 × 57,6 м",
+    title: "Коровник 32,6 × 115,2 м",
     location: "Солнцевский р-н, Белгородская обл.",
-    area: "1 876 м²",
-    size: "32,6 × 57,6 м",
+    area: "3 756 м²",
+    size: "32,6 × 115,2 м",
     duration: "2022 год",
     type: "Коровник",
     description: "Коровник на 200 голов с трёхпролётной системой и аэрационным коньком.",
-    image: "/projects/korovnik.jpg",
+    image: "/projects/korovnik32.6x115.2.png",
     coords: [50.92, 36.45],
   },
   {
