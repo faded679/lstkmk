@@ -26,11 +26,11 @@ function Hero() {
   }, [titleNumber, titles]);
 
   return (
-    <div className="w-full">
-      <div className="container mx-auto">
+    <div className="w-full overflow-x-hidden">
+      <div className="container mx-auto px-4">
         <div className="flex gap-4 pt-24 lg:pt-28 pb-4 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
-            <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl max-w-2xl md:max-w-3xl tracking-tighter text-center font-regular px-2">
               <span className="text-accent-blue">Здания из металлоконструкций</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
@@ -58,14 +58,14 @@ function Hero() {
               </span>
             </h1>
           </div>
-          <div className="flex flex-row gap-3">
-            <Link href="/#contacts">
-              <Button className="gap-4 text-black border-black hover:bg-black/10" variant="outline">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto px-4 sm:px-0">
+            <Link href="/#contacts" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto gap-4 text-black border-black hover:bg-black/10" variant="outline">
                 Заказать звонок <Phone size={20} />
               </Button>
             </Link>
-            <Link href="/catalog">
-              <Button className="gap-4 text-black border-black hover:bg-black/10" variant="outline">
+            <Link href="/catalog" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto gap-4 text-black border-black hover:bg-black/10" variant="outline">
                 Каталог проектов <ArrowRight size={20} />
               </Button>
             </Link>
