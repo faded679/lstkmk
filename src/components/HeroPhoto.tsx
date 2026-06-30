@@ -1,7 +1,7 @@
 export default function HeroPhoto() {
   return (
-    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full">
-      <div className="relative w-full max-w-5xl mx-auto" style={{ height: "60vh" }}>
+    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full -mt-4">
+      <div className="relative w-full max-w-5xl mx-auto" style={{ height: "65vh" }}>
         <picture>
           <source srcSet="/newherophoto.webp" type="image/webp" />
           <img
@@ -12,7 +12,7 @@ export default function HeroPhoto() {
             fetchPriority="high"
             decoding="async"
             className="absolute bottom-0 left-0 right-0 mx-auto w-full object-cover object-bottom"
-            style={{ maxHeight: "60vh", height: "100%", objectPosition: "center 0%" }}
+            style={{ maxHeight: "65vh", height: "100%", objectPosition: "center bottom" }}
           />
         </picture>
         <span className="hidden lg:block absolute text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500 text-right leading-tight whitespace-nowrap" style={{ top: "22%", right: "calc(50% + 460px)" }}>Проектирование</span>
