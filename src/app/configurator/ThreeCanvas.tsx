@@ -196,7 +196,7 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   const wallMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.55, metalness: 0.2, side: THREE.DoubleSide });
   const roofMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.4,  metalness: 0.25, side: THREE.DoubleSide });
   const glassMat  = new THREE.MeshStandardMaterial({ color: 0xadd8e6, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.45, side: THREE.DoubleSide });
-  const gateMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.4, metalness: 0.35 });
+  const gateMat   = new THREE.MeshStandardMaterial({ color: 0x2a3a4a, roughness: 0.35, metalness: 0.6 });
   const frameMat  = new THREE.MeshStandardMaterial({ color: 0x5a5a5a, roughness: 0.4, metalness: 0.7 });
 
   const frameCount = Math.ceil(length / columnStep);
@@ -389,40 +389,60 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     // Торцевые стены
     for (const z of [frontZ, backZ]) {
       const isGateSide = showGate && (z === frontZ);
+      // Фронтон — сплошная панель треугольником (апроксимация горизонтальными слоями)
+      {
+        const dy = apexH - height;
+        const slices = 10;
+        for (let s = 0; s < slices; s++) {
+          const t0 = s / slices;
+          const t1 = (s + 1) / slices;
+          const y0 = height + t0 * dy;
+          const y1 = height + t1 * dy;
+          const w0 = width * (1 - t0);
+          const w1 = width * (1 - t1);
+          const wAvg = (w0 + w1) / 2;
+          const yAvg = (y0 + y1) / 2;
+          const sliceH = y1 - y0;
+          box(wAvg, sliceH, thick, wallMat, 0, yAvg, z);
+        }
+      }
+
       if (isGateSide) {
-        // Боковые полосы рядом с воротами
         const sideW = (width - gateW) / 2;
+        const doorW = 0.95, doorH = 2.1;
+
+        // Левая боковая полоса (глухая)
         box(sideW, height, thick, wallMat, -halfW + sideW / 2, height / 2, z);
-        box(sideW, height, thick, wallMat,  halfW - sideW / 2, height / 2, z);
+
+        // Правая боковая полоса: глухая часть + дверь
+        const rightGlueW = sideW - doorW;
+        // правый глухой остаток у угла
+        box(rightGlueW, height, thick, wallMat, halfW - rightGlueW / 2, height / 2, z);
+        // панель над дверью
+        box(doorW, height - doorH, thick, wallMat, halfW - rightGlueW - doorW / 2, doorH + (height - doorH) / 2, z);
+        // дверь
+        const doorCx = halfW - rightGlueW - doorW / 2;
+        box(doorW - 0.1, doorH - 0.05, thick * 0.7, gateMat, doorCx, doorH / 2, z);
+        box(doorW, 0.07, thick * 1.4, frameMat, doorCx, doorH, z);
+        box(0.06, doorH, thick * 1.4, frameMat, doorCx - doorW / 2, doorH / 2, z);
+        box(0.06, doorH, thick * 1.4, frameMat, doorCx + doorW / 2, doorH / 2, z);
+
         // Полоса над воротами
         box(gateW, height - gateH, thick, wallMat, 0, gateH + (height - gateH) / 2, z);
-        // Ворота (секционные — 3 секции)
+
+        // Ворота секционные (3 секции)
         const secH = gateH / 3;
         for (let s = 0; s < 3; s++) {
-          box(gateW - 0.1, secH - 0.05, thick * 0.8, gateMat, 0, secH * s + secH / 2 + 0.05, z);
-          // горизонтальная планка между секциями
-          if (s < 2) box(gateW, 0.06, thick * 1.2, frameMat, 0, secH * (s + 1), z);
+          box(gateW - 0.12, secH - 0.06, thick * 0.7, gateMat, 0, secH * s + secH / 2, z);
+          if (s < 2) box(gateW, 0.07, thick * 1.3, frameMat, 0, secH * (s + 1), z);
         }
         // Рама ворот
         box(0.1, gateH, thick * 1.5, frameMat, -gateW / 2, gateH / 2, z);
         box(0.1, gateH, thick * 1.5, frameMat,  gateW / 2, gateH / 2, z);
-        box(gateW, 0.1, thick * 1.5, frameMat, 0, gateH, z);
-        // Дверь рядом с воротами (правая сторона)
-        const doorW = 0.9, doorH = 2.1;
-        const doorX = halfW - sideW / 2 - doorW;
-        box(doorW, doorH, thick * 0.8, gateMat, doorX, doorH / 2, z);
-        box(doorW, 0.05, thick * 1.3, frameMat, doorX, doorH, z);
-        box(0.05, doorH, thick * 1.3, frameMat, doorX - doorW / 2, doorH / 2, z);
-        box(0.05, doorH, thick * 1.3, frameMat, doorX + doorW / 2, doorH / 2, z);
+        box(gateW + 0.1, 0.1, thick * 1.5, frameMat, 0, gateH, z);
       } else {
         box(width, height, thick, wallMat, 0, height / 2, z);
       }
-      // Фронтон (треугольная часть над height)
-      const dx = halfW, dy = apexH - height;
-      const rafLen = Math.sqrt(dx * dx + dy * dy);
-      const angle  = Math.atan2(dy, dx);
-      box(rafLen, thick, thick, wallMat, -dx / 2, height + dy / 2, z, 0, 0, angle);
-      box(rafLen, thick, thick, wallMat,  dx / 2, height + dy / 2, z, 0, 0, -angle);
     }
 
     // Кровля — два ската
