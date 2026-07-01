@@ -1,7 +1,7 @@
 export default function HeroPhoto() {
   return (
-    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full -mt-4">
-      <div className="relative w-full max-w-5xl mx-auto h-[45vh] md:h-[60vh]">
+    <div className="relative flex-1 min-w-0 bg-white flex items-end justify-center w-full -mt-4 pb-6 md:pb-0">
+      <div className="relative w-full max-w-5xl mx-auto h-[40vh] md:h-[60vh]">
         <picture>
           <source srcSet="/newherophoto.webp" type="image/webp" />
           <img
