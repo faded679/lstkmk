@@ -28,7 +28,7 @@ function Hero() {
   return (
     <div className="w-full overflow-x-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex gap-4 pt-24 lg:pt-28 pb-4 items-center justify-center flex-col">
+        <div className="flex gap-4 pt-24 lg:pt-28 pb-0 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
             <h1 className="text-4xl md:text-6xl lg:text-7xl max-w-2xl md:max-w-3xl tracking-tighter text-center font-regular px-2">
               <span className="text-accent-blue">Здания из металлоконструкций</span>
