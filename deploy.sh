@@ -15,6 +15,9 @@ echo "Kill stuck next-server processes..."
 pkill -9 -f "next-server" || true
 pkill -9 -f "next start" || true
 
+echo "Install dependencies..."
+npm install
+
 echo "Clear cache..."
 rm -rf .next
 rm -rf /tmp/next*
