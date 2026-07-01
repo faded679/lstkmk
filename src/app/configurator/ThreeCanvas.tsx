@@ -273,18 +273,70 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   // ── ПРОДОЛЬНАЯ КОНЁК-СВЯЗЬ ────────────────────────────────────────────────
   box(0.1, 0.1, totalLen, steelMat, 0, apexH, 0);
 
-  // ── ГОРИЗОНТАЛЬНЫЕ СВЯЗИ В ПЛОСКОСТИ РИГЕЛЕЙ (торцевые пролёты) ──────────
-  // Первый и последний пролёт — Х-образные крестовые связи в стенах
+  // ── КРЕСТОВЫЕ СВЯЗИ В БОКОВЫХ СТЕНАХ (первый и последний пролёт) ──────────
   for (const span of [0, frameCount - 1]) {
     const z0 = startZ + span * columnStep;
     const z1 = z0 + columnStep;
-    // Левая стена: крест
     addDiag(group, -halfW, 0,      z0, -halfW, height, z1, 0.05, steelMat);
     addDiag(group, -halfW, height, z0, -halfW, 0,      z1, 0.05, steelMat);
-    // Правая стена: крест
     addDiag(group,  halfW, 0,      z0,  halfW, height, z1, 0.05, steelMat);
     addDiag(group,  halfW, height, z0,  halfW, 0,      z1, 0.05, steelMat);
   }
+
+  // ── ТОРЦЕВЫЕ СТЕНЫ (фронтоны) ─────────────────────────────────────────────
+  // Промежуточные колонны на торцах + горизонтальные прогоны + рафтеры фронтона
+  const endColStep = 3; // шаг промежуточных колонн на торце
+  const endColCount = Math.floor(width / endColStep) - 1; // колонны между угловыми
+
+  for (const endZ of [startZ, startZ + totalLen]) {
+    // Промежуточные колонны торца (не угловые — угловые уже есть в рамах)
+    for (let c = 1; c <= endColCount; c++) {
+      const cx = -halfW + c * (width / (endColCount + 1));
+      // Высота колонны до точки на рафтере
+      const colH = height + Math.abs(cx) * roofPitch; // высота у края = height, к центру растёт
+      // Поправка: высота = height + (halfW - |cx|) * roofPitch
+      const colHeight = height + (halfW - Math.abs(cx)) * roofPitch;
+      box(0.15, colHeight, 0.15, steelMat, cx, colHeight / 2, endZ);
+      // Опорная пластина
+      box(0.3, 0.05, 0.3, boltMat, cx, 0.025, endZ);
+    }
+
+    // Горизонтальные прогоны торцевой стены
+    const endPurlinCount = Math.max(2, Math.round(height / 1.5));
+    for (let p = 1; p <= endPurlinCount; p++) {
+      const y = (height / (endPurlinCount + 1)) * p;
+      box(width, 0.06, 0.08, purlinMat, 0, y, endZ);
+    }
+
+    // Рафтеры фронтона: от каждой промежуточной колонны до конька
+    const dx = halfW, dy = apexH - height;
+    const rafAngle = Math.atan2(dy, dx);
+    // Левый рафтер фронтона (от -halfW до 0)
+    const rafLen = Math.sqrt(dx * dx + dy * dy);
+    box(rafLen, 0.12, 0.1, steelMat, -dx / 2, height + dy / 2, endZ, 0, 0,  rafAngle);
+    // Правый рафтер фронтона
+    box(rafLen, 0.12, 0.1, steelMat,  dx / 2, height + dy / 2, endZ, 0, 0, -rafAngle);
+
+    // Прогоны фронтона вдоль скатов (между угловой колонной и коньком)
+    const frontPurlinCount = 3;
+    for (let p = 1; p <= frontPurlinCount; p++) {
+      const t = p / (frontPurlinCount + 1);
+      const lx = -halfW + dx * t;
+      const ly = height + dy * t;
+      box(0.08, 0.06, 0.08, purlinMat, lx,  ly, endZ);
+      box(0.08, 0.06, 0.08, purlinMat, -lx, ly, endZ);
+    }
+
+    // Крестовая связь на фронтоне (в плоскости торца)
+    addDiag(group, -halfW, 0,      endZ, 0, apexH, endZ, 0.05, steelMat);
+    addDiag(group,  halfW, 0,      endZ, 0, apexH, endZ, 0.05, steelMat);
+  }
+
+  // ── ПРОГОНЫ ПЕРЕДНЕЙ И ЗАДНЕЙ СТЕНЫ вдоль здания (нижние пояса) ──────────
+  // Горизонтальные пояса у основания торцов — связывают торцевые колонны вдоль здания
+  // (уже есть прогоны боковых стен; добавляем лишь нижний обвязочный пояс)
+  box(0.1, 0.08, totalLen, steelMat, -halfW, 0.12, 0);
+  box(0.1, 0.08, totalLen, steelMat,  halfW, 0.12, 0);
 
   // ── СЭНДВИЧ-ПАНЕЛИ ────────────────────────────────────────────────────────
   if (showSandwich) {
