@@ -352,23 +352,34 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
     const frontZ = startZ - thick / 2; // передний торец
     const backZ  = startZ + totalLen + thick / 2;
 
-    // Боковые стены (с проёмами под окна если showWindows)
+    // Боковые стены
     if (showWindows) {
-      const winW = 1.5, winH = 1.2, winY = height * 0.55;
-      const winStep = columnStep; // окно в каждом пролёте
-      const winCount = frameCount;
-      for (let i = 0; i < winCount; i++) {
-        const wz = startZ + i * winStep + winStep / 2;
-        // Левая стена: панели вокруг окна
-        box(thick, height, winStep - winW, wallMat, -halfW - thick / 2, height / 2, wz); // полоса рядом
-        box(thick, winY - winH / 2, winW, wallMat, -halfW - thick / 2, (winY - winH / 2) / 2, wz); // ниже окна
-        box(thick, height - winY - winH / 2, winW, wallMat, -halfW - thick / 2, winY + winH / 2 + (height - winY - winH / 2) / 2, wz); // выше окна
-        box(thick, winH, winW, glassMat, -halfW - thick / 2, winY, wz); // стекло
-        // Правая стена зеркально
-        box(thick, height, winStep - winW, wallMat,  halfW + thick / 2, height / 2, wz);
-        box(thick, winY - winH / 2, winW, wallMat,  halfW + thick / 2, (winY - winH / 2) / 2, wz);
-        box(thick, height - winY - winH / 2, winW, wallMat,  halfW + thick / 2, winY + winH / 2 + (height - winY - winH / 2) / 2, wz);
-        box(thick, winH, winW, glassMat,  halfW + thick / 2, winY, wz);
+      // Окно центрировано в пролёте. Пролёт от z0 до z1 (длина columnStep).
+      // Раскладка по Z: [глухая полоса sideLen] [окно winW] [глухая полоса sideLen]
+      const winW = 1.5, winH = 1.2;
+      const winBottomY = height * 0.45;   // низ окна
+      const winTopY    = winBottomY + winH; // верх окна
+      const sideLen    = (columnStep - winW) / 2; // ширина боковой глухой полосы
+
+      for (let i = 0; i < frameCount; i++) {
+        const z0  = startZ + i * columnStep;         // левая рама пролёта
+        const wz  = z0 + columnStep / 2;             // центр пролёта = центр окна
+        const zL  = z0 + sideLen / 2;                // центр левой глухой полосы
+        const zR  = z0 + columnStep - sideLen / 2;   // центр правой глухой полосы
+
+        for (const sx of [-halfW - thick / 2, halfW + thick / 2]) {
+          // Левая глухая полоса (полная высота)
+          box(thick, height, sideLen, wallMat, sx, height / 2, zL);
+          // Правая глухая полоса (полная высота)
+          box(thick, height, sideLen, wallMat, sx, height / 2, zR);
+          // Панель ниже окна
+          box(thick, winBottomY, winW, wallMat, sx, winBottomY / 2, wz);
+          // Панель выше окна
+          const aboveH = height - winTopY;
+          box(thick, aboveH, winW, wallMat, sx, winTopY + aboveH / 2, wz);
+          // Стекло
+          box(thick, winH, winW, glassMat, sx, winBottomY + winH / 2, wz);
+        }
       }
     } else {
       box(thick, height, totalLen, wallMat, -halfW - thick / 2, height / 2, 0);
