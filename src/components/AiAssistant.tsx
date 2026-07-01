@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check, ChatTeardropDots } from "@phosphor-icons/react";
+import { Robot, X, PaperPlaneTilt, CircleNotch, Microphone, MicrophoneSlash, Phone, Check, ChatTeardropDots, SpeakerHigh, SpeakerSlash, SpeakerX } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
+import { speak, stopSpeaking, initTTSVoices, isTTSSupported } from "@/lib/tts";
 
 const LINK_LABELS: Record<string, string> = {
   "/#calculator": "🧮 Калькулятор",
@@ -150,9 +151,17 @@ export default function AiAssistant() {
   const [listening, setListening] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [hintDismissed, setHintDismissed] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [speakingIdx, setSpeakingIdx] = useState<number | null>(null);
+  const listenRef = useRef(false);
+  const mutedRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<VoiceController | null>(null);
   const baseInputRef = useRef<string>("");
+
+  useEffect(() => { initTTSVoices(); }, []);
+  useEffect(() => { listenRef.current = listening; }, [listening]);
+  useEffect(() => { mutedRef.current = muted; }, [muted]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -169,6 +178,8 @@ export default function AiAssistant() {
       stopListening();
       return;
     }
+    stopSpeaking();
+    setSpeakingIdx(null);
     setVoiceError(null);
     baseInputRef.current = input ? input.trim() + " " : "";
     const ctrl = createVoice({
@@ -202,6 +213,14 @@ export default function AiAssistant() {
     const withReply = [...nextMessages, { role: "assistant" as const, content: reply }];
     setMessages(withReply);
     setLoading(false);
+
+    if (!mutedRef.current && !listenRef.current && isTTSSupported()) {
+      const idx = withReply.length - 1;
+      speak(reply, {
+        onStart: () => setSpeakingIdx(idx),
+        onEnd: () => setSpeakingIdx((prev) => (prev === idx ? null : prev)),
+      });
+    }
   };
 
   return (
@@ -226,13 +245,29 @@ export default function AiAssistant() {
                   <div className="text-[11px] text-white/70">Онлайн</div>
                 </div>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Закрыть чат"
-                className="p-1 hover:bg-white/20 rounded transition-colors"
-              >
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-1">
+                {isTTSSupported() && (
+                  <button
+                    onClick={() => {
+                      const next = !muted;
+                      setMuted(next);
+                      if (next) { stopSpeaking(); setSpeakingIdx(null); }
+                    }}
+                    aria-label={muted ? "Включить озвучку" : "Отключить озвучку"}
+                    title={muted ? "Включить озвучку" : "Отключить озвучку"}
+                    className="p-1 hover:bg-white/20 rounded transition-colors"
+                  >
+                    {muted ? <SpeakerX size={18} /> : <SpeakerHigh size={18} />}
+                  </button>
+                )}
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Закрыть чат"
+                  className="p-1 hover:bg-white/20 rounded transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             <div
@@ -246,14 +281,40 @@ export default function AiAssistant() {
                       msg.role === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <div
-                      className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
-                        msg.role === "user"
-                          ? "bg-accent-blue text-white rounded-br-sm"
-                          : "bg-slate-100 text-foreground rounded-bl-sm"
-                      }`}
-                    >
-                      {msg.role === "assistant" ? linkify(msg.content) : msg.content}
+                    <div className={`relative group max-w-[85%] ${
+                      msg.role === "user" ? "" : "flex flex-col"
+                    }`}>
+                      <div
+                        className={`px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                          msg.role === "user"
+                            ? "bg-accent-blue text-white rounded-br-sm"
+                            : "bg-slate-100 text-foreground rounded-bl-sm"
+                        }`}
+                      >
+                        {msg.role === "assistant" ? linkify(msg.content) : msg.content}
+                      </div>
+                      {msg.role === "assistant" && isTTSSupported() && (
+                        <button
+                          onClick={() => {
+                            if (speakingIdx === i) {
+                              stopSpeaking();
+                              setSpeakingIdx(null);
+                            } else {
+                              speak(msg.content, {
+                                onStart: () => setSpeakingIdx(i),
+                                onEnd: () => setSpeakingIdx((prev) => (prev === i ? null : prev)),
+                              });
+                            }
+                          }}
+                          aria-label={speakingIdx === i ? "Остановить озвучку" : "Озвучить сообщение"}
+                          className="mt-1 self-start flex items-center gap-1 text-[10px] text-slate-400 hover:text-accent-blue transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        >
+                          {speakingIdx === i
+                            ? <SpeakerSlash size={13} weight="bold" />
+                            : <SpeakerHigh size={13} weight="bold" />}
+                          {speakingIdx === i ? "Стоп" : "Озвучить"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
