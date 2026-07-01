@@ -181,254 +181,160 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
 
 function createBuilding(group: THREE.Group, width: number, length: number, height: number, showSandwich: boolean) {
   const columnStep = 6;
-  const trussHeight = 1.2;
-  const halfWidth = width / 2;
-  
-  // Материалы ЛСТК - реалистичная сталь
-  const steelColor = 0x8b9299; // Цвет оцинкованной стали
-  const columnMat = new THREE.MeshStandardMaterial({ color: steelColor, roughness: 0.35, metalness: 0.85 });
-  const beamMat = new THREE.MeshStandardMaterial({ color: steelColor, roughness: 0.35, metalness: 0.85 });
-  const trussMat = new THREE.MeshStandardMaterial({ color: 0x7a828a, roughness: 0.4, metalness: 0.8 });
-  const sandwichMat = new THREE.MeshStandardMaterial({ color: 0xf5f5f5, roughness: 0.5, metalness: 0.05 });
-  const boltMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.3, metalness: 0.9 });
+  // Уклон кровли ~15° от горизонта
+  const roofPitch = Math.tan(15 * Math.PI / 180);
+  const apexH = height + (width / 2) * roofPitch; // высота конька над землёй
+  const halfW = width / 2;
+
+  // Материалы
+  const steelMat  = new THREE.MeshStandardMaterial({ color: 0x8b9299, roughness: 0.35, metalness: 0.85 });
+  const purlinMat = new THREE.MeshStandardMaterial({ color: 0x9aa2a8, roughness: 0.4,  metalness: 0.75 });
+  const boltMat   = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.3,  metalness: 0.9  });
+  const wallMat   = new THREE.MeshStandardMaterial({ color: 0xdce8f0, roughness: 0.55, metalness: 0.1, side: THREE.DoubleSide });
+  const roofMat   = new THREE.MeshStandardMaterial({ color: 0xb8ccd8, roughness: 0.5,  metalness: 0.2, side: THREE.DoubleSide });
 
   const frameCount = Math.ceil(length / columnStep);
-  const actualLength = frameCount * columnStep;
-  const startZ = -actualLength / 2;
+  const totalLen   = frameCount * columnStep;
+  const startZ     = -totalLen / 2;
 
-  // === ПОРТАЛЫ (РАМЫ) ===
+  // Вспомогательная функция — добавить box-mesh
+  function box(sx: number, sy: number, sz: number, mat: THREE.Material, px: number, py: number, pz: number, rx = 0, ry = 0, rz = 0) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat);
+    m.position.set(px, py, pz);
+    m.rotation.set(rx, ry, rz);
+    m.castShadow = true;
+    m.receiveShadow = true;
+    group.add(m);
+    return m;
+  }
+
+  // ── РАМЫ ──────────────────────────────────────────────────────────────────
+  // Каждая рама = левая колонна + правая колонна + левый рафтер + правый рафтер
   for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
-    
-    // Левая колонна
-    const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.1), columnMat);
-    leftCol.position.set(-halfWidth, height / 2, z);
-    leftCol.castShadow = true;
-    leftCol.receiveShadow = true;
-    group.add(leftCol);
 
-    // Правая колонна
-    const rightCol = new THREE.Mesh(new THREE.BoxGeometry(0.2, height, 0.1), columnMat);
-    rightCol.position.set(halfWidth, height / 2, z);
-    rightCol.castShadow = true;
-    rightCol.receiveShadow = true;
-    group.add(rightCol);
+    // Колонны (вертикальные, 0.2×0.15 сечение)
+    box(0.2, height, 0.15, steelMat, -halfW, height / 2, z);
+    box(0.2, height, 0.15, steelMat,  halfW, height / 2, z);
 
-    // Ригель
-    if (i < frameCount) {
-      const righel = new THREE.Mesh(new THREE.BoxGeometry(width, 0.12, 0.08), beamMat);
-      righel.position.set(0, height, z + columnStep / 2);
-      righel.castShadow = true;
-      righel.receiveShadow = true;
-      group.add(righel);
+    // Опорные пластины у основания
+    box(0.4, 0.06, 0.3, boltMat, -halfW, 0.03, z);
+    box(0.4, 0.06, 0.3, boltMat,  halfW, 0.03, z);
 
-      // Соединительные пластины
-      for (const x of [-halfWidth, halfWidth]) {
-        const plate = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.06), boltMat);
-        plate.position.set(x, height, z + columnStep / 2);
-        plate.castShadow = true;
-        group.add(plate);
-        
-        // Болты на пластине (2x3 сетка)
-        const boltGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.08, 8);
-        const boltHeadGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.01, 6);
-        for (let bx = -1; bx <= 1; bx++) {
-          for (let by = -1; by <= 1; by++) {
-            const boltX = x + bx * 0.1;
-            const boltY = height + by * 0.08;
-            const boltZ = z + columnStep / 2 + (x > 0 ? 0.03 : -0.03);
-            
-            const bolt = new THREE.Mesh(boltGeo, boltMat);
-            bolt.position.set(boltX, boltY, boltZ);
-            bolt.rotation.x = Math.PI / 2;
-            group.add(bolt);
-            
-            // Головка болта
-            const head = new THREE.Mesh(boltHeadGeo, boltMat);
-            head.position.set(boltX, boltY, boltZ + (x > 0 ? 0.03 : -0.03));
-            head.rotation.x = Math.PI / 2;
-            group.add(head);
-          }
-        }
-      }
+    // Рафтеры (наклонные балки крыши от верха колонны до конька)
+    // Левый рафтер: от (-halfW, height) до (0, apexH)
+    {
+      const dx = halfW, dy = apexH - height;
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      const angle  = Math.atan2(dy, dx); // наклон от горизонта
+      const midX   = -halfW + dx / 2;
+      const midY   = height + dy / 2;
+      box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, angle);
+    }
+    // Правый рафтер (зеркально)
+    {
+      const dx = halfW, dy = apexH - height;
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      const angle  = Math.atan2(dy, dx);
+      const midX   = halfW - dx / 2;
+      const midY   = height + dy / 2;
+      box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, -angle);
     }
 
-    // База колонн (фундаментная пластина)
-    for (const x of [-halfWidth, halfWidth]) {
-      const base = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.3), boltMat);
-      base.position.set(x, 0.04, z);
-      base.castShadow = true;
-      group.add(base);
-      
-      // Анкерные болты по углам пластины
-      const anchorGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.12, 8);
-      const anchorHeadGeo = new THREE.BoxGeometry(0.05, 0.02, 0.05);
-      const anchorPositions = [[-0.15, -0.1], [0.15, -0.1], [-0.15, 0.1], [0.15, 0.1]];
-      
-      for (const [ax, az] of anchorPositions) {
-        const anchor = new THREE.Mesh(anchorGeo, boltMat);
-        anchor.position.set(x + ax, 0.06, z + az);
-        group.add(anchor);
-        
-        // Гайка/шайба сверху
-        const head = new THREE.Mesh(anchorHeadGeo, boltMat);
-        head.position.set(x + ax, 0.12, z + az);
-        group.add(head);
-      }
+    // Коньковый узел (небольшой блок на вершине)
+    box(0.25, 0.25, 0.15, boltMat, 0, apexH, z);
+  }
+
+  // ── ПРОГОНЫ СТЕН (горизонтальные вдоль здания, на левой и правой стене) ──
+  const wallPurlinCount = Math.max(2, Math.round(height / 1.5));
+  for (let p = 1; p <= wallPurlinCount; p++) {
+    const y = (height / (wallPurlinCount + 1)) * p;
+    box(0.08, 0.06, totalLen, purlinMat, -halfW, y, 0);
+    box(0.08, 0.06, totalLen, purlinMat,  halfW, y, 0);
+  }
+
+  // ── ПРОГОНЫ КРОВЛИ (вдоль здания, вдоль скатов) ──────────────────────────
+  const roofPurlinCount = 4; // прогонов на каждом скате
+  {
+    const dx = halfW, dy = apexH - height;
+    const rafLen = Math.sqrt(dx * dx + dy * dy);
+    const angle  = Math.atan2(dy, dx);
+    for (let p = 1; p <= roofPurlinCount; p++) {
+      const t = p / (roofPurlinCount + 1); // 0..1 вдоль рафтера
+      // Левый скат: начало (-halfW, height), конец (0, apexH)
+      const lx = -halfW + dx * t;
+      const ly = height + dy * t;
+      box(0.06, 0.06, totalLen, purlinMat, lx, ly, 0, 0, 0, angle);
+      // Правый скат
+      box(0.06, 0.06, totalLen, purlinMat, -lx, ly, 0, 0, 0, -angle);
     }
   }
 
-  // === ФЕРМЫ ПОКРЫТИЯ ===
-  for (let i = 0; i < frameCount; i++) {
-    const z = startZ + i * columnStep;
-    const zNext = startZ + (i + 1) * columnStep;
-    const midZ = (z + zNext) / 2;
+  // ── ПРОДОЛЬНАЯ КОНЁК-СВЯЗЬ ────────────────────────────────────────────────
+  box(0.1, 0.1, totalLen, steelMat, 0, apexH, 0);
 
-    // === ЛЕВАЯ ФЕРМА ===
-    const leftLowerLen = Math.sqrt(halfWidth * halfWidth + trussHeight * trussHeight);
-    const leftLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
-    leftLower.position.set(-halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
-    leftLower.rotation.z = Math.atan(trussHeight / halfWidth);
-    leftLower.castShadow = true;
-    group.add(leftLower);
-
-    // Верхний пояс (конек)
-    const topChord = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, columnStep), trussMat);
-    topChord.position.set(0, height + trussHeight, z + columnStep / 2);
-    topChord.castShadow = true;
-    group.add(topChord);
-
-    // === ПРАВАЯ ФЕРМА (зеркально) ===
-    const rightLower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, leftLowerLen), trussMat);
-    rightLower.position.set(halfWidth / 2, height + trussHeight / 2, z + columnStep / 2);
-    rightLower.rotation.z = -Math.atan(trussHeight / halfWidth);
-    rightLower.castShadow = true;
-    group.add(rightLower);
-
-    // Связи в плоскости фермы (раскосы) - Σ-профили 60x30
-    const braceZ1 = z + columnStep * 0.25;
-    const braceZ2 = z + columnStep * 0.75;
-    
-    // Левый раскос 1
-    const leftBrace1 = createDiagonal(-halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.025, trussMat);
-    group.add(leftBrace1);
-    
-    // Левый раскос 2
-    const leftBrace2 = createDiagonal(0, height + trussHeight, braceZ2, -halfWidth, height, braceZ2, 0.025, trussMat);
-    group.add(leftBrace2);
-
-    // Правый раскос 1
-    const rightBrace1 = createDiagonal(halfWidth, height, braceZ1, 0, height + trussHeight, braceZ1, 0.025, trussMat);
-    group.add(rightBrace1);
-    
-    // Правый раскос 2
-    const rightBrace2 = createDiagonal(0, height + trussHeight, braceZ2, halfWidth, height, braceZ2, 0.025, trussMat);
-    group.add(rightBrace2);
+  // ── ГОРИЗОНТАЛЬНЫЕ СВЯЗИ В ПЛОСКОСТИ РИГЕЛЕЙ (торцевые пролёты) ──────────
+  // Первый и последний пролёт — Х-образные крестовые связи в стенах
+  for (const span of [0, frameCount - 1]) {
+    const z0 = startZ + span * columnStep;
+    const z1 = z0 + columnStep;
+    // Левая стена: крест
+    addDiag(group, -halfW, 0,      z0, -halfW, height, z1, 0.05, steelMat);
+    addDiag(group, -halfW, height, z0, -halfW, 0,      z1, 0.05, steelMat);
+    // Правая стена: крест
+    addDiag(group,  halfW, 0,      z0,  halfW, height, z1, 0.05, steelMat);
+    addDiag(group,  halfW, height, z0,  halfW, 0,      z1, 0.05, steelMat);
   }
 
-  // === ПРОДОЛЬНЫЕ СВЯЗИ (вдоль здания) ===
-  // Укорочены чтобы не торчать за торцы ферм
-  const tieLength = actualLength - 1.2;
-  
-  // Связи на уровне ригелей
-  const leftTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-  leftTie.position.set(-halfWidth, height, 0);
-  leftTie.castShadow = true;
-  group.add(leftTie);
-
-  const rightTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-  rightTie.position.set(halfWidth, height, 0);
-  rightTie.castShadow = true;
-  group.add(rightTie);
-
-  // Связь на коньке
-  if (!showSandwich) {
-    const ridgeTie = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, tieLength), trussMat);
-    ridgeTie.position.set(0, height + trussHeight, 0);
-    ridgeTie.castShadow = true;
-    group.add(ridgeTie);
-  }
-  
-  // Убраны мелкие вертикальные связи на скатах - они мешали визуально
-
-  // === ФРОНТАЛЬНЫЕ СВЯЗИ (торцы здания) ===
-  const leftEndZ = startZ;
-  const rightEndZ = startZ + actualLength;
-  const ridgeY = height + trussHeight;
-  
-  for (const endZ of [leftEndZ, rightEndZ]) {
-    const leftEndBrace = createDiagonal(-halfWidth, height, endZ, 0, ridgeY, endZ, 0.04, trussMat);
-    group.add(leftEndBrace);
-    const rightEndBrace = createDiagonal(halfWidth, height, endZ, 0, ridgeY, endZ, 0.04, trussMat);
-    group.add(rightEndBrace);
-    const ridgeEndTie = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.05, 0.05), trussMat);
-    ridgeEndTie.position.set(0, ridgeY - 0.1, endZ);
-    ridgeEndTie.castShadow = true;
-    group.add(ridgeEndTie);
-  }
-
-  // === СЭНДВИЧ-ПАНЕЛИ ===
+  // ── СЭНДВИЧ-ПАНЕЛИ ────────────────────────────────────────────────────────
   if (showSandwich) {
-    // Стены
-    const wallThick = 0.08;
-    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThick, height, length), sandwichMat);
-    leftWall.position.set(-halfWidth - wallThick / 2, height / 2, 0);
-    leftWall.castShadow = true;
-    leftWall.receiveShadow = true;
-    group.add(leftWall);
+    const thick = 0.12;
 
-    const rightWall = new THREE.Mesh(new THREE.BoxGeometry(wallThick, height, length), sandwichMat);
-    rightWall.position.set(halfWidth + wallThick / 2, height / 2, 0);
-    rightWall.castShadow = true;
-    rightWall.receiveShadow = true;
-    group.add(rightWall);
+    // Боковые стены
+    box(thick, height, totalLen, wallMat, -halfW - thick / 2, height / 2, 0);
+    box(thick, height, totalLen, wallMat,  halfW + thick / 2, height / 2, 0);
 
-    // Кровля - левый скат
-    const roofLen = Math.sqrt(halfWidth * halfWidth + trussHeight * trussHeight);
-    const roofAngle = Math.atan(trussHeight / halfWidth);
-    
-    const leftRoof = new THREE.Mesh(new THREE.BoxGeometry(roofLen, 0.06, length), sandwichMat);
-    leftRoof.position.set(-halfWidth / 2, height + trussHeight / 2, 0);
-    leftRoof.rotation.z = roofAngle;
-    leftRoof.castShadow = true;
-    leftRoof.receiveShadow = true;
-    group.add(leftRoof);
+    // Торцевые стены (прямоугольник + треугольный фронтон)
+    for (const z of [startZ - thick / 2, startZ + totalLen + thick / 2]) {
+      // Прямоугольная часть
+      box(width, height, thick, wallMat, 0, height / 2, z);
+      // Треугольный фронтон (аппроксимация через наклонные панели)
+      const dx = halfW, dy = apexH - height;
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      const angle  = Math.atan2(dy, dx);
+      box(rafLen, thick, thick, wallMat, -dx / 2, height + dy / 2, z, 0, 0, angle);
+      box(rafLen, thick, thick, wallMat,  dx / 2, height + dy / 2, z, 0, 0, -angle);
+    }
 
-    // Кровля - правый скат
-    const rightRoof = new THREE.Mesh(new THREE.BoxGeometry(roofLen, 0.06, length), sandwichMat);
-    rightRoof.position.set(halfWidth / 2, height + trussHeight / 2, 0);
-    rightRoof.rotation.z = -roofAngle;
-    rightRoof.castShadow = true;
-    rightRoof.receiveShadow = true;
-    group.add(rightRoof);
+    // Кровля — два ската
+    {
+      const dx = halfW, dy = apexH - height;
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      const angle  = Math.atan2(dy, dx);
+      box(rafLen, thick, totalLen, roofMat, -dx / 2, height + dy / 2, 0, 0, 0,  angle);
+      box(rafLen, thick, totalLen, roofMat,  dx / 2, height + dy / 2, 0, 0, 0, -angle);
+    }
 
-    // Конек
-    const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.1, length), beamMat);
-    ridge.position.set(0, height + trussHeight + 0.05, 0);
-    ridge.castShadow = true;
-    group.add(ridge);
+    // Конёк (крышная нашлёпка)
+    box(0.2, 0.15, totalLen, steelMat, 0, apexH + thick / 2, 0);
   }
-
 }
 
-// Хелпер для создания диагонали
-function createDiagonal(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number, thickness: number, material: THREE.Material) {
+// Хелпер для создания диагональной связи
+function addDiag(group: THREE.Group, x1: number, y1: number, z1: number, x2: number, y2: number, z2: number, thickness: number, material: THREE.Material) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   const dz = z2 - z1;
-  const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
-  
-  const geometry = new THREE.BoxGeometry(thickness, length, thickness);
+  const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+  const geometry = new THREE.BoxGeometry(thickness, len, thickness);
   const mesh = new THREE.Mesh(geometry, material);
-  
+
   mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
-  
-  // Вычисляем угол поворота
   mesh.lookAt(x2, y2, z2);
   mesh.rotateX(Math.PI / 2);
-  
   mesh.castShadow = true;
-  return mesh;
+  group.add(mesh);
 }
 
 // Создание Σ-профиля (сигма/шляпный профиль) ЛСТК
