@@ -164,8 +164,8 @@ export default function ConfiguratorClient() {
 
         <div className="flex-1 relative min-h-[500px]">
           <ThreeCanvas
-            width={length}
-            length={width}
+            width={width}
+            length={length}
             height={height}
             showSandwich={showSandwich}
             wallColor={wallColor}
