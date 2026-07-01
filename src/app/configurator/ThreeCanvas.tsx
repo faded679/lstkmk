@@ -185,7 +185,7 @@ export default function ThreeCanvas({ width, length, height, showSandwich, wallC
 function createBuilding(group: THREE.Group, width: number, length: number, height: number, showSandwich: boolean, wallColor: number, showWindows: boolean, showGate: boolean) {
   const columnStep = 6;
   // Уклон кровли ~15° от горизонта
-  const roofPitch = Math.tan(15 * Math.PI / 180);
+  const roofPitch = Math.tan(6 * Math.PI / 180);
   const apexH = height + (width / 2) * roofPitch; // высота конька над землёй
   const halfW = width / 2;
 
