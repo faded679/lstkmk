@@ -110,6 +110,78 @@ export default function ThreeCanvas({ width, length, height, showSandwich, wallC
     (gridHelper.material as THREE.LineBasicMaterial).transparent = true;
     scene.add(gridHelper);
 
+    // ── ДОРОГА К ВОРОТАМ ──────────────────────────────────────────────────────
+    const roadMat = new THREE.MeshStandardMaterial({ color: 0x6b7280, roughness: 0.98, metalness: 0 });
+    const road = new THREE.Mesh(new THREE.PlaneGeometry(6, length * 0.6 + 20), roadMat);
+    road.rotation.x = -Math.PI / 2;
+    road.position.set(0, 0.015, -(length / 2 + (length * 0.6 + 20) / 2 - length * 0.6 / 2));
+    road.receiveShadow = true;
+    scene.add(road);
+
+    // Разметка дороги (пунктир)
+    const dashMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 });
+    for (let d = 0; d < 5; d++) {
+      const dash = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 2), dashMat);
+      dash.rotation.x = -Math.PI / 2;
+      dash.position.set(0, 0.02, -(length / 2) - 4 - d * 3.5);
+      scene.add(dash);
+    }
+
+    // ── ПАРКОВОЧНАЯ РАЗМЕТКА ──────────────────────────────────────────────────
+    const lineMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 });
+    const parkStartX = width / 2 + 3;
+    for (let p = 0; p < 5; p++) {
+      const line = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 5), lineMat);
+      line.rotation.x = -Math.PI / 2;
+      line.position.set(parkStartX + p * 2.5, 0.02, length / 4);
+      scene.add(line);
+    }
+
+    // ── ДЕРЕВЬЯ ───────────────────────────────────────────────────────────────
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5c3a1e, roughness: 0.9 });
+    const crownMat = new THREE.MeshStandardMaterial({ color: 0x2d6a2d, roughness: 0.9 });
+    const treePositions = [
+      [-width / 2 - 8, -length / 2 - 6], [-width / 2 - 8, -length / 2 + 2],
+      [-width / 2 - 8,  length / 2 - 6], [-width / 2 - 8,  length / 2 + 4],
+      [ width / 2 + 8, -length / 2 - 6], [ width / 2 + 8,  length / 2 - 4],
+      [ width / 2 + parkStartX + 14, length / 4 - 4],
+      [ width / 2 + parkStartX + 14, length / 4 + 4],
+    ];
+    for (const [tx, tz] of treePositions) {
+      const h = 4 + Math.random() * 2;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, h, 7), trunkMat);
+      trunk.position.set(tx, h / 2, tz);
+      trunk.castShadow = true;
+      scene.add(trunk);
+      const crown = new THREE.Mesh(new THREE.SphereGeometry(1.6 + Math.random() * 0.5, 7, 6), crownMat);
+      crown.position.set(tx, h + 1.2, tz);
+      crown.castShadow = true;
+      scene.add(crown);
+    }
+
+    // ── ФОНАРНЫЕ СТОЛБЫ ───────────────────────────────────────────────────────
+    const polePositions = [
+      [-width / 2 - 5, -length / 2 + 1],
+      [-width / 2 - 5,  length / 2 - 1],
+      [ width / 2 + 5, -length / 2 + 1],
+      [ width / 2 + 5,  length / 2 - 1],
+    ];
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4, metalness: 0.7 });
+    const lampMat = new THREE.MeshStandardMaterial({ color: 0xffffe0, roughness: 0.3, emissive: 0xffffe0, emissiveIntensity: 0.4 });
+    for (const [px, pz] of polePositions) {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 7, 8), poleMat);
+      pole.position.set(px, 3.5, pz);
+      pole.castShadow = true;
+      scene.add(pole);
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.5, 6), poleMat);
+      arm.rotation.z = Math.PI / 2;
+      arm.position.set(px + 0.75, 7, pz);
+      scene.add(arm);
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.18, 0.35), lampMat);
+      lamp.position.set(px + 1.4, 6.9, pz);
+      scene.add(lamp);
+    }
+
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
 
@@ -456,6 +528,25 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
 
     // Конёк
     box(0.2, 0.15, totalLen, steelMat, 0, apexH + thick / 2, 0);
+
+    // ── ИНТЕРЬЕР ──────────────────────────────────────────────────────────────
+    // Бетонный пол внутри
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0xc8c4b8, roughness: 0.85, metalness: 0 });
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(width - thick * 2, totalLen - thick * 2), floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set(0, 0.005, 0);
+    floor.receiveShadow = true;
+    group.add(floor);
+
+    // Промышленные светильники под коньком
+    const fixtureCount = Math.ceil(totalLen / 6);
+    const fixtureMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffee, emissiveIntensity: 0.8, roughness: 0.3 });
+    for (let f = 0; f < fixtureCount; f++) {
+      const fz = startZ + thick + (f + 0.5) * ((totalLen - thick * 2) / fixtureCount);
+      const fixture = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 1.2), fixtureMat);
+      fixture.position.set(0, apexH - 0.3, fz);
+      group.add(fixture);
+    }
   }
 }
 
