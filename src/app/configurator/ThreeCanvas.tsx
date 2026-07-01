@@ -10,9 +10,12 @@ interface ThreeCanvasProps {
   length: number;
   height: number;
   showSandwich: boolean;
+  wallColor: number;
+  showWindows: boolean;
+  showGate: boolean;
 }
 
-export default function ThreeCanvas({ width, length, height, showSandwich }: ThreeCanvasProps) {
+export default function ThreeCanvas({ width, length, height, showSandwich, wallColor, showWindows, showGate }: ThreeCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<{
     scene: THREE.Scene;
@@ -158,12 +161,12 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
       buildingGroup.remove(child);
     }
 
-    createBuilding(buildingGroup, width, length, height, showSandwich);
+    createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, showWindows, showGate);
 
     camera.position.set(width * 0.8, height * 1.5, length * 0.8);
     controls.target.set(0, height / 2, 0);
     controls.update();
-  }, [width, length, height, showSandwich]);
+  }, [width, length, height, showSandwich, wallColor, showWindows, showGate]);
 
   return (
     <div ref={containerRef} className="w-full h-full" style={{ minHeight: "500px" }}>
@@ -179,7 +182,7 @@ export default function ThreeCanvas({ width, length, height, showSandwich }: Thr
   );
 }
 
-function createBuilding(group: THREE.Group, width: number, length: number, height: number, showSandwich: boolean) {
+function createBuilding(group: THREE.Group, width: number, length: number, height: number, showSandwich: boolean, wallColor: number, showWindows: boolean, showGate: boolean) {
   const columnStep = 6;
   // Уклон кровли ~15° от горизонта
   const roofPitch = Math.tan(15 * Math.PI / 180);
@@ -190,8 +193,11 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   const steelMat  = new THREE.MeshStandardMaterial({ color: 0x8b9299, roughness: 0.35, metalness: 0.85 });
   const purlinMat = new THREE.MeshStandardMaterial({ color: 0x9aa2a8, roughness: 0.4,  metalness: 0.75 });
   const boltMat   = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.3,  metalness: 0.9  });
-  const wallMat   = new THREE.MeshStandardMaterial({ color: 0xdce8f0, roughness: 0.55, metalness: 0.1, side: THREE.DoubleSide });
-  const roofMat   = new THREE.MeshStandardMaterial({ color: 0xb8ccd8, roughness: 0.5,  metalness: 0.2, side: THREE.DoubleSide });
+  const wallMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.55, metalness: 0.2, side: THREE.DoubleSide });
+  const roofMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.4,  metalness: 0.25, side: THREE.DoubleSide });
+  const glassMat  = new THREE.MeshStandardMaterial({ color: 0xadd8e6, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.45, side: THREE.DoubleSide });
+  const gateMat   = new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.4, metalness: 0.35 });
+  const frameMat  = new THREE.MeshStandardMaterial({ color: 0x5a5a5a, roughness: 0.4, metalness: 0.7 });
 
   const frameCount = Math.ceil(length / columnStep);
   const totalLen   = frameCount * columnStep;
@@ -341,16 +347,66 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
   // ── СЭНДВИЧ-ПАНЕЛИ ────────────────────────────────────────────────────────
   if (showSandwich) {
     const thick = 0.12;
+    const gateW = Math.min(4.5, halfW * 1.2); // ширина ворот
+    const gateH = Math.min(4.2, height - 0.3); // высота ворот
+    const frontZ = startZ - thick / 2; // передний торец
+    const backZ  = startZ + totalLen + thick / 2;
 
-    // Боковые стены
-    box(thick, height, totalLen, wallMat, -halfW - thick / 2, height / 2, 0);
-    box(thick, height, totalLen, wallMat,  halfW + thick / 2, height / 2, 0);
+    // Боковые стены (с проёмами под окна если showWindows)
+    if (showWindows) {
+      const winW = 1.5, winH = 1.2, winY = height * 0.55;
+      const winStep = columnStep; // окно в каждом пролёте
+      const winCount = frameCount;
+      for (let i = 0; i < winCount; i++) {
+        const wz = startZ + i * winStep + winStep / 2;
+        // Левая стена: панели вокруг окна
+        box(thick, height, winStep - winW, wallMat, -halfW - thick / 2, height / 2, wz); // полоса рядом
+        box(thick, winY - winH / 2, winW, wallMat, -halfW - thick / 2, (winY - winH / 2) / 2, wz); // ниже окна
+        box(thick, height - winY - winH / 2, winW, wallMat, -halfW - thick / 2, winY + winH / 2 + (height - winY - winH / 2) / 2, wz); // выше окна
+        box(thick, winH, winW, glassMat, -halfW - thick / 2, winY, wz); // стекло
+        // Правая стена зеркально
+        box(thick, height, winStep - winW, wallMat,  halfW + thick / 2, height / 2, wz);
+        box(thick, winY - winH / 2, winW, wallMat,  halfW + thick / 2, (winY - winH / 2) / 2, wz);
+        box(thick, height - winY - winH / 2, winW, wallMat,  halfW + thick / 2, winY + winH / 2 + (height - winY - winH / 2) / 2, wz);
+        box(thick, winH, winW, glassMat,  halfW + thick / 2, winY, wz);
+      }
+    } else {
+      box(thick, height, totalLen, wallMat, -halfW - thick / 2, height / 2, 0);
+      box(thick, height, totalLen, wallMat,  halfW + thick / 2, height / 2, 0);
+    }
 
-    // Торцевые стены (прямоугольник + треугольный фронтон)
-    for (const z of [startZ - thick / 2, startZ + totalLen + thick / 2]) {
-      // Прямоугольная часть
-      box(width, height, thick, wallMat, 0, height / 2, z);
-      // Треугольный фронтон (аппроксимация через наклонные панели)
+    // Торцевые стены
+    for (const z of [frontZ, backZ]) {
+      const isGateSide = showGate && (z === frontZ);
+      if (isGateSide) {
+        // Боковые полосы рядом с воротами
+        const sideW = (width - gateW) / 2;
+        box(sideW, height, thick, wallMat, -halfW + sideW / 2, height / 2, z);
+        box(sideW, height, thick, wallMat,  halfW - sideW / 2, height / 2, z);
+        // Полоса над воротами
+        box(gateW, height - gateH, thick, wallMat, 0, gateH + (height - gateH) / 2, z);
+        // Ворота (секционные — 3 секции)
+        const secH = gateH / 3;
+        for (let s = 0; s < 3; s++) {
+          box(gateW - 0.1, secH - 0.05, thick * 0.8, gateMat, 0, secH * s + secH / 2 + 0.05, z);
+          // горизонтальная планка между секциями
+          if (s < 2) box(gateW, 0.06, thick * 1.2, frameMat, 0, secH * (s + 1), z);
+        }
+        // Рама ворот
+        box(0.1, gateH, thick * 1.5, frameMat, -gateW / 2, gateH / 2, z);
+        box(0.1, gateH, thick * 1.5, frameMat,  gateW / 2, gateH / 2, z);
+        box(gateW, 0.1, thick * 1.5, frameMat, 0, gateH, z);
+        // Дверь рядом с воротами (правая сторона)
+        const doorW = 0.9, doorH = 2.1;
+        const doorX = halfW - sideW / 2 - doorW;
+        box(doorW, doorH, thick * 0.8, gateMat, doorX, doorH / 2, z);
+        box(doorW, 0.05, thick * 1.3, frameMat, doorX, doorH, z);
+        box(0.05, doorH, thick * 1.3, frameMat, doorX - doorW / 2, doorH / 2, z);
+        box(0.05, doorH, thick * 1.3, frameMat, doorX + doorW / 2, doorH / 2, z);
+      } else {
+        box(width, height, thick, wallMat, 0, height / 2, z);
+      }
+      // Фронтон (треугольная часть над height)
       const dx = halfW, dy = apexH - height;
       const rafLen = Math.sqrt(dx * dx + dy * dy);
       const angle  = Math.atan2(dy, dx);
@@ -367,7 +423,7 @@ function createBuilding(group: THREE.Group, width: number, length: number, heigh
       box(rafLen, thick, totalLen, roofMat,  dx / 2, height + dy / 2, 0, 0, 0, -angle);
     }
 
-    // Конёк (крышная нашлёпка)
+    // Конёк
     box(0.2, 0.15, totalLen, steelMat, 0, apexH + thick / 2, 0);
   }
 }
