@@ -166,7 +166,6 @@ export default function ThreeCanvas({ width, length, height, showSandwich, wallC
 
     createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, showWindows, showGate);
 
-    camera.position.set(width * 0.8, height * 1.5, length * 0.8);
     controls.target.set(0, height / 2, 0);
     controls.update();
     // ── ОКРУЖЕНИЕ (пересчитывается при каждом изменении размеров) ──────────────
