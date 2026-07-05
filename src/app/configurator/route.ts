@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import { join } from "path";
 
+export const runtime = "nodejs";
 export const dynamic = "force-static";
 
 export async function GET() {
