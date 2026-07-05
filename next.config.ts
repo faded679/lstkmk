@@ -16,5 +16,11 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: "/configurator", destination: "/configurator/index.html" },
+      { source: "/configurator/", destination: "/configurator/index.html" },
+    ];
+  },
 };
 export default nextConfig;
