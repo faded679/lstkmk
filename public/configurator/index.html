@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ZMW9MJ2QZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4ZMW9MJ2QZ');
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>3D Конфигуратор ангара</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <base href="/configurator/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/configurator/configurator.css" />
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.171.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.171.0/examples/jsm/"}}</script>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <p class="sidebar-kicker">Конфигуратор</p>
+          <h1>Параметры здания</h1>
+        </div>
+
+        <div class="controls accordion">
+
+          <section class="accordion-item is-open" data-accordion="sizes">
+            <button type="button" class="accordion-trigger" aria-expanded="true">
+              <span class="accordion-title">Размеры</span>
+              <span class="accordion-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-inner">
+                <div class="control-group">
+                  <div class="control-top">
+                    <label for="width">Ширина</label>
+                    <span class="value-pill"><span id="width-val">18</span> м</span>
+                  </div>
+                  <input type="range" id="width" min="12" max="36" step="6" value="18" />
+                  <div class="range-labels"><span>12</span><span>36</span></div>
+                </div>
+
+                <div class="control-group">
+                  <div class="control-top">
+                    <label for="length">Длина</label>
+                    <span class="value-pill"><span id="length-val">36</span> м</span>
+                  </div>
+                  <input type="range" id="length" min="24" max="120" step="6" value="36" />
+                  <div class="range-labels"><span>24</span><span>120</span></div>
+                </div>
+
+                <div class="control-group">
+                  <div class="control-top">
+                    <label for="height">Высота</label>
+                    <span class="value-pill"><span id="height-val">5</span> м</span>
+                  </div>
+                  <input type="range" id="height" min="4" max="9" step="1" value="5" />
+                  <div class="range-labels"><span>4</span><span>9</span></div>
+                </div>
+
+                <div class="control-group">
+                  <div class="control-top">
+                    <label>Шаг колонн</label>
+                    <span class="value-pill"><span id="column-step-val">6</span> м</span>
+                  </div>
+                  <div class="step-btns" role="group" aria-label="Шаг колонн">
+                    <button type="button" class="step-btn" data-step="3">3 м</button>
+                    <button type="button" class="step-btn active" data-step="6">6 м</button>
+                    <button type="button" class="step-btn" data-step="9">9 м</button>
+                    <button type="button" class="step-btn" data-step="12">12 м</button>
+                  </div>
+                  <div class="step-custom">
+                    <label for="column-step-input">Своё значение</label>
+                    <div class="step-input-wrap">
+                      <input type="number" id="column-step-input" min="2" max="24" step="0.5" value="6" inputmode="decimal" />
+                      <span class="step-input-unit">м</span>
+                    </div>
+                  </div>
+                  <p class="step-note">Стандарт для ангаров ЛМК — 6 м; можно задать свой шаг от 2 до 24 м</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="accordion-item" id="equipment-section" data-accordion="equipment">
+            <button type="button" class="accordion-trigger" aria-expanded="false">
+              <span class="accordion-title">Оборудование</span>
+              <span class="accordion-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-inner option-block">
+                <div class="sub-block">
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="crane" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">Кран-балка</span>
+                  </label>
+                </div>
+
+                <div class="sub-block">
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="mezzanine" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">Антресоль</span>
+                  </label>
+                  <div class="sub-panel hidden" id="mezzanine-tools">
+                    <span class="sub-label">Сторона</span>
+                    <div class="seg-btns" id="mezz-wall-btns">
+                      <button type="button" class="seg-btn mezz-wall-btn" data-wall="left">Слева</button>
+                      <button type="button" class="seg-btn mezz-wall-btn active" data-wall="right">Справа</button>
+                    </div>
+                    <div class="control-group compact">
+                      <div class="control-top">
+                        <label for="mezz-height">Высота</label>
+                        <span class="value-pill"><span id="mezz-height-val">2.6</span> м</span>
+                      </div>
+                      <input type="range" id="mezz-height" min="2" max="7" step="0.1" value="2.6" />
+                    </div>
+                    <div class="control-group compact">
+                      <div class="control-top">
+                        <label for="mezz-depth">Глубина</label>
+                        <span class="value-pill"><span id="mezz-depth-val">36</span>%</span>
+                      </div>
+                      <input type="range" id="mezz-depth" min="20" max="50" step="1" value="36" />
+                    </div>
+                    <div class="control-group compact">
+                      <div class="control-top">
+                        <label for="mezz-length">Длина</label>
+                        <span class="value-pill"><span id="mezz-length-val">75</span>%</span>
+                      </div>
+                      <input type="range" id="mezz-length" min="30" max="95" step="1" value="75" />
+                    </div>
+                    <div class="control-group compact">
+                      <div class="control-top">
+                        <label for="mezz-pos">Смещение</label>
+                        <span class="value-pill"><span id="mezz-pos-val">0</span> м</span>
+                      </div>
+                      <input type="range" id="mezz-pos" min="-15" max="15" step="0.5" value="0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="accordion-item" data-accordion="cladding">
+            <button type="button" class="accordion-trigger" aria-expanded="false">
+              <span class="accordion-title">Обшивка</span>
+              <span class="accordion-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-inner">
+                <label class="toggle">
+                  <input type="checkbox" id="sandwich" />
+                  <span class="toggle-track" aria-hidden="true"></span>
+                  <span class="toggle-text">Сэндвич-панели</span>
+                </label>
+
+                <div class="sub-panel hidden" id="cladding-colors">
+                  <div class="sub-block" id="color-section">
+                    <span class="sub-label">Цвет обшивки</span>
+                    <div class="color-grid" id="color-grid"></div>
+                    <p class="color-name" id="color-name"></p>
+                  </div>
+                  <div class="sub-block" id="roof-color-section">
+                    <span class="sub-label">Цвет кровли</span>
+                    <div class="color-grid" id="roof-color-grid"></div>
+                    <p class="color-name" id="roof-color-name"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="accordion-item hidden" id="openings-section" data-accordion="openings">
+            <button type="button" class="accordion-trigger" aria-expanded="false">
+              <span class="accordion-title">Проёмы</span>
+              <span class="accordion-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-inner option-block">
+                <label class="toggle">
+                  <input type="checkbox" id="gate" />
+                  <span class="toggle-track" aria-hidden="true"></span>
+                  <span class="toggle-text">Секционные ворота</span>
+                </label>
+                <p class="field-hint hidden" id="gate-hint">Перетащите ворота на фасаде</p>
+
+                <div class="sub-block">
+                  <span class="sub-label">Двери</span>
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="door-side" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">Сбоку</span>
+                  </label>
+                  <div class="seg-btns hidden" id="door-side-btns">
+                    <button type="button" class="seg-btn door-wall-btn" data-wall="left">Слева</button>
+                    <button type="button" class="seg-btn door-wall-btn" data-wall="right">Справа</button>
+                  </div>
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="door-front" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">У ворот</span>
+                  </label>
+                </div>
+                <p class="field-hint hidden" id="door-hint">Перетащите дверь на модели</p>
+
+                <div class="sub-block">
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="windows" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">Окна</span>
+                  </label>
+                  <div class="sub-panel hidden" id="window-tools">
+                    <div class="seg-btns">
+                      <button type="button" class="seg-btn" id="add-window-left">+ Слева</button>
+                      <button type="button" class="seg-btn" id="add-window-right">+ Справа</button>
+                      <button type="button" class="seg-btn seg-btn-danger" id="remove-window" disabled>−</button>
+                    </div>
+                    <p class="field-meta">Окон: <span id="window-count">0</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="stats-card">
+            <div class="stat">
+              <span class="stat-label">Колонн</span>
+              <span class="stat-value" id="stat-columns">7</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Ферм</span>
+              <span class="stat-value" id="stat-frames">6</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Площадь</span>
+              <span class="stat-value"><span id="stat-area">648</span> м²</span>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <main class="canvas-wrap">
+        <div id="canvas-container"></div>
+        <div id="loading">
+          <div class="loading-inner">
+            <div class="spinner"></div>
+            <p>Загрузка 3D-сцены…</p>
+          </div>
+        </div>
+        <div class="canvas-hint">
+          <span>ЛКМ — вращение</span>
+          <span>Колесо — масштаб</span>
+          <span>ПКМ — панорама</span>
+          <span>Проёмы — перетащить</span>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/configurator/app.js"></script>
+  </body>
+</html>

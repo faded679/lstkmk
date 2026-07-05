@@ -1,0 +1,784 @@
+import { ConfiguratorScene } from "./three-scene.js";
+
+const RAL_COLORS = [
+  { name: "RAL 5005 Синий", hex: "#1a4b8c", value: 0x1a4b8c },
+  { name: "RAL 6005 Зелёный", hex: "#1f4f2b", value: 0x1f4f2b },
+  { name: "RAL 7035 Светло-серый", hex: "#c2c5c0", value: 0xc2c5c0 },
+  { name: "RAL 3005 Бордо", hex: "#621827", value: 0x621827 },
+  { name: "RAL 8017 Коричневый", hex: "#4a2b1a", value: 0x4a2b1a },
+  { name: "RAL 9003 Белый", hex: "#f4f4f4", value: 0xf4f4f4 },
+  { name: "RAL 1018 Жёлтый", hex: "#f5d033", value: 0xf5d033 },
+  { name: "RAL 2004 Оранжевый", hex: "#e05c1a", value: 0xe05c1a },
+];
+
+const ROOF_COLORS = [
+  { name: "RAL 9006 Бело-алюминиевый", hex: "#a1a1a0", value: 0x9aa2a8 },
+  { name: "RAL 7035 Светло-серый", hex: "#c2c5c0", value: 0xc2c5c0 },
+  { name: "RAL 7004 Сигнальный серый", hex: "#969992", value: 0x969992 },
+  { name: "RAL 5005 Синий", hex: "#1a4b8c", value: 0x1a4b8c },
+  { name: "RAL 6005 Зелёный", hex: "#1f4f2b", value: 0x1f4f2b },
+  { name: "RAL 8017 Коричневый", hex: "#4a2b1a", value: 0x4a2b1a },
+  { name: "RAL 9003 Белый", hex: "#f4f4f4", value: 0xf4f4f4 },
+  { name: "RAL 3005 Бордо", hex: "#621827", value: 0x621827 },
+];
+
+const state = {
+  width: 18,
+  length: 36,
+  height: 5,
+  columnStep: 6,
+  showSandwich: false,
+  wallColor: RAL_COLORS[0].value,
+  roofColor: 0x9aa2a8,
+  showWindows: false,
+  showGate: false,
+  gateX: 0,
+  gateSelected: false,
+  showSideDoor: false,
+  sideDoorWall: "left",
+  sideDoorPos: 0,
+  showFrontDoor: false,
+  frontDoorPos: 0,
+  selectedDoor: null,
+  showCraneBeam: false,
+  showMezzanine: false,
+  mezzWall: "right",
+  mezzHeight: 2.6,
+  mezzDepthPct: 36,
+  mezzLengthPct: 75,
+  mezzPosZ: 0,
+  windows: [],
+  selectedWindowId: null,
+};
+
+const $ = (id) => document.getElementById(id);
+
+const els = {
+  width: $("width"),
+  length: $("length"),
+  height: $("height"),
+  widthVal: $("width-val"),
+  lengthVal: $("length-val"),
+  heightVal: $("height-val"),
+  columnStepVal: $("column-step-val"),
+  columnStepInput: $("column-step-input"),
+  stepBtns: document.querySelectorAll(".step-btn"),
+  sandwich: $("sandwich"),
+  openingsSection: $("openings-section"),
+  windows: $("windows"),
+  gate: $("gate"),
+  gateHint: $("gate-hint"),
+  doorSide: $("door-side"),
+  doorFront: $("door-front"),
+  doorSideBtns: $("door-side-btns"),
+  doorHint: $("door-hint"),
+  doorWallBtns: document.querySelectorAll(".door-wall-btn"),
+  windowTools: $("window-tools"),
+  addWindowLeft: $("add-window-left"),
+  addWindowRight: $("add-window-right"),
+  removeWindow: $("remove-window"),
+  windowCount: $("window-count"),
+  colorSection: $("color-section"),
+  colorGrid: $("color-grid"),
+  colorName: $("color-name"),
+  claddingColors: $("cladding-colors"),
+  roofColorSection: $("roof-color-section"),
+  roofColorGrid: $("roof-color-grid"),
+  roofColorName: $("roof-color-name"),
+  crane: $("crane"),
+  mezzanine: $("mezzanine"),
+  mezzanineTools: $("mezzanine-tools"),
+  mezzHeight: $("mezz-height"),
+  mezzHeightVal: $("mezz-height-val"),
+  mezzDepth: $("mezz-depth"),
+  mezzDepthVal: $("mezz-depth-val"),
+  mezzLength: $("mezz-length"),
+  mezzLengthVal: $("mezz-length-val"),
+  mezzPos: $("mezz-pos"),
+  mezzPosVal: $("mezz-pos-val"),
+  mezzWallBtns: document.querySelectorAll(".mezz-wall-btn"),
+  statColumns: $("stat-columns"),
+  statFrames: $("stat-frames"),
+  statArea: $("stat-area"),
+  loading: $("loading"),
+  container: $("canvas-container"),
+};
+
+let scene = null;
+let windowIdSeq = 0;
+let renderTimer = null;
+let prevShowSandwich = false;
+
+function setAccordionOpen(name, open) {
+  const item = document.querySelector(`[data-accordion="${name}"]`);
+  if (!item || item.classList.contains("hidden")) return;
+  item.classList.toggle("is-open", open);
+  item.querySelector(".accordion-trigger")?.setAttribute("aria-expanded", String(open));
+}
+
+function initAccordion() {
+  document.querySelectorAll(".accordion-trigger").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest(".accordion-item");
+      if (!item) return;
+      const open = !item.classList.contains("is-open");
+      item.classList.toggle("is-open", open);
+      btn.setAttribute("aria-expanded", String(open));
+    });
+  });
+}
+
+function getBuildingZBounds() {
+  const columnStep = state.columnStep;
+  const frameCount = Math.ceil(state.length / columnStep);
+  const totalLen = frameCount * columnStep;
+  const startZ = -totalLen / 2;
+  return {
+    startZ,
+    totalLen,
+    frameCount,
+    minZ: startZ + 1.2,
+    maxZ: startZ + totalLen - 1.2,
+    centerZ: startZ + totalLen / 2,
+  };
+}
+
+function getDoorSize(height) {
+  return {
+    doorW: 1.05,
+    doorH: Math.min(2.15, height - 0.25),
+  };
+}
+
+function hasAnyDoor() {
+  return state.showSideDoor || state.showFrontDoor;
+}
+
+function clampFrontDoorPos(x) {
+  const { doorW } = getDoorSize(state.height);
+  const halfW = state.width / 2;
+  const margin = 1.2;
+  const absMin = -halfW + doorW / 2 + margin;
+  const absMax = halfW - doorW / 2 - margin;
+  x = Math.max(absMin, Math.min(absMax, x));
+  if (!state.showGate) return x;
+
+  const { gateW } = getGateSize(state.width, state.height);
+  const gateX = state.gateX ?? 0;
+  const gap = 0.2;
+  const dLeft = x - doorW / 2;
+  const dRight = x + doorW / 2;
+  const gLeft = gateX - gateW / 2 - gap;
+  const gRight = gateX + gateW / 2 + gap;
+  if (dRight <= gLeft || dLeft >= gRight) return x;
+
+  const leftSlot = gateX - gateW / 2 - gap - doorW / 2;
+  const rightSlot = gateX + gateW / 2 + gap + doorW / 2;
+  const target = Math.abs(x - leftSlot) <= Math.abs(x - rightSlot) ? leftSlot : rightSlot;
+  return Math.max(absMin, Math.min(absMax, target));
+}
+
+function getSideDoorPosBounds() {
+  const { minZ, maxZ } = getBuildingZBounds();
+  const { doorW } = getDoorSize(state.height);
+  return {
+    min: minZ + doorW / 2,
+    max: maxZ - doorW / 2,
+  };
+}
+
+function getDefaultSideDoorPos() {
+  const { minZ, maxZ } = getBuildingZBounds();
+  return (minZ + maxZ) / 2;
+}
+
+function getDefaultFrontDoorPos() {
+  const { doorW } = getDoorSize(state.height);
+  const gap = 0.2;
+  const halfW = state.width / 2;
+  const margin = 1.2;
+  const max = halfW - doorW / 2 - margin;
+  const min = -halfW + doorW / 2 + margin;
+  if (state.showGate) {
+    const { gateW } = getGateSize(state.width, state.height);
+    const gateX = state.gateX ?? 0;
+    const rightSlot = gateX + gateW / 2 + gap + doorW / 2;
+    if (rightSlot <= max) return rightSlot;
+    const leftSlot = gateX - gateW / 2 - gap - doorW / 2;
+    if (leftSlot >= min) return leftSlot;
+  }
+  return Math.min(max, halfW * 0.55);
+}
+
+function clampDoors() {
+  if (state.showSideDoor) {
+    const { min, max } = getSideDoorPosBounds();
+    state.sideDoorPos = Math.max(min, Math.min(max, state.sideDoorPos ?? 0));
+  }
+  if (state.showFrontDoor) {
+    state.frontDoorPos = clampFrontDoorPos(state.frontDoorPos ?? 0);
+  }
+}
+
+function getGateSize(width, height) {
+  return {
+    gateW: Math.min(4.2, width * 0.32),
+    gateH: Math.min(4.0, height - 0.45),
+  };
+}
+
+function getGateXBounds() {
+  const { gateW } = getGateSize(state.width, state.height);
+  const halfW = state.width / 2;
+  const margin = 1.2;
+  return { minX: -halfW + gateW / 2 + margin, maxX: halfW - gateW / 2 - margin };
+}
+
+function clampGate() {
+  if (!state.showGate) return;
+  const { minX, maxX } = getGateXBounds();
+  state.gateX = Math.max(minX, Math.min(maxX, state.gateX ?? 0));
+}
+
+function getMezzHeightBounds() {
+  return { min: 2.0, max: Math.max(2.0, state.height - 1.2) };
+}
+
+function getMezzPosBounds() {
+  const { minZ, maxZ, totalLen, centerZ } = getBuildingZBounds();
+  const mezzLen = totalLen * (state.mezzLengthPct / 100);
+  const halfLen = mezzLen / 2;
+  const min = minZ + halfLen;
+  const max = maxZ - halfLen;
+  if (min > max) return { min: centerZ, max: centerZ };
+  return { min, max };
+}
+
+function clampMezzanine() {
+  if (!state.showMezzanine) return;
+  const heightBounds = getMezzHeightBounds();
+  state.mezzHeight = Math.max(heightBounds.min, Math.min(heightBounds.max, state.mezzHeight ?? 2.6));
+  const posBounds = getMezzPosBounds();
+  state.mezzPosZ = Math.max(posBounds.min, Math.min(posBounds.max, state.mezzPosZ ?? 0));
+}
+
+function updateSliderRange(input, min, max, value) {
+  if (!input) return;
+  input.min = String(min);
+  input.max = String(max);
+  input.value = String(value);
+  updateSliderFill(input);
+}
+
+function clampWindows() {
+  const { minZ, maxZ } = getBuildingZBounds();
+  for (const w of state.windows) {
+    w.z = Math.max(minZ, Math.min(maxZ, w.z));
+  }
+}
+
+function newWindowId() {
+  windowIdSeq += 1;
+  return `win-${windowIdSeq}`;
+}
+
+function isWindowSlotFree(z, wall, ignoreId = null) {
+  const winW = 1.5;
+  return !state.windows.some(
+    (w) => w.wall === wall && w.id !== ignoreId && Math.abs(w.z - z) < winW + 0.05
+  );
+}
+
+function findNextWindowZ(wall) {
+  const { startZ, frameCount, minZ, maxZ } = getBuildingZBounds();
+  const step = state.columnStep;
+
+  for (let i = 0; i < frameCount; i++) {
+    const z = startZ + step * i + step / 2;
+    if (z < minZ || z > maxZ) continue;
+    if (isWindowSlotFree(z, wall)) return z;
+  }
+
+  for (let z = minZ; z <= maxZ; z += 0.5) {
+    if (isWindowSlotFree(z, wall)) return z;
+  }
+
+  const offset = state.windows.filter((w) => w.wall === wall).length * 2;
+  return Math.max(minZ, Math.min(maxZ, minZ + offset));
+}
+
+function addWindow(wall) {
+  const z = findNextWindowZ(wall);
+  const id = newWindowId();
+  state.windows.push({ id, z, wall });
+  state.selectedWindowId = id;
+  clampWindows();
+  syncAll(true);
+}
+
+function removeWindow() {
+  if (state.windows.length === 0) return;
+
+  let idx = state.windows.findIndex((w) => w.id === state.selectedWindowId);
+  if (idx < 0) idx = state.windows.length - 1;
+
+  const removed = state.windows.splice(idx, 1)[0];
+  if (state.selectedWindowId === removed.id) {
+    state.selectedWindowId = state.windows.length ? state.windows[state.windows.length - 1].id : null;
+  }
+  syncAll(true);
+}
+
+function getParams() {
+  return {
+    ...state,
+    windows: state.windows.map((w) => ({ ...w })),
+  };
+}
+
+function updateStats() {
+  const frames = Math.ceil(state.length / state.columnStep);
+  els.statColumns.textContent = String(frames + 1);
+  els.statFrames.textContent = String(frames);
+  els.statArea.textContent = String(state.width * state.length);
+}
+
+function updateConditionalUI() {
+  const show = state.showSandwich;
+  els.openingsSection?.classList.toggle("hidden", !show);
+  els.claddingColors?.classList.toggle("hidden", !show);
+  els.windowTools.classList.toggle("hidden", !show || !state.showWindows);
+  if (els.doorSideBtns) els.doorSideBtns.classList.toggle("hidden", !show || !state.showSideDoor);
+  if (els.gateHint) els.gateHint.classList.toggle("hidden", !show || !state.showGate);
+  if (els.doorHint) els.doorHint.classList.toggle("hidden", !show || !hasAnyDoor());
+  els.mezzanineTools?.classList.toggle("hidden", !state.showMezzanine);
+  if (!show) {
+    state.showWindows = false;
+    state.showGate = false;
+    state.showSideDoor = false;
+    state.showFrontDoor = false;
+    state.gateSelected = false;
+    state.selectedDoor = null;
+    els.windows.checked = false;
+    els.gate.checked = false;
+    if (els.doorSide) els.doorSide.checked = false;
+    if (els.doorFront) els.doorFront.checked = false;
+  }
+  for (const btn of els.doorWallBtns) {
+    btn.classList.toggle("active", btn.dataset.wall === state.sideDoorWall);
+  }
+  for (const btn of els.mezzWallBtns) {
+    btn.classList.toggle("active", btn.dataset.wall === state.mezzWall);
+  }
+  if (els.doorSide) els.doorSide.checked = state.showSideDoor;
+  if (els.doorFront) els.doorFront.checked = state.showFrontDoor;
+  els.windowCount.textContent = String(state.windows.length);
+  if (els.removeWindow) {
+    els.removeWindow.disabled = state.windows.length === 0;
+  }
+  if (show && !prevShowSandwich) {
+    setAccordionOpen("cladding", true);
+    setAccordionOpen("openings", true);
+  }
+  prevShowSandwich = show;
+}
+
+function updateRoofColorUI() {
+  const current = ROOF_COLORS.find((c) => c.value === state.roofColor);
+  if (els.roofColorName) els.roofColorName.textContent = current ? current.name : "";
+  if (!els.roofColorGrid) return;
+  for (const btn of els.roofColorGrid.querySelectorAll(".color-btn")) {
+    btn.classList.toggle("active", Number(btn.dataset.value) === state.roofColor);
+  }
+}
+
+function updateColorUI() {
+  const current = RAL_COLORS.find((c) => c.value === state.wallColor);
+  els.colorName.textContent = current ? current.name : "";
+  for (const btn of els.colorGrid.querySelectorAll(".color-btn")) {
+    btn.classList.toggle("active", Number(btn.dataset.value) === state.wallColor);
+  }
+}
+
+const COLUMN_STEP_MIN = 2;
+const COLUMN_STEP_MAX = 24;
+
+function normalizeColumnStep(value) {
+  if (value === "" || value == null) return null;
+  const n = Math.round(Number(value) * 10) / 10;
+  if (!Number.isFinite(n)) return null;
+  return Math.max(COLUMN_STEP_MIN, Math.min(COLUMN_STEP_MAX, n));
+}
+
+function setColumnStep(step, immediate = true) {
+  const normalized = normalizeColumnStep(step);
+  if (normalized == null) {
+    updateStepUI();
+    return;
+  }
+  state.columnStep = normalized;
+  clampWindows();
+  clampGate();
+  clampDoors();
+  clampMezzanine();
+  syncAll(immediate);
+}
+
+function updateStepUI() {
+  if (els.columnStepVal) els.columnStepVal.textContent = String(state.columnStep);
+  if (els.columnStepInput && document.activeElement !== els.columnStepInput) {
+    els.columnStepInput.value = String(state.columnStep);
+  }
+  for (const btn of els.stepBtns) {
+    btn.classList.toggle("active", Number(btn.dataset.step) === state.columnStep);
+  }
+}
+
+function renderScene() {
+  if (scene) scene.update(getParams());
+}
+
+function scheduleRender(immediate = false) {
+  if (renderTimer) {
+    clearTimeout(renderTimer);
+    renderTimer = null;
+  }
+  if (immediate) {
+    renderScene();
+    return;
+  }
+  renderTimer = setTimeout(() => {
+    renderTimer = null;
+    renderScene();
+  }, 120);
+}
+
+function updateSliderFill(input) {
+  const min = Number(input.min);
+  const max = Number(input.max);
+  const val = Number(input.value);
+  const pct = ((val - min) / (max - min)) * 100;
+  input.style.setProperty("--pct", `${pct}%`);
+}
+
+function updateAllSliders() {
+  updateSliderFill(els.width);
+  updateSliderFill(els.length);
+  updateSliderFill(els.height);
+  if (els.mezzHeight) updateSliderFill(els.mezzHeight);
+  if (els.mezzDepth) updateSliderFill(els.mezzDepth);
+  if (els.mezzLength) updateSliderFill(els.mezzLength);
+  if (els.mezzPos) updateSliderFill(els.mezzPos);
+}
+
+function updateDynamicSliders() {
+  if (els.mezzHeight) {
+    const { min, max } = getMezzHeightBounds();
+    updateSliderRange(els.mezzHeight, min, max, state.mezzHeight);
+    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(Math.round(state.mezzHeight * 10) / 10);
+  }
+  if (els.mezzDepth && els.mezzDepthVal) {
+    els.mezzDepth.value = String(state.mezzDepthPct);
+    els.mezzDepthVal.textContent = String(state.mezzDepthPct);
+    updateSliderFill(els.mezzDepth);
+  }
+  if (els.mezzLength && els.mezzLengthVal) {
+    els.mezzLength.value = String(state.mezzLengthPct);
+    els.mezzLengthVal.textContent = String(state.mezzLengthPct);
+    updateSliderFill(els.mezzLength);
+  }
+  if (els.mezzPos) {
+    const { min, max } = getMezzPosBounds();
+    updateSliderRange(els.mezzPos, min, max, state.mezzPosZ);
+    if (els.mezzPosVal) els.mezzPosVal.textContent = String(Math.round(state.mezzPosZ * 10) / 10);
+  }
+}
+
+function syncUI() {
+  clampWindows();
+  clampGate();
+  clampDoors();
+  clampMezzanine();
+  els.widthVal.textContent = String(state.width);
+  els.lengthVal.textContent = String(state.length);
+  els.heightVal.textContent = String(state.height);
+  updateAllSliders();
+  updateDynamicSliders();
+  updateStats();
+  updateConditionalUI();
+  updateColorUI();
+  updateRoofColorUI();
+  updateStepUI();
+}
+
+function syncAll(immediate = false) {
+  syncUI();
+  scheduleRender(immediate);
+}
+
+function buildRoofColorGrid() {
+  if (!els.roofColorGrid) return;
+  els.roofColorGrid.innerHTML = "";
+  for (const c of ROOF_COLORS) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "color-btn";
+    btn.title = c.name;
+    btn.dataset.value = String(c.value);
+    btn.style.backgroundColor = c.hex;
+    btn.addEventListener("click", () => {
+      state.roofColor = c.value;
+      syncAll(true);
+    });
+    els.roofColorGrid.appendChild(btn);
+  }
+}
+
+function buildColorGrid() {
+  els.colorGrid.innerHTML = "";
+  for (const c of RAL_COLORS) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "color-btn";
+    btn.title = c.name;
+    btn.dataset.value = String(c.value);
+    btn.style.backgroundColor = c.hex;
+    btn.addEventListener("click", () => {
+      state.wallColor = c.value;
+      syncAll(true);
+    });
+    els.colorGrid.appendChild(btn);
+  }
+}
+
+function bindSlider(input, key, valEl) {
+  input.addEventListener("input", () => {
+    state[key] = Number(input.value);
+    valEl.textContent = String(state[key]);
+    updateSliderFill(input);
+    updateStats();
+    scheduleRender();
+  });
+  input.addEventListener("change", () => syncAll(true));
+}
+
+bindSlider(els.width, "width", els.widthVal);
+bindSlider(els.length, "length", els.lengthVal);
+bindSlider(els.height, "height", els.heightVal);
+
+for (const btn of els.stepBtns) {
+  btn.addEventListener("click", () => {
+    setColumnStep(Number(btn.dataset.step), true);
+  });
+}
+
+els.columnStepInput.addEventListener("input", () => {
+  const normalized = normalizeColumnStep(els.columnStepInput.value);
+  if (normalized == null || normalized === state.columnStep) return;
+  state.columnStep = normalized;
+  clampWindows();
+  clampGate();
+  clampDoors();
+  clampMezzanine();
+  els.columnStepVal.textContent = String(normalized);
+  for (const btn of els.stepBtns) {
+    btn.classList.toggle("active", Number(btn.dataset.step) === normalized);
+  }
+  scheduleRender();
+});
+
+els.columnStepInput.addEventListener("change", () => {
+  setColumnStep(els.columnStepInput.value, true);
+});
+
+els.columnStepInput.addEventListener("blur", () => {
+  setColumnStep(els.columnStepInput.value, true);
+});
+
+els.sandwich.addEventListener("change", () => {
+  state.showSandwich = els.sandwich.checked;
+  if (state.showSandwich) setAccordionOpen("cladding", true);
+  syncAll(true);
+});
+
+els.crane?.addEventListener("change", () => {
+  state.showCraneBeam = els.crane.checked;
+  if (state.showCraneBeam) {
+    state.selectedWindowId = null;
+    state.selectedDoor = null;
+    state.gateSelected = false;
+  }
+  syncAll(true);
+});
+
+els.mezzanine?.addEventListener("change", () => {
+  state.showMezzanine = els.mezzanine.checked;
+  if (state.showMezzanine) setAccordionOpen("equipment", true);
+  syncAll(true);
+});
+
+if (els.mezzHeight) {
+  els.mezzHeight.addEventListener("input", () => {
+    state.mezzHeight = Number(els.mezzHeight.value);
+    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(state.mezzHeight);
+    updateSliderFill(els.mezzHeight);
+    scheduleRender();
+  });
+  els.mezzHeight.addEventListener("change", () => syncAll(true));
+}
+
+if (els.mezzDepth) {
+  els.mezzDepth.addEventListener("input", () => {
+    state.mezzDepthPct = Number(els.mezzDepth.value);
+    if (els.mezzDepthVal) els.mezzDepthVal.textContent = String(state.mezzDepthPct);
+    updateSliderFill(els.mezzDepth);
+    scheduleRender();
+  });
+  els.mezzDepth.addEventListener("change", () => syncAll(true));
+}
+
+if (els.mezzLength) {
+  els.mezzLength.addEventListener("input", () => {
+    state.mezzLengthPct = Number(els.mezzLength.value);
+    if (els.mezzLengthVal) els.mezzLengthVal.textContent = String(state.mezzLengthPct);
+    updateSliderFill(els.mezzLength);
+    clampMezzanine();
+    updateDynamicSliders();
+    scheduleRender();
+  });
+  els.mezzLength.addEventListener("change", () => syncAll(true));
+}
+
+if (els.mezzPos) {
+  els.mezzPos.addEventListener("input", () => {
+    state.mezzPosZ = Number(els.mezzPos.value);
+    if (els.mezzPosVal) els.mezzPosVal.textContent = String(state.mezzPosZ);
+    updateSliderFill(els.mezzPos);
+    scheduleRender();
+  });
+  els.mezzPos.addEventListener("change", () => syncAll(true));
+}
+
+for (const btn of els.mezzWallBtns) {
+  btn.addEventListener("click", () => {
+    state.mezzWall = btn.dataset.wall;
+    syncAll(true);
+  });
+}
+
+els.windows.addEventListener("change", () => {
+  state.showWindows = els.windows.checked;
+  if (state.showWindows && state.windows.length === 0) {
+    addWindow("left");
+    return;
+  }
+  syncAll(true);
+});
+
+els.gate.addEventListener("change", () => {
+  state.showGate = els.gate.checked;
+  if (state.showGate) {
+    state.gateX = state.gateX ?? 0;
+    state.gateSelected = true;
+    state.selectedWindowId = null;
+    state.selectedDoor = null;
+    if (state.showFrontDoor) {
+      state.frontDoorPos = getDefaultFrontDoorPos();
+    }
+  } else {
+    state.gateSelected = false;
+  }
+  syncAll(true);
+});
+
+els.doorSide?.addEventListener("change", () => {
+  state.showSideDoor = els.doorSide.checked;
+  if (state.showSideDoor) {
+    state.sideDoorPos = state.sideDoorPos ?? getDefaultSideDoorPos();
+    state.selectedDoor = "side";
+    state.selectedWindowId = null;
+    state.gateSelected = false;
+  } else if (state.selectedDoor === "side") {
+    state.selectedDoor = state.showFrontDoor ? "front" : null;
+  }
+  syncAll(true);
+});
+
+els.doorFront?.addEventListener("change", () => {
+  state.showFrontDoor = els.doorFront.checked;
+  if (state.showFrontDoor) {
+    state.frontDoorPos = state.frontDoorPos ?? getDefaultFrontDoorPos();
+    state.selectedDoor = "front";
+    state.selectedWindowId = null;
+    state.gateSelected = false;
+  } else if (state.selectedDoor === "front") {
+    state.selectedDoor = state.showSideDoor ? "side" : null;
+  }
+  syncAll(true);
+});
+
+for (const btn of els.doorWallBtns) {
+  btn.addEventListener("click", () => {
+    state.sideDoorWall = btn.dataset.wall;
+    state.sideDoorPos = getDefaultSideDoorPos();
+    state.selectedDoor = "side";
+    state.selectedWindowId = null;
+    state.gateSelected = false;
+    syncAll(true);
+  });
+}
+
+els.addWindowLeft.addEventListener("click", () => addWindow("left"));
+els.addWindowRight.addEventListener("click", () => addWindow("right"));
+els.removeWindow.addEventListener("click", () => removeWindow());
+
+buildColorGrid();
+buildRoofColorGrid();
+initAccordion();
+updateStats();
+updateConditionalUI();
+updateAllSliders();
+updateStepUI();
+updateRoofColorUI();
+
+scene = new ConfiguratorScene(
+  els.container,
+  () => {
+    els.loading.hidden = true;
+  },
+  (id, z) => {
+    const win = state.windows.find((w) => w.id === id);
+    if (win) win.z = z;
+    syncAll(true);
+  },
+  (id) => {
+    state.selectedWindowId = id;
+    state.gateSelected = false;
+    state.selectedDoor = null;
+    syncUI();
+    scheduleRender(true);
+  },
+  (x) => {
+    state.gateX = x;
+    syncAll(true);
+  },
+  () => {
+    state.gateSelected = true;
+    state.selectedWindowId = null;
+    state.selectedDoor = null;
+    syncUI();
+    scheduleRender(true);
+  },
+  (doorId, pos) => {
+    if (doorId === "side") state.sideDoorPos = pos;
+    else if (doorId === "front") state.frontDoorPos = pos;
+    syncAll(true);
+  },
+  (doorId) => {
+    state.selectedDoor = doorId;
+    state.selectedWindowId = null;
+    state.gateSelected = false;
+    syncUI();
+    scheduleRender(true);
+  }
+);

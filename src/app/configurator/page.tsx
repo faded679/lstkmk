@@ -1,5 +1,5 @@
-import ConfiguratorClient from "./ConfiguratorClient";
+import { redirect } from "next/navigation";
 
 export default function ConfiguratorPage() {
-  return <ConfiguratorClient />;
+  redirect("/configurator/index.html");
 }
