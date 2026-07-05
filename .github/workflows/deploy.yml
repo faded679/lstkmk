@@ -53,5 +53,10 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/lstkmk.ru
-          pm2 restart lstkmk || pm2 start ecosystem.config.js --env production
+          pm2 delete lstkmk || true
+          pm2 kill || true
+          pkill -9 -f "next-server" || true
+          pkill -9 -f "next start" || true
+          sleep 2
+          pm2 start ecosystem.config.js --env production --force
           pm2 save
