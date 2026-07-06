@@ -5,7 +5,6 @@
   "use strict";
 
   let muted = false;
-  let greeted = false;
   const spoken = {}; // track which tips already said (don't repeat)
 
   // --- Tips per section / action ---
@@ -122,86 +121,63 @@
     }
   });
 
+  // --- Immediately greet ---
+  sayOnce("welcome");
+
   // --- Watch user interactions ---
-  function init() {
-    // Greet after 3D loads
-    setTimeout(() => {
-      if (!greeted) { greeted = true; sayOnce("welcome"); }
-    }, 2500);
-
-    // Accordion open events
-    document.querySelectorAll(".accordion-trigger").forEach(trigger => {
-      trigger.addEventListener("click", () => {
-        const item = trigger.closest(".accordion-item");
-        if (!item) return;
-        const section = item.dataset.accordion;
-        // Only speak when opening
-        setTimeout(() => {
-          if (item.classList.contains("is-open") && TIPS[section]) {
-            sayOnce(section);
-          }
-        }, 100);
-      });
+  // Accordion open events
+  document.querySelectorAll(".accordion-trigger").forEach(trigger => {
+    trigger.addEventListener("click", () => {
+      const item = trigger.closest(".accordion-item");
+      if (!item) return;
+      const section = item.dataset.accordion;
+      setTimeout(() => {
+        if (item.classList.contains("is-open") && TIPS[section]) {
+          sayOnce(section);
+        }
+      }, 150);
     });
+  });
 
-    // Sliders in sizes — speak sizes tip on first interaction
-    const sizeSliders = document.querySelectorAll('[data-accordion="sizes"] input[type="range"]');
-    sizeSliders.forEach(slider => {
-      slider.addEventListener("input", () => sayOnce("sizes"), { once: true });
-    });
+  // Sliders in sizes — speak sizes tip on first interaction
+  const sizeSliders = document.querySelectorAll('[data-accordion="sizes"] input[type="range"]');
+  sizeSliders.forEach(slider => {
+    slider.addEventListener("input", () => sayOnce("sizes"), { once: true });
+  });
 
-    // Checkboxes
-    const crane = document.getElementById("crane");
-    if (crane) crane.addEventListener("change", () => { if (crane.checked) sayOnce("crane"); });
+  // Checkboxes
+  const crane = document.getElementById("crane");
+  if (crane) crane.addEventListener("change", () => { if (crane.checked) sayOnce("crane"); });
 
-    const mezz = document.getElementById("mezzanine");
-    if (mezz) mezz.addEventListener("change", () => { if (mezz.checked) sayOnce("mezzanine"); });
+  const mezz = document.getElementById("mezzanine");
+  if (mezz) mezz.addEventListener("change", () => { if (mezz.checked) sayOnce("mezzanine"); });
 
-    const sandwich = document.getElementById("sandwich");
-    if (sandwich) sandwich.addEventListener("change", () => {
-      if (sandwich.checked) sayOnce("sandwich");
-      else sayOnce("sandwichOff");
-    });
+  const sandwich = document.getElementById("sandwich");
+  if (sandwich) sandwich.addEventListener("change", () => {
+    if (sandwich.checked) sayOnce("sandwich");
+    else sayOnce("sandwichOff");
+  });
 
-    const gate = document.getElementById("gate");
-    if (gate) gate.addEventListener("change", () => { if (gate.checked) sayOnce("gate"); });
+  const gate = document.getElementById("gate");
+  if (gate) gate.addEventListener("change", () => { if (gate.checked) sayOnce("gate"); });
 
-    const doorSide = document.getElementById("door-side");
-    if (doorSide) doorSide.addEventListener("change", () => { if (doorSide.checked) sayOnce("doorSide"); });
+  const doorSide = document.getElementById("door-side");
+  if (doorSide) doorSide.addEventListener("change", () => { if (doorSide.checked) sayOnce("doorSide"); });
 
-    const doorFront = document.getElementById("door-front");
-    if (doorFront) doorFront.addEventListener("change", () => { if (doorFront.checked) sayOnce("doorFront"); });
+  const doorFront = document.getElementById("door-front");
+  if (doorFront) doorFront.addEventListener("change", () => { if (doorFront.checked) sayOnce("doorFront"); });
 
-    const windows = document.getElementById("windows");
-    if (windows) windows.addEventListener("change", () => { if (windows.checked) sayOnce("windows"); });
+  const windows = document.getElementById("windows");
+  if (windows) windows.addEventListener("change", () => { if (windows.checked) sayOnce("windows"); });
 
-    // Color grid clicks
-    const colorGrid = document.getElementById("color-grid");
-    if (colorGrid) colorGrid.addEventListener("click", () => sayOnce("colorWall"));
+  // Color grid clicks
+  const colorGrid = document.getElementById("color-grid");
+  if (colorGrid) colorGrid.addEventListener("click", () => sayOnce("colorWall"));
 
-    const roofGrid = document.getElementById("roof-color-grid");
-    if (roofGrid) roofGrid.addEventListener("click", () => sayOnce("colorRoof"));
-  }
+  const roofGrid = document.getElementById("roof-color-grid");
+  if (roofGrid) roofGrid.addEventListener("click", () => sayOnce("colorRoof"));
 
-  // --- Wait for scene to load then init ---
-  const loading = document.getElementById("loading");
-  if (loading) {
-    const observer = new MutationObserver(() => {
-      if (loading.style.display === "none" || !loading.offsetParent) {
-        observer.disconnect();
-        init();
-      }
-    });
-    observer.observe(loading, { attributes: true, attributeFilter: ["style", "class"] });
-    if (loading.style.display === "none" || !loading.offsetParent) {
-      observer.disconnect();
-      init();
-    }
-  } else {
-    init();
-  }
-
-  // Load voices early
+  // Load voices
   if (window.speechSynthesis) {
     window.speechSynthesis.getVoices();
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
