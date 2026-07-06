@@ -3,17 +3,40 @@
 (function () {
   "use strict";
 
-  // --- Parse Command (regex-based, no AI) ---
-  const claddingNames = { none: "без обшивки", prof: "профлист", sandwich: "сэндвич-панели" };
+  // --- Color map for voice commands ---
+  const COLOR_MAP = [
+    { keywords: ["синий", "синяя", "синее", "голубой"], wallValue: 0x1a4b8c, roofValue: 0x1a4b8c },
+    { keywords: ["зелёный", "зеленый", "зелёная", "зелёное"], wallValue: 0x1f4f2b, roofValue: 0x1f4f2b },
+    { keywords: ["серый", "серая", "серое", "светло-серый"], wallValue: 0xc2c5c0, roofValue: 0xc2c5c0 },
+    { keywords: ["бордо", "бордовый", "бордовая", "красный", "красная", "тёмно-красный"], wallValue: 0x621827, roofValue: 0x621827 },
+    { keywords: ["коричневый", "коричневая", "коричневое", "шоколад"], wallValue: 0x4a2b1a, roofValue: 0x4a2b1a },
+    { keywords: ["белый", "белая", "белое"], wallValue: 0xf4f4f4, roofValue: 0xf4f4f4 },
+    { keywords: ["жёлтый", "желтый", "жёлтая", "жёлтое"], wallValue: 0xf5d033, roofValue: null },
+    { keywords: ["оранжевый", "оранжевая", "оранжевое", "рыжий"], wallValue: 0xe05c1a, roofValue: null },
+    { keywords: ["алюминиевый", "алюминий", "металлик"], wallValue: null, roofValue: 0x9aa2a8 },
+  ];
 
+  function findColor(text) {
+    const lower = text.toLowerCase();
+    for (const c of COLOR_MAP) {
+      for (const kw of c.keywords) {
+        if (lower.includes(kw)) return c;
+      }
+    }
+    return null;
+  }
+
+  // --- Parse Command (regex-based, no AI) ---
   function describeState(s) {
     const parts = [`${s.width}×${s.length}×${s.height} м`];
-    parts.push(s.showSandwich ? "сэндвич-панели" : "профлист");
+    parts.push(`шаг колонн ${s.columnStep} м`);
+    parts.push(s.showSandwich ? "сэндвич-панели" : "каркас без обшивки");
     if (s.showGate) parts.push("ворота");
-    if (s.showSideDoor || s.showFrontDoor) parts.push("дверь");
+    if (s.showSideDoor) parts.push("боковая дверь");
+    if (s.showFrontDoor) parts.push("фронтальная дверь");
     if (s.showWindows) parts.push(`окна (${s.windows ? s.windows.length : 0} шт.)`);
     if (s.showCraneBeam) parts.push("кран-балка");
-    if (s.showMezzanine) parts.push("антресоль");
+    if (s.showMezzanine) parts.push(`антресоль (${s.mezzWall === "left" ? "слева" : "справа"}, h=${s.mezzHeight}м)`);
     return parts.join(", ");
   }
 
@@ -26,22 +49,30 @@
     // --- HELP ---
     if (/что ты умеешь|помощь|команды|help|помоги/.test(lower)) {
       return {
-        text: "Я понимаю: размеры (например «20 на 40»), обшивка (сэндвич, профлист), ворота, двери, окна, кран-балка, антресоль. Спросите «параметры» или «сколько стоит».",
+        text: "Команды: размеры («20 на 40», «высота 7»), шаг колонн («шаг 3»), обшивка («сэндвич», «без обшивки»), цвет («стены синие», «кровля зелёная»), ворота, дверь сбоку, дверь у ворот, окна, кран-балка, антресоль (слева/справа, высота, глубина). Спросите «параметры» или «сброс».",
         action: null,
       };
     }
 
-    if (/какой сейчас|что сейчас|параметры|текущ|что выбрано/.test(lower)) {
+    if (/какой сейчас|что сейчас|параметры|текущ|что выбрано|статус/.test(lower)) {
       return { text: `Сейчас: ${describeState(state)}.`, action: null };
     }
 
     if (/сколько стоит|цена|стоимость|почём|прайс/.test(lower)) {
-      return { text: "Точная цена зависит от проекта. Позвоните: +7 (960) 632-20-61 или оставьте заявку.", action: null };
+      return { text: "Точная цена зависит от проекта. Позвоните: +7 (960) 632-20-61 или оставьте заявку на сайте.", action: null };
+    }
+
+    // --- RESET ---
+    if (/сброс|сбрось|начать заново|по умолчанию|reset/.test(lower)) {
+      return {
+        text: "Сброс. Параметры по умолчанию: 18×36×5 м, без обшивки.",
+        action: { width: 18, length: 36, height: 5, columnStep: 6, showSandwich: false, showGate: false, showSideDoor: false, showFrontDoor: false, showWindows: false, showCraneBeam: false, showMezzanine: false },
+      };
     }
 
     // --- DIMENSIONS ---
     const dimMatch = lower.match(/(\d+)\s*(?:на|x|×|х)\s*(\d+)(?:\s*(?:на|x|×|х)\s*(\d+))?/);
-    if (dimMatch) {
+    if (dimMatch && !/ворот|окн/.test(lower)) {
       const d1 = parseInt(dimMatch[1]);
       const d2 = parseInt(dimMatch[2]);
       const d3 = dimMatch[3] ? parseInt(dimMatch[3]) : null;
@@ -55,90 +86,185 @@
       hasAction = true;
     }
 
-    if (!dimMatch) {
+    if (!dimMatch || /ворот|окн/.test(lower)) {
       const wm = lower.match(/ширин[ауы]\s*(\d+)/);
       if (wm) { action.width = parseInt(wm[1]); responses.push(`Ширина: ${action.width} м`); hasAction = true; }
       const lm = lower.match(/длин[ауы]\s*(\d+)/);
       if (lm) { action.length = parseInt(lm[1]); responses.push(`Длина: ${action.length} м`); hasAction = true; }
       const hm = lower.match(/высот[ауы]\s*(\d+)/);
-      if (hm) { action.height = parseInt(hm[1]); responses.push(`Высота: ${action.height} м`); hasAction = true; }
+      if (hm && !/антресол|мезонин/.test(lower)) { action.height = parseInt(hm[1]); responses.push(`Высота: ${action.height} м`); hasAction = true; }
       const am = lower.match(/(\d+)\s*(?:квадратов|м2|кв\.?\s*м|квадрат)/);
       if (am) {
         const area = parseInt(am[1]);
         const w = Math.min(36, Math.max(12, Math.round(Math.sqrt(area * 0.5) / 6) * 6));
-        const l = Math.round(area / w / 6) * 6;
-        action.width = w; action.length = Math.max(12, l);
-        responses.push(`Площадь ~${area} м² → ${action.width}×${action.length} м`);
+        const l = Math.max(24, Math.round(area / w / 6) * 6);
+        action.width = w; action.length = l;
+        responses.push(`Площадь ~${area} м² → ${w}×${l} м`);
         hasAction = true;
       }
     }
 
+    // --- COLUMN STEP ---
+    const stepMatch = lower.match(/шаг\s*(?:колонн|стоек|рам|рамы)?\s*(\d+(?:[.,]\d+)?)/);
+    if (stepMatch) {
+      action.columnStep = parseFloat(stepMatch[1].replace(",", "."));
+      responses.push(`Шаг колонн: ${action.columnStep} м`);
+      hasAction = true;
+    }
+
     // --- CLADDING ---
-    if (/сэндвич|сандвич|sandwich/.test(lower)) {
-      action.showSandwich = true; responses.push("Сэндвич-панели"); hasAction = true;
+    if (/сэндвич|сандвич|sandwich|панел/.test(lower) && !/без|убер|удал/.test(lower)) {
+      action.showSandwich = true; responses.push("Сэндвич-панели включены"); hasAction = true;
+    } else if (/без обшивки|только каркас|голый каркас|убери обшивк|убери панел|без панел/.test(lower)) {
+      action.showSandwich = false; responses.push("Обшивка убрана, только каркас"); hasAction = true;
     } else if (/профлист|профнастил/.test(lower)) {
-      action.showSandwich = false; responses.push("Профлист"); hasAction = true;
-    } else if (/без обшивки|только каркас|голый каркас/.test(lower)) {
-      action.showSandwich = false; responses.push("Только каркас"); hasAction = true;
+      action.showSandwich = true; responses.push("Обшивка включена (профлист = сэндвич в конфигураторе)"); hasAction = true;
+    }
+
+    // --- COLORS ---
+    const isRoof = /кровл|крыш/.test(lower);
+    const isWall = /стен|фасад|обшивк/.test(lower);
+    const color = findColor(lower);
+    if (color) {
+      if (isRoof && color.roofValue !== null) {
+        action.roofColor = color.roofValue;
+        if (!action.showSandwich && state && !state.showSandwich) action.showSandwich = true;
+        responses.push(`Цвет кровли изменён`);
+        hasAction = true;
+      } else if (isWall && color.wallValue !== null) {
+        action.wallColor = color.wallValue;
+        if (!action.showSandwich && state && !state.showSandwich) action.showSandwich = true;
+        responses.push(`Цвет стен изменён`);
+        hasAction = true;
+      } else if (!isRoof && !isWall) {
+        // Default: apply to walls
+        if (color.wallValue !== null) {
+          action.wallColor = color.wallValue;
+          if (!action.showSandwich && state && !state.showSandwich) action.showSandwich = true;
+          responses.push(`Цвет стен изменён`);
+          hasAction = true;
+        }
+      }
+    }
+    // RAL number
+    const ralMatch = lower.match(/рал\s*(\d{4})|ral\s*(\d{4})/);
+    if (ralMatch) {
+      const ralNum = ralMatch[1] || ralMatch[2];
+      const allColors = [
+        { ral: "5005", value: 0x1a4b8c }, { ral: "6005", value: 0x1f4f2b },
+        { ral: "7035", value: 0xc2c5c0 }, { ral: "3005", value: 0x621827 },
+        { ral: "8017", value: 0x4a2b1a }, { ral: "9003", value: 0xf4f4f4 },
+        { ral: "1018", value: 0xf5d033 }, { ral: "2004", value: 0xe05c1a },
+        { ral: "9006", value: 0x9aa2a8 }, { ral: "7004", value: 0x969992 },
+      ];
+      const found = allColors.find(c => c.ral === ralNum);
+      if (found) {
+        if (isRoof) { action.roofColor = found.value; responses.push(`Кровля RAL ${ralNum}`); }
+        else { action.wallColor = found.value; responses.push(`Стены RAL ${ralNum}`); }
+        if (!action.showSandwich && state && !state.showSandwich) action.showSandwich = true;
+        hasAction = true;
+      }
     }
 
     // --- GATES ---
-    if (/добав.*ворот|включи.*ворот|поставь.*ворот|нужн.*ворот/.test(lower) || (/ворот/.test(lower) && !/убер|удал|без/.test(lower) && !dimMatch)) {
-      action.showGate = true; responses.push("Ворота добавлены"); hasAction = true;
+    if (/добав.*ворот|включи.*ворот|поставь.*ворот|нужн.*ворот|покажи.*ворот/.test(lower) || (/ворот/.test(lower) && !/убер|удал|без|закр/.test(lower) && !hasAction)) {
+      action.showGate = true;
+      if (!state.showSandwich && !action.showSandwich) action.showSandwich = true;
+      responses.push("Ворота добавлены");
+      hasAction = true;
     }
-    if (/убери.*ворот|удали.*ворот|без ворот/.test(lower)) {
+    if (/убери.*ворот|удали.*ворот|без ворот|скрой.*ворот/.test(lower)) {
       action.showGate = false; responses.push("Ворота убраны"); hasAction = true;
     }
 
     // --- DOORS ---
-    if (/добав.*дверь|включи.*дверь|поставь.*дверь|нужн.*дверь/.test(lower) || (/дверь|двери/.test(lower) && !/убер|удал|без/.test(lower))) {
-      if (/сбоку|боков|слева|справа/.test(lower)) {
-        action.showSideDoor = true; responses.push("Боковая дверь"); hasAction = true;
-      } else if (/фасад|перед|фронт|у ворот/.test(lower)) {
-        action.showFrontDoor = true; responses.push("Фронтальная дверь"); hasAction = true;
+    if (/добав.*дверь|включи.*дверь|поставь.*дверь|нужн.*дверь|покажи.*дверь/.test(lower) || (/дверь|двери/.test(lower) && !/убер|удал|без/.test(lower) && !hasAction)) {
+      if (/фасад|перед|фронт|у ворот|передн/.test(lower)) {
+        action.showFrontDoor = true;
+        if (!state.showSandwich && !action.showSandwich) action.showSandwich = true;
+        responses.push("Фронтальная дверь добавлена");
+      } else if (/сбоку|боков|слева|справа|бок/.test(lower)) {
+        action.showSideDoor = true;
+        if (/слева|лев/.test(lower)) action.sideDoorWall = "left";
+        else if (/справа|прав/.test(lower)) action.sideDoorWall = "right";
+        if (!state.showSandwich && !action.showSandwich) action.showSandwich = true;
+        responses.push("Боковая дверь добавлена");
       } else {
-        action.showSideDoor = true; responses.push("Дверь добавлена"); hasAction = true;
+        action.showSideDoor = true;
+        if (!state.showSandwich && !action.showSandwich) action.showSandwich = true;
+        responses.push("Дверь добавлена (сбоку)");
       }
+      hasAction = true;
     }
-    if (/убери.*дверь|удали.*дверь|без двер/.test(lower)) {
-      action.showSideDoor = false; action.showFrontDoor = false; responses.push("Двери убраны"); hasAction = true;
+    if (/убери.*дверь|удали.*дверь|без двер|скрой.*дверь/.test(lower)) {
+      action.showSideDoor = false; action.showFrontDoor = false;
+      responses.push("Двери убраны"); hasAction = true;
     }
 
     // --- WINDOWS ---
-    if (/добав.*окн|включи.*окн|поставь.*окн|нужн.*окн/.test(lower) || (/ок[оё]н|окна|окно/.test(lower) && !/убер|удал|без/.test(lower))) {
-      action.showWindows = true; responses.push("Окна добавлены"); hasAction = true;
+    if (/добав.*окн|включи.*окн|поставь.*окн|нужн.*окн|покажи.*окн/.test(lower) || (/ок[оё]н|окна|окно/.test(lower) && !/убер|удал|без/.test(lower) && !hasAction)) {
+      action.showWindows = true;
+      if (!state.showSandwich && !action.showSandwich) action.showSandwich = true;
+      // Check if number specified
+      const winNum = lower.match(/(\d+)\s*ок[оё]н/);
+      if (winNum) {
+        action.windowCount = parseInt(winNum[1]);
+        responses.push(`${action.windowCount} окон`);
+      } else {
+        responses.push("Окна добавлены");
+      }
+      hasAction = true;
     }
-    if (/убери.*окн|удали.*окн|без окон/.test(lower)) {
+    if (/убери.*окн|удали.*окн|без окон|скрой.*окн/.test(lower)) {
       action.showWindows = false; responses.push("Окна убраны"); hasAction = true;
     }
 
     // --- CRANE BEAM ---
-    if (/кран|балк/.test(lower) && !/убер|удал|без/.test(lower)) {
+    if (/добав.*кран|включи.*кран|поставь.*кран|нужн.*кран|покажи.*кран|кран.?балк/.test(lower) && !/убер|удал|без/.test(lower)) {
       action.showCraneBeam = true; responses.push("Кран-балка добавлена"); hasAction = true;
     }
-    if (/убери.*кран|удали.*кран|без кран/.test(lower)) {
+    if (/убери.*кран|удали.*кран|без кран|скрой.*кран/.test(lower)) {
       action.showCraneBeam = false; responses.push("Кран-балка убрана"); hasAction = true;
     }
 
     // --- MEZZANINE ---
-    if (/антресоль|мезонин|второй этаж|2 этаж/.test(lower) && !/убер|удал|без/.test(lower)) {
-      action.showMezzanine = true; responses.push("Антресоль добавлена"); hasAction = true;
+    if (/добав.*антресол|включи.*антресол|поставь.*антресол|нужн.*антресол|покажи.*антресол|антресоль|мезонин|второй этаж|2\s*этаж/.test(lower) && !/убер|удал|без/.test(lower)) {
+      action.showMezzanine = true;
+      if (/слева|лев/.test(lower)) action.mezzWall = "left";
+      else if (/справа|прав/.test(lower)) action.mezzWall = "right";
+      // Mezzanine height
+      const mhMatch = lower.match(/(?:антресол|мезонин).*высот[ауы]\s*(\d+(?:[.,]\d+)?)/);
+      if (mhMatch) action.mezzHeight = parseFloat(mhMatch[1].replace(",", "."));
+      // Mezzanine depth %
+      const mdMatch = lower.match(/глубин[ауы]\s*(\d+)/);
+      if (mdMatch) action.mezzDepthPct = parseInt(mdMatch[1]);
+      // Mezzanine length %
+      const mlMatch = lower.match(/длин[ауы]\s*антресол\w*\s*(\d+)/);
+      if (mlMatch) action.mezzLengthPct = parseInt(mlMatch[1]);
+      responses.push("Антресоль добавлена");
+      hasAction = true;
     }
-    if (/убери.*антресоль|удали.*антресоль|без антресол/.test(lower)) {
+    if (/убери.*антресол|удали.*антресол|без антресол|скрой.*антресол/.test(lower)) {
       action.showMezzanine = false; responses.push("Антресоль убрана"); hasAction = true;
     }
-
-    // --- COLUMN STEP ---
-    const stepMatch = lower.match(/шаг\s*(?:колонн|стоек|рам)?\s*(\d+)/);
-    if (stepMatch) {
-      action.columnStep = parseInt(stepMatch[1]); responses.push(`Шаг колонн: ${action.columnStep} м`); hasAction = true;
+    // Change mezzanine side without "add"
+    if (state.showMezzanine && /антресоль\s*(?:на\s*)?слев|антресоль\s*(?:на\s*)?лев/.test(lower)) {
+      action.mezzWall = "left"; responses.push("Антресоль слева"); hasAction = true;
+    }
+    if (state.showMezzanine && /антресоль\s*(?:на\s*)?справ|антресоль\s*(?:на\s*)?прав/.test(lower)) {
+      action.mezzWall = "right"; responses.push("Антресоль справа"); hasAction = true;
+    }
+    // Mezzanine height standalone
+    if (state.showMezzanine && /высот[ауы]\s*антресол|антресол.*высот/.test(lower)) {
+      const mhMatch2 = lower.match(/высот[ауы]\s*(?:антресол\w*)?\s*(\d+(?:[.,]\d+)?)/);
+      if (mhMatch2) { action.mezzHeight = parseFloat(mhMatch2[1].replace(",", ".")); responses.push(`Высота антресоли: ${action.mezzHeight} м`); hasAction = true; }
     }
 
     if (hasAction) {
       return { text: `Готово. ${responses.join(". ")}.`, action };
     }
 
-    return { text: "Не поняла. Попробуйте: «20 на 40», «сэндвич», «добавь ворота», «помощь».", action: null };
+    return { text: "Не поняла. Скажите, например: «ангар 24 на 60», «высота 7», «сэндвич-панели», «стены синие», «добавь ворота», «кран-балка», «антресоль слева». Скажите «помощь» для списка всех команд.", action: null };
   }
 
   // --- Voice Assistant UI ---

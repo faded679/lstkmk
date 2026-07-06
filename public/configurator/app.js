@@ -787,51 +787,119 @@ scene = new ConfiguratorScene(
 window.__configuratorState = state;
 
 window.__applyVoiceAction = function (action) {
+  // --- Dimensions ---
   if (action.width !== undefined) {
     const clamped = Math.min(36, Math.max(12, Math.round(action.width / 6) * 6));
     state.width = clamped;
     if (els.width) { els.width.value = clamped; els.widthVal.textContent = clamped; }
   }
   if (action.length !== undefined) {
-    const clamped = Math.min(120, Math.max(12, Math.round(action.length / 6) * 6));
+    const clamped = Math.min(120, Math.max(24, Math.round(action.length / 6) * 6));
     state.length = clamped;
     if (els.length) { els.length.value = clamped; els.lengthVal.textContent = clamped; }
   }
   if (action.height !== undefined) {
-    const clamped = Math.min(10, Math.max(3, action.height));
+    const clamped = Math.min(9, Math.max(4, action.height));
     state.height = clamped;
     if (els.height) { els.height.value = clamped; els.heightVal.textContent = clamped; }
   }
+
+  // --- Column step ---
   if (action.columnStep !== undefined) {
-    state.columnStep = Math.min(12, Math.max(3, action.columnStep));
+    const clamped = Math.min(24, Math.max(2, action.columnStep));
+    state.columnStep = clamped;
+    if (els.columnStepVal) els.columnStepVal.textContent = String(clamped);
+    if (els.columnStepInput) els.columnStepInput.value = clamped;
+    // Update step buttons active state
+    if (els.stepBtns) {
+      els.stepBtns.forEach(function(btn) {
+        btn.classList.toggle("active", Number(btn.dataset.step) === clamped);
+      });
+    }
   }
+
+  // --- Cladding ---
   if (action.showSandwich !== undefined) {
     state.showSandwich = action.showSandwich;
     if (els.sandwich) els.sandwich.checked = action.showSandwich;
   }
+
+  // --- Colors ---
+  if (action.wallColor !== undefined) {
+    state.wallColor = action.wallColor;
+  }
+  if (action.roofColor !== undefined) {
+    state.roofColor = action.roofColor;
+  }
+
+  // --- Gates ---
   if (action.showGate !== undefined) {
     state.showGate = action.showGate;
     if (els.gate) els.gate.checked = action.showGate;
   }
-  if (action.showWindows !== undefined) {
-    state.showWindows = action.showWindows;
-    if (els.windows) els.windows.checked = action.showWindows;
-  }
+
+  // --- Doors ---
   if (action.showSideDoor !== undefined) {
     state.showSideDoor = action.showSideDoor;
     if (els.doorSide) els.doorSide.checked = action.showSideDoor;
+  }
+  if (action.sideDoorWall !== undefined) {
+    state.sideDoorWall = action.sideDoorWall;
+    // Update door wall buttons
+    if (els.doorWallBtns) {
+      els.doorWallBtns.forEach(function(btn) {
+        btn.classList.toggle("active", btn.dataset.wall === action.sideDoorWall);
+      });
+    }
   }
   if (action.showFrontDoor !== undefined) {
     state.showFrontDoor = action.showFrontDoor;
     if (els.doorFront) els.doorFront.checked = action.showFrontDoor;
   }
+
+  // --- Windows ---
+  if (action.showWindows !== undefined) {
+    state.showWindows = action.showWindows;
+    if (els.windows) els.windows.checked = action.showWindows;
+  }
+
+  // --- Crane beam ---
   if (action.showCraneBeam !== undefined) {
     state.showCraneBeam = action.showCraneBeam;
     if (els.crane) els.crane.checked = action.showCraneBeam;
   }
+
+  // --- Mezzanine ---
   if (action.showMezzanine !== undefined) {
     state.showMezzanine = action.showMezzanine;
     if (els.mezzanine) els.mezzanine.checked = action.showMezzanine;
   }
+  if (action.mezzWall !== undefined) {
+    state.mezzWall = action.mezzWall;
+    if (els.mezzWallBtns) {
+      els.mezzWallBtns.forEach(function(btn) {
+        btn.classList.toggle("active", btn.dataset.wall === action.mezzWall);
+      });
+    }
+  }
+  if (action.mezzHeight !== undefined) {
+    const clamped = Math.min(7, Math.max(2, action.mezzHeight));
+    state.mezzHeight = clamped;
+    if (els.mezzHeight) { els.mezzHeight.value = clamped; }
+    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(clamped);
+  }
+  if (action.mezzDepthPct !== undefined) {
+    const clamped = Math.min(50, Math.max(20, action.mezzDepthPct));
+    state.mezzDepthPct = clamped;
+    if (els.mezzDepth) { els.mezzDepth.value = clamped; }
+    if (els.mezzDepthVal) els.mezzDepthVal.textContent = String(clamped);
+  }
+  if (action.mezzLengthPct !== undefined) {
+    const clamped = Math.min(95, Math.max(30, action.mezzLengthPct));
+    state.mezzLengthPct = clamped;
+    if (els.mezzLength) { els.mezzLength.value = clamped; }
+    if (els.mezzLengthVal) els.mezzLengthVal.textContent = String(clamped);
+  }
+
   syncAll(true);
 };
