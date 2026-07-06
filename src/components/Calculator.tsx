@@ -12,6 +12,8 @@ import {
   MicrophoneSlash,
 } from "@phosphor-icons/react";
 import { createVoice, type VoiceController } from "@/lib/voice-input";
+import VoiceAssistant from "@/components/VoiceAssistant";
+import { parseCommand, type ConfigState } from "@/lib/parseCommand";
 
 type BuildingType = "small-building" | "warehouse" | "agriculture" | "service";
 type Insulation = "none" | "proflist" | "sandwich";
@@ -99,6 +101,17 @@ export default function Calculator() {
   const [lengthVal, setLengthVal] = useState(cfg.lengthMin);
   const [heightIdx, setHeightIdx] = useState(0);
   const [insulation, setInsulation] = useState<Insulation>("none");
+
+  // Voice assistant config state
+  const [voiceGates, setVoiceGates] = useState(false);
+  const [voiceGateType, setVoiceGateType] = useState<"sectional" | "swing" | null>(null);
+  const [voiceGatesCount, setVoiceGatesCount] = useState(1);
+  const [voiceGateWidth, setVoiceGateWidth] = useState(4);
+  const [voiceGateHeight, setVoiceGateHeight] = useState(4.5);
+  const [voiceDoors, setVoiceDoors] = useState(false);
+  const [voiceDoorPosition, setVoiceDoorPosition] = useState<"side" | "gate" | null>(null);
+  const [voiceWindows, setVoiceWindows] = useState(false);
+  const [voiceWindowCount, setVoiceWindowCount] = useState(0);
 
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
@@ -408,7 +421,78 @@ export default function Calculator() {
     );
   };
 
+  // Voice command handler
+  const handleVoiceCommand = (text: string) => {
+    const currentConfig: ConfigState = {
+      width: cfg.widths[widthIdx],
+      length: lengthVal,
+      height: cfg.heights[heightIdx],
+      cladding: insulation === "proflist" ? "prof" : insulation === "sandwich" ? "sandwich" : "none",
+      gates: voiceGates,
+      gateType: voiceGateType,
+      gatesCount: voiceGatesCount,
+      gateWidth: voiceGateWidth,
+      gateHeight: voiceGateHeight,
+      doors: voiceDoors,
+      doorPosition: voiceDoorPosition,
+      windows: voiceWindows,
+      windowCount: voiceWindowCount,
+    };
+
+    const result = parseCommand(text, currentConfig);
+
+    if (result.action) {
+      const a = result.action;
+
+      // Apply width
+      if (a.width !== undefined) {
+        const closestIdx = cfg.widths.reduce((best, w, i) =>
+          Math.abs(w - a.width!) < Math.abs(cfg.widths[best] - a.width!) ? i : best, 0);
+        setWidthIdx(closestIdx);
+      }
+
+      // Apply length
+      if (a.length !== undefined) {
+        const clamped = Math.max(cfg.lengthMin, Math.min(cfg.lengthMax, a.length));
+        const snapped = Math.round((clamped - cfg.lengthMin) / cfg.lengthStep) * cfg.lengthStep + cfg.lengthMin;
+        setLengthVal(Math.round(snapped * 10) / 10);
+      }
+
+      // Apply height
+      if (a.height !== undefined) {
+        const closestH = cfg.heights.reduce((best, h, i) =>
+          Math.abs(h - a.height!) < Math.abs(cfg.heights[best] - a.height!) ? i : best, 0);
+        setHeightIdx(closestH);
+      }
+
+      // Apply cladding
+      if (a.cladding !== undefined) {
+        if (a.cladding === "prof") setInsulation("proflist");
+        else if (a.cladding === "sandwich") setInsulation("sandwich");
+        else setInsulation("none");
+      }
+
+      // Apply gates
+      if (a.gates !== undefined) setVoiceGates(a.gates);
+      if (a.gateType !== undefined) setVoiceGateType(a.gateType);
+      if (a.gatesCount !== undefined) setVoiceGatesCount(a.gatesCount);
+      if (a.gateWidth !== undefined) setVoiceGateWidth(a.gateWidth);
+      if (a.gateHeight !== undefined) setVoiceGateHeight(a.gateHeight);
+
+      // Apply doors
+      if (a.doors !== undefined) setVoiceDoors(a.doors);
+      if (a.doorPosition !== undefined) setVoiceDoorPosition(a.doorPosition);
+
+      // Apply windows
+      if (a.windows !== undefined) setVoiceWindows(a.windows);
+      if (a.windowCount !== undefined) setVoiceWindowCount(a.windowCount);
+    }
+
+    return result;
+  };
+
   return (
+    <>
     <section id="calculator" className="py-24 lg:py-32 bg-slate-50/50">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <motion.div
@@ -719,5 +803,7 @@ export default function Calculator() {
         </div>
       </div>
     </section>
+    <VoiceAssistant onCommand={handleVoiceCommand} />
+    </>
   );
 }
