@@ -782,3 +782,56 @@ scene = new ConfiguratorScene(
     scheduleRender(true);
   }
 );
+
+// --- Voice Assistant Bridge ---
+window.__configuratorState = state;
+
+window.__applyVoiceAction = function (action) {
+  if (action.width !== undefined) {
+    const clamped = Math.min(36, Math.max(12, Math.round(action.width / 6) * 6));
+    state.width = clamped;
+    if (els.width) { els.width.value = clamped; els.widthVal.textContent = clamped; }
+  }
+  if (action.length !== undefined) {
+    const clamped = Math.min(120, Math.max(12, Math.round(action.length / 6) * 6));
+    state.length = clamped;
+    if (els.length) { els.length.value = clamped; els.lengthVal.textContent = clamped; }
+  }
+  if (action.height !== undefined) {
+    const clamped = Math.min(10, Math.max(3, action.height));
+    state.height = clamped;
+    if (els.height) { els.height.value = clamped; els.heightVal.textContent = clamped; }
+  }
+  if (action.columnStep !== undefined) {
+    state.columnStep = Math.min(12, Math.max(3, action.columnStep));
+  }
+  if (action.showSandwich !== undefined) {
+    state.showSandwich = action.showSandwich;
+    if (els.sandwich) els.sandwich.checked = action.showSandwich;
+  }
+  if (action.showGate !== undefined) {
+    state.showGate = action.showGate;
+    if (els.gate) els.gate.checked = action.showGate;
+  }
+  if (action.showWindows !== undefined) {
+    state.showWindows = action.showWindows;
+    if (els.windows) els.windows.checked = action.showWindows;
+  }
+  if (action.showSideDoor !== undefined) {
+    state.showSideDoor = action.showSideDoor;
+    if (els.doorSide) els.doorSide.checked = action.showSideDoor;
+  }
+  if (action.showFrontDoor !== undefined) {
+    state.showFrontDoor = action.showFrontDoor;
+    if (els.doorFront) els.doorFront.checked = action.showFrontDoor;
+  }
+  if (action.showCraneBeam !== undefined) {
+    state.showCraneBeam = action.showCraneBeam;
+    if (els.crane) els.crane.checked = action.showCraneBeam;
+  }
+  if (action.showMezzanine !== undefined) {
+    state.showMezzanine = action.showMezzanine;
+    if (els.mezzanine) els.mezzanine.checked = action.showMezzanine;
+  }
+  syncAll(true);
+};
