@@ -21,6 +21,26 @@
     <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.171.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.171.0/examples/jsm/"}}</script>
   </head>
   <body>
+    <!-- City selection modal -->
+    <div id="city-modal" class="city-modal">
+      <div class="city-modal-content">
+        <div class="city-modal-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b6fd9" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h2>Здравствуйте, дорогой друг!</h2>
+        <p>Для определения ветрового и снегового района укажите город, где будет располагаться ваше здание.</p>
+        <div class="city-input-wrap">
+          <input type="text" id="city-input" placeholder="Введите название города..." autocomplete="off" />
+          <div id="city-suggestions" class="city-suggestions"></div>
+        </div>
+        <div class="city-result hidden" id="city-result">
+          <span id="city-wind"></span>
+          <span id="city-snow"></span>
+        </div>
+        <button type="button" id="city-confirm" class="city-confirm" disabled>Продолжить</button>
+      </div>
+    </div>
+
     <div class="app">
       <aside class="sidebar">
         <div class="sidebar-head">
@@ -197,19 +217,19 @@
                   <label class="toggle toggle-compact">
                     <input type="checkbox" id="door-side" />
                     <span class="toggle-track" aria-hidden="true"></span>
-                    <span class="toggle-text">Сбоку</span>
+                    <span class="toggle-text">Дверь</span>
                   </label>
                   <div class="seg-btns hidden" id="door-side-btns">
                     <button type="button" class="seg-btn door-wall-btn" data-wall="left">Слева</button>
                     <button type="button" class="seg-btn door-wall-btn" data-wall="right">Справа</button>
                   </div>
-                  <label class="toggle toggle-compact">
+                  <label class="toggle toggle-compact hidden">
                     <input type="checkbox" id="door-front" />
                     <span class="toggle-track" aria-hidden="true"></span>
                     <span class="toggle-text">У ворот</span>
                   </label>
                 </div>
-                <p class="field-hint hidden" id="door-hint">Перетащите дверь на модели</p>
+                <p class="field-hint hidden" id="door-hint">Зажмите мышь на двери и перетащите вдоль стены</p>
 
                 <div class="sub-block">
                   <label class="toggle toggle-compact">
@@ -224,6 +244,21 @@
                       <button type="button" class="seg-btn seg-btn-danger" id="remove-window" disabled>−</button>
                     </div>
                     <p class="field-meta">Окон: <span id="window-count">0</span></p>
+                  </div>
+                </div>
+
+                <div class="sub-block">
+                  <label class="toggle toggle-compact">
+                    <input type="checkbox" id="ribbon-glazing" />
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span class="toggle-text">Ленточное остекление</span>
+                  </label>
+                  <div class="sub-panel hidden" id="ribbon-tools">
+                    <div class="seg-btns">
+                      <button type="button" class="seg-btn ribbon-wall-btn active" data-wall="left">Слева</button>
+                      <button type="button" class="seg-btn ribbon-wall-btn" data-wall="right">Справа</button>
+                      <button type="button" class="seg-btn ribbon-wall-btn" data-wall="both">Обе</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -259,11 +294,16 @@
           <span>ЛКМ — вращение</span>
           <span>Колесо — масштаб</span>
           <span>ПКМ — панорама</span>
-          <span>Проёмы — перетащить</span>
+          <span>Проёмы — зажмите и перетащите</span>
         </div>
+        <button type="button" id="btn-interior" class="btn-interior" title="Посмотреть изнутри">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Изнутри
+        </button>
       </main>
     </div>
 
+    <script src="/configurator/city-select.js" defer></script>
     <script type="module" src="/configurator/app.js"></script>
     <script src="/configurator/voice-assistant.js" defer></script>
   </body>

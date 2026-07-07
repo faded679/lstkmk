@@ -49,6 +49,8 @@ const state = {
   mezzPosZ: 0,
   windows: [],
   selectedWindowId: null,
+  ribbonGlazing: false,
+  ribbonWall: "left",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -97,6 +99,9 @@ const els = {
   mezzPos: $("mezz-pos"),
   mezzPosVal: $("mezz-pos-val"),
   mezzWallBtns: document.querySelectorAll(".mezz-wall-btn"),
+  ribbonGlazing: $("ribbon-glazing"),
+  ribbonTools: $("ribbon-tools"),
+  ribbonWallBtns: document.querySelectorAll(".ribbon-wall-btn"),
   statColumns: $("stat-columns"),
   statFrames: $("stat-frames"),
   statArea: $("stat-area"),
@@ -214,6 +219,8 @@ function clampDoors() {
   if (state.showSideDoor) {
     const { min, max } = getSideDoorPosBounds();
     state.sideDoorPos = Math.max(min, Math.min(max, state.sideDoorPos ?? 0));
+    state.sideDoorPos = avoidColumns(state.sideDoorPos, 0.525);
+    state.sideDoorPos = Math.max(min, Math.min(max, state.sideDoorPos));
   }
   if (state.showFrontDoor) {
     state.frontDoorPos = clampFrontDoorPos(state.frontDoorPos ?? 0);
@@ -270,9 +277,38 @@ function updateSliderRange(input, min, max, value) {
   updateSliderFill(input);
 }
 
+function getColumnPositions() {
+  const frameCount = Math.ceil(state.length / state.columnStep);
+  const totalLen = frameCount * state.columnStep;
+  const startZ = -totalLen / 2;
+  const positions = [];
+  for (let i = 0; i <= frameCount; i++) {
+    positions.push(startZ + i * state.columnStep);
+  }
+  return positions;
+}
+
+function avoidColumns(z, halfWidth) {
+  const columns = getColumnPositions();
+  const margin = halfWidth + 0.2;
+  for (const cz of columns) {
+    if (Math.abs(z - cz) < margin) {
+      z = z < cz ? cz - margin : cz + margin;
+    }
+  }
+  return z;
+}
+
+function avoidColumnsX(x) {
+  return x;
+}
+
 function clampWindows() {
   const { minZ, maxZ } = getBuildingZBounds();
+  const winHalfW = 0.75;
   for (const w of state.windows) {
+    w.z = Math.max(minZ, Math.min(maxZ, w.z));
+    w.z = avoidColumns(w.z, winHalfW);
     w.z = Math.max(minZ, Math.min(maxZ, w.z));
   }
 }
@@ -333,6 +369,8 @@ function getParams() {
   return {
     ...state,
     windows: state.windows.map((w) => ({ ...w })),
+    ribbonGlazing: state.ribbonGlazing,
+    ribbonWall: state.ribbonWall,
   };
 }
 
@@ -372,6 +410,11 @@ function updateConditionalUI() {
   }
   if (els.doorSide) els.doorSide.checked = state.showSideDoor;
   if (els.doorFront) els.doorFront.checked = state.showFrontDoor;
+  if (els.ribbonTools) els.ribbonTools.classList.toggle("hidden", !show || !state.ribbonGlazing);
+  if (els.ribbonGlazing) els.ribbonGlazing.checked = state.ribbonGlazing;
+  for (const btn of els.ribbonWallBtns) {
+    btn.classList.toggle("active", state.ribbonWall === "both" ? true : btn.dataset.wall === state.ribbonWall);
+  }
   els.windowCount.textContent = String(state.windows.length);
   if (els.removeWindow) {
     els.removeWindow.disabled = state.windows.length === 0;
@@ -732,6 +775,23 @@ els.addWindowLeft.addEventListener("click", () => addWindow("left"));
 els.addWindowRight.addEventListener("click", () => addWindow("right"));
 els.removeWindow.addEventListener("click", () => removeWindow());
 
+// Ribbon glazing
+if (els.ribbonGlazing) {
+  els.ribbonGlazing.addEventListener("change", () => {
+    state.ribbonGlazing = els.ribbonGlazing.checked;
+    syncAll(true);
+  });
+}
+for (const btn of els.ribbonWallBtns) {
+  btn.addEventListener("click", () => {
+    state.ribbonWall = btn.dataset.wall;
+    for (const b of els.ribbonWallBtns) {
+      b.classList.toggle("active", state.ribbonWall === "both" ? true : b.dataset.wall === state.ribbonWall);
+    }
+    syncAll(true);
+  });
+}
+
 buildColorGrid();
 buildRoofColorGrid();
 initAccordion();
@@ -903,3 +963,36 @@ window.__applyVoiceAction = function (action) {
 
   syncAll(true);
 };
+
+// --- Interior camera button ---
+const btnInterior = document.getElementById("btn-interior");
+let interiorMode = false;
+
+if (btnInterior && scene) {
+  btnInterior.addEventListener("click", () => {
+    if (!scene || !scene.sceneRef) return;
+    const { camera, controls } = scene.sceneRef;
+    if (!interiorMode) {
+      // Move camera inside
+      const targetY = state.height * 0.5;
+      camera.position.set(0, targetY, 0);
+      controls.target.set(0, targetY, -state.length * 0.3);
+      controls.minDistance = 0.5;
+      controls.maxDistance = 150;
+      controls.maxPolarAngle = Math.PI;
+      controls.update();
+      btnInterior.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg> Снаружи`;
+      interiorMode = true;
+    } else {
+      // Move camera outside
+      camera.position.set(state.width * 0.8, state.height * 1.5, state.length * 0.8);
+      controls.target.set(0, state.height / 2, 0);
+      controls.minDistance = 10;
+      controls.maxDistance = 300;
+      controls.maxPolarAngle = Math.PI / 2 - 0.02;
+      controls.update();
+      btnInterior.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Изнутри`;
+      interiorMode = false;
+    }
+  });
+}

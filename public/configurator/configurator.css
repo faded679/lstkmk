@@ -837,3 +837,78 @@ body {
     display: none;
   }
 }
+
+/* ===== City Selection Modal ===== */
+.city-modal {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  animation: cityFadeIn 0.4s ease-out;
+}
+.city-modal.hidden { display: none; }
+.city-modal-content {
+  background: #fff; border-radius: 20px; padding: 40px 36px;
+  max-width: 420px; width: 90%; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.city-modal-icon { margin-bottom: 16px; }
+.city-modal-content h2 {
+  font-size: 22px; font-weight: 700; color: #1e293b; margin-bottom: 10px;
+}
+.city-modal-content p {
+  font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 20px;
+}
+.city-input-wrap { position: relative; }
+.city-input-wrap input {
+  width: 100%; padding: 12px 16px; font-size: 15px;
+  border: 2px solid #e2e8f0; border-radius: 12px; outline: none;
+  transition: border-color 0.2s;
+}
+.city-input-wrap input:focus { border-color: #3b6fd9; }
+.city-suggestions {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: #fff; border-radius: 10px; margin-top: 4px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  max-height: 200px; overflow-y: auto; z-index: 10;
+}
+.city-suggestions:empty { display: none; }
+.city-suggestions .city-option {
+  padding: 10px 16px; font-size: 14px; cursor: pointer;
+  border-bottom: 1px solid #f1f5f9; text-align: left;
+}
+.city-suggestions .city-option:last-child { border-bottom: none; }
+.city-suggestions .city-option:hover { background: #f0f4ff; }
+.city-result {
+  margin-top: 14px; display: flex; gap: 12px; justify-content: center;
+  flex-wrap: wrap;
+}
+.city-result.hidden { display: none; }
+.city-result span {
+  padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  background: #f0f4ff; color: #3b6fd9;
+}
+.city-confirm {
+  margin-top: 20px; padding: 14px 32px; font-size: 15px; font-weight: 600;
+  background: #3b6fd9; color: #fff; border: none; border-radius: 12px;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+}
+.city-confirm:hover:not(:disabled) { background: #2f5fc0; transform: translateY(-1px); }
+.city-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+@keyframes cityFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== Interior View Button ===== */
+.btn-interior {
+  position: absolute; top: 16px; right: 16px; z-index: 100;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(15,23,42,0.1); border-radius: 10px;
+  font-size: 13px; font-weight: 500; color: #1e293b;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.btn-interior:hover { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.btn-interior svg { flex-shrink: 0; }

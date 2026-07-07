@@ -684,10 +684,10 @@ export class ConfiguratorScene {
     };
   }
 
-  update({ width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false }) {
+  update({ width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left" }) {
     if (!this.sceneRef) return;
 
-    this._params = { width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected };
+    this._params = { width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall };
 
     const { buildingGroup, envGroup } = this.sceneRef;
 
@@ -698,7 +698,7 @@ export class ConfiguratorScene {
     }
     this._craneMobileGroup = null;
 
-    createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected);
+    createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall);
 
     this._craneMobileGroup = buildingGroup.getObjectByName("crane-mobile") ?? null;
     if (this._craneMobileGroup) {
@@ -1185,7 +1185,82 @@ function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
   box(stairW, 0.1, stepRun * 1.1, deckMat, stairX, mezzY - 0.05, landingZ);
 }
 
-function createBuilding(group, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false) {
+function buildRibbonGlazingWall(group, wallX, startZ, totalLen, height, thick, wallColor, columnStep, facingLeft, door, doorSelected, wallSide, pickables) {
+  const ribbonH = 1.4;
+  const ribbonBottomY = height * 0.42;
+  const ribbonTopY = ribbonBottomY + ribbonH;
+  const frameCount = Math.ceil(totalLen / columnStep);
+  const { doorW, doorH } = door ? getDoorSize(height) : { doorW: 0, doorH: 0 };
+
+  const ribbonGlassMat = new THREE.MeshStandardMaterial({
+    color: 0x87ceeb,
+    roughness: 0.02,
+    metalness: 0.12,
+    transparent: true,
+    opacity: 0.55,
+    side: THREE.DoubleSide,
+  });
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x4b5563, roughness: 0.32, metalness: 0.78 });
+
+  function box(sx, sy, sz, mat, px, py, pz) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat);
+    m.position.set(px, py, pz);
+    m.castShadow = false;
+    m.receiveShadow = true;
+    group.add(m);
+  }
+
+  // Wall below ribbon
+  const matBelow = createSandwichMaterial(wallColor, totalLen, ribbonBottomY, 0, 0);
+  addSideWallPlane(group, wallX, ribbonBottomY / 2, 0, totalLen, ribbonBottomY, matBelow, facingLeft);
+
+  // Wall above ribbon
+  const aboveH = height - ribbonTopY;
+  if (aboveH > 0.05) {
+    const matAbove = createSandwichMaterial(wallColor, totalLen, aboveH, 0, ribbonTopY / PANEL_H_M);
+    addSideWallPlane(group, wallX, ribbonTopY + aboveH / 2, 0, totalLen, aboveH, matAbove, facingLeft);
+  }
+
+  // Glass strip — one per bay
+  for (let i = 0; i < frameCount; i++) {
+    const bayStart = startZ + i * columnStep;
+    const bayEnd = bayStart + columnStep;
+    const bayMid = (bayStart + bayEnd) / 2;
+    const glassLen = columnStep - 0.3;
+
+    // Skip bay if door is in it
+    if (door && Math.abs(door.z - bayMid) < columnStep / 2) continue;
+
+    const glassGeo = new THREE.PlaneGeometry(glassLen, ribbonH);
+    glassGeo.rotateY(facingLeft ? Math.PI / 2 : -Math.PI / 2);
+    const glass = new THREE.Mesh(glassGeo, ribbonGlassMat);
+    glass.position.set(wallX, ribbonBottomY + ribbonH / 2, bayMid);
+    group.add(glass);
+
+    // Horizontal frame bars (top and bottom of ribbon)
+    box(thick * 1.5, 0.04, glassLen, frameMat, wallX, ribbonBottomY, bayMid);
+    box(thick * 1.5, 0.04, glassLen, frameMat, wallX, ribbonTopY, bayMid);
+
+    // Vertical mullions every ~1.5m
+    const mullionCount = Math.max(1, Math.floor(glassLen / 1.5));
+    for (let m = 1; m < mullionCount; m++) {
+      const mz = bayStart + 0.15 + (glassLen / mullionCount) * m;
+      box(thick * 1.2, ribbonH, 0.03, frameMat, wallX, ribbonBottomY + ribbonH / 2, mz);
+    }
+  }
+
+  // Door if present
+  if (door) {
+    buildSwingDoor(group, box, wallX, door.z, thick, doorW, doorH, doorSelected, wallSide, "side", pickables);
+    // Wall patch above door in ribbon zone
+    const doorAboveInRibbon = ribbonTopY - doorH;
+    if (doorAboveInRibbon > 0.1 && doorH < ribbonTopY) {
+      // small patch — handled by the wall sections above
+    }
+  }
+}
+
+function createBuilding(group, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left") {
   const roofPitch = Math.tan((6 * Math.PI) / 180);
   const apexH = height + (width / 2) * roofPitch;
   const halfW = width / 2;
@@ -1352,13 +1427,20 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     const leftWins = windows.filter((w) => w.wall === "left");
     const rightWins = windows.filter((w) => w.wall === "right");
 
-    if ((showWindows && leftWins.length > 0) || leftDoor) {
+    const ribbonLeft = ribbonGlazing && (ribbonWall === "left" || ribbonWall === "both");
+    const ribbonRight = ribbonGlazing && (ribbonWall === "right" || ribbonWall === "both");
+
+    if (ribbonLeft) {
+      buildRibbonGlazingWall(group, -halfW - thick / 2, startZ, totalLen, height, thick, wallColor, columnStep, true, leftDoor, selectedDoor === "side" && sideDoorWall === "left", "left", pickables);
+    } else if ((showWindows && leftWins.length > 0) || leftDoor) {
       buildSideWallWithWindows(group, -halfW - thick / 2, startZ, totalLen, height, thick, wallColor, glassMat, leftWins, pickables, selectedWindowId, true, leftDoor, selectedDoor === "side" && sideDoorWall === "left", "left");
     } else {
       addSideWallPlane(group, -halfW - thick / 2, height / 2, 0, totalLen, height, wallMat, true);
     }
 
-    if ((showWindows && rightWins.length > 0) || rightDoor) {
+    if (ribbonRight) {
+      buildRibbonGlazingWall(group, halfW + thick / 2, startZ, totalLen, height, thick, wallColor, columnStep, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right", pickables);
+    } else if ((showWindows && rightWins.length > 0) || rightDoor) {
       buildSideWallWithWindows(group, halfW + thick / 2, startZ, totalLen, height, thick, wallColor, glassMat, rightWins, pickables, selectedWindowId, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right");
     } else {
       addSideWallPlane(group, halfW + thick / 2, height / 2, 0, totalLen, height, wallMat, false);
