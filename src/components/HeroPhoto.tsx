@@ -1,6 +1,6 @@
 export default function HeroPhoto() {
   return (
-    <div className="w-full bg-white overflow-hidden mt-4">
+    <div className="w-full overflow-hidden mt-4">
       <div className="relative w-full max-w-5xl mx-auto h-[60vh] md:h-[75vh]">
         <picture>
           <source srcSet="/newherophoto.webp" type="image/webp" />
