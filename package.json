@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "prestart": "fuser -k 3001/tcp || true",
+    "start": "PORT=3001 next start",
     "lint": "eslint"
   },
   "dependencies": {
