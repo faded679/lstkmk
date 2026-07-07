@@ -42,7 +42,7 @@ const state = {
   selectedDoor: null,
   showCraneBeam: false,
   showMezzanine: false,
-  mezzWall: "right",
+  mezzWall: "front",
   mezzHeight: 2.6,
   mezzDepthPct: 36,
   mezzLengthPct: 75,
@@ -408,7 +408,7 @@ function updateConditionalUI() {
   for (const btn of els.mezzWallBtns) {
     btn.classList.toggle("active", btn.dataset.wall === state.mezzWall);
   }
-  if (els.doorSide) els.doorSide.checked = state.showSideDoor;
+  if (els.doorSide) els.doorSide.checked = false;
   if (els.doorFront) els.doorFront.checked = state.showFrontDoor;
   if (els.ribbonTools) els.ribbonTools.classList.toggle("hidden", !show || !state.ribbonGlazing);
   if (els.ribbonGlazing) els.ribbonGlazing.checked = state.ribbonGlazing;
@@ -734,28 +734,17 @@ els.gate.addEventListener("change", () => {
   syncAll(true);
 });
 
-els.doorSide?.addEventListener("change", () => {
-  state.showSideDoor = els.doorSide.checked;
-  if (state.showSideDoor) {
-    state.sideDoorPos = state.sideDoorPos ?? getDefaultSideDoorPos();
-    state.selectedDoor = "side";
-    state.selectedWindowId = null;
-    state.gateSelected = false;
-  } else if (state.selectedDoor === "side") {
-    state.selectedDoor = state.showFrontDoor ? "front" : null;
-  }
-  syncAll(true);
-});
-
+// door-side hidden — no listener needed
 els.doorFront?.addEventListener("change", () => {
   state.showFrontDoor = els.doorFront.checked;
+  state.showSideDoor = false;
   if (state.showFrontDoor) {
     state.frontDoorPos = state.frontDoorPos ?? getDefaultFrontDoorPos();
     state.selectedDoor = "front";
     state.selectedWindowId = null;
     state.gateSelected = false;
   } else if (state.selectedDoor === "front") {
-    state.selectedDoor = state.showSideDoor ? "side" : null;
+    state.selectedDoor = null;
   }
   syncAll(true);
 });
@@ -973,23 +962,29 @@ if (btnInterior && scene) {
     if (!scene || !scene.sceneRef) return;
     const { camera, controls } = scene.sceneRef;
     if (!interiorMode) {
-      // Move camera inside
-      const targetY = state.height * 0.5;
+      const halfW = state.width / 2 - 0.8;
+      const halfL = state.length / 2 - 0.8;
+      const targetY = state.height * 0.45;
       camera.position.set(0, targetY, 0);
-      controls.target.set(0, targetY, -state.length * 0.3);
-      controls.minDistance = 0.5;
-      controls.maxDistance = 150;
-      controls.maxPolarAngle = Math.PI;
+      controls.target.set(0, targetY, -1);
+      controls.minDistance = 0.1;
+      controls.maxDistance = Math.min(halfW, halfL, state.height - 0.5);
+      controls.maxPolarAngle = Math.PI - 0.05;
+      controls.minPolarAngle = 0.05;
+      camera.fov = 85;
+      camera.updateProjectionMatrix();
       controls.update();
       btnInterior.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg> Снаружи`;
       interiorMode = true;
     } else {
-      // Move camera outside
+      camera.fov = 50;
+      camera.updateProjectionMatrix();
       camera.position.set(state.width * 0.8, state.height * 1.5, state.length * 0.8);
       controls.target.set(0, state.height / 2, 0);
       controls.minDistance = 10;
       controls.maxDistance = 300;
       controls.maxPolarAngle = Math.PI / 2 - 0.02;
+      controls.minPolarAngle = 0;
       controls.update();
       btnInterior.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Изнутри`;
       interiorMode = false;

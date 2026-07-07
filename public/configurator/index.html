@@ -132,8 +132,8 @@
                   <div class="sub-panel hidden" id="mezzanine-tools">
                     <span class="sub-label">Сторона</span>
                     <div class="seg-btns" id="mezz-wall-btns">
-                      <button type="button" class="seg-btn mezz-wall-btn" data-wall="left">Слева</button>
-                      <button type="button" class="seg-btn mezz-wall-btn active" data-wall="right">Справа</button>
+                      <button type="button" class="seg-btn mezz-wall-btn active" data-wall="front">Спереди</button>
+                      <button type="button" class="seg-btn mezz-wall-btn" data-wall="back">Сзади</button>
                     </div>
                     <div class="control-group compact">
                       <div class="control-top">
@@ -215,21 +215,13 @@
                 <div class="sub-block">
                   <span class="sub-label">Двери</span>
                   <label class="toggle toggle-compact">
-                    <input type="checkbox" id="door-side" />
-                    <span class="toggle-track" aria-hidden="true"></span>
-                    <span class="toggle-text">Дверь</span>
-                  </label>
-                  <div class="seg-btns hidden" id="door-side-btns">
-                    <button type="button" class="seg-btn door-wall-btn" data-wall="left">Слева</button>
-                    <button type="button" class="seg-btn door-wall-btn" data-wall="right">Справа</button>
-                  </div>
-                  <label class="toggle toggle-compact hidden">
                     <input type="checkbox" id="door-front" />
                     <span class="toggle-track" aria-hidden="true"></span>
-                    <span class="toggle-text">У ворот</span>
+                    <span class="toggle-text">Дверь у ворот</span>
                   </label>
+                  <input type="checkbox" id="door-side" style="display:none" />
                 </div>
-                <p class="field-hint hidden" id="door-hint">Зажмите мышь на двери и перетащите вдоль стены</p>
+                <p class="field-hint hidden" id="door-hint">Дверь размещается рядом с воротами на фасаде</p>
 
                 <div class="sub-block">
                   <label class="toggle toggle-compact">

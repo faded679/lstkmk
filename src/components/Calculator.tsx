@@ -233,7 +233,7 @@ export default function Calculator() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
 
           {/* TOP LEFT — Тип здания + утепление + ползунки */}
           <motion.div
@@ -444,6 +444,7 @@ export default function Calculator() {
             </div>
           </motion.div>
 
+          {/* BOTTOM — two columns: price + benefits */}
           {/* BOTTOM LEFT — Предварительный расчёт */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 20 }}
@@ -504,6 +505,38 @@ export default function Calculator() {
             </div>
           </motion.div>
 
+
+          {/* BOTTOM RIGHT — Почему мы */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="bg-white border border-border rounded-lg p-5 h-full flex flex-col gap-4">
+              <div className="text-xs text-muted font-mono uppercase tracking-wider">Почему выбирают нас</div>
+              <ul className="space-y-3 flex-1">
+                {[
+                  { icon: "🏗️", text: "Собственное производство — без посредников" },
+                  { icon: "📐", text: "Проект за 3 дня, монтаж от 2 недель" },
+                  { icon: "🔩", text: "Гарантия на конструкции 25 лет" },
+                  { icon: "💳", text: "Рассрочка и лизинг без первого взноса" },
+                  { icon: "📍", text: "Работаем по всей России и СНГ" },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm">
+                    <span className="text-lg shrink-0 mt-0.5">{item.icon}</span>
+                    <span className="text-foreground leading-snug">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#contacts"
+                className="mt-2 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+              >
+                Получить точный расчёт
+              </a>
+            </div>
+          </motion.div>
 
         </div>
       </div>
