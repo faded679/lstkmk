@@ -25,7 +25,7 @@ function Hero() {
   }, [titleNumber, titles]);
 
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="w-full overflow-x-hidden" style={{ backgroundColor: "#FFFFF0" }}>
       <div className="container mx-auto px-4">
         <div className="flex gap-4 pt-24 lg:pt-28 pb-0 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
