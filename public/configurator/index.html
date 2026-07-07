@@ -271,8 +271,37 @@
               <span class="stat-value"><span id="stat-area">648</span> м²</span>
             </div>
           </section>
+
+          <button type="button" id="btn-get-quote" class="btn-get-quote">Получить расчёт</button>
         </div>
       </aside>
+
+      <!-- Quote modal -->
+      <div id="quote-modal" class="quote-modal hidden">
+        <div class="quote-modal-content">
+          <button type="button" id="quote-modal-close" class="quote-modal-close" aria-label="Закрыть">&times;</button>
+          <h2>Получить расчёт</h2>
+          <p id="quote-summary" class="quote-summary"></p>
+          <form id="quote-form" class="quote-form" novalidate>
+            <div class="quote-field">
+              <label for="quote-name">Ваше имя</label>
+              <input type="text" id="quote-name" placeholder="Иван Иванов" autocomplete="name" />
+            </div>
+            <div class="quote-field">
+              <label for="quote-phone">Телефон *</label>
+              <input type="tel" id="quote-phone" placeholder="+7 (___) ___-__-__" autocomplete="tel" required />
+            </div>
+            <div class="quote-field">
+              <label for="quote-comment">Комментарий</label>
+              <textarea id="quote-comment" rows="2" placeholder="Дополнительные пожелания..."></textarea>
+            </div>
+            <button type="submit" class="quote-submit">Отправить заявку</button>
+            <p id="quote-error" class="quote-error hidden">Пожалуйста, укажите телефон</p>
+            <p id="quote-success" class="quote-success hidden">✓ Заявка отправлена! Мы свяжемся с вами в течение 15 минут.</p>
+          </form>
+          <p class="quote-policy">Нажимая «Отправить», вы соглашаетесь с <a href="/privacy" target="_blank">политикой конфиденциальности</a></p>
+        </div>
+      </div>
 
       <main class="canvas-wrap">
         <div id="canvas-container"></div>

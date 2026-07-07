@@ -912,3 +912,66 @@ body {
 }
 .btn-interior:hover { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
 .btn-interior svg { flex-shrink: 0; }
+
+/* ===== Get Quote Button ===== */
+.btn-get-quote {
+  width: 100%; margin-top: 1rem;
+  padding: 14px 20px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+  letter-spacing: 0.01em;
+}
+.btn-get-quote:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,0.45); }
+.btn-get-quote:active { transform: translateY(0); }
+
+/* ===== Quote Modal ===== */
+.quote-modal {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(15,23,42,0.6); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  animation: cityFadeIn 0.3s ease-out;
+}
+.quote-modal.hidden { display: none; }
+.quote-modal-content {
+  background: #fff; border-radius: 20px; padding: 36px 32px;
+  max-width: 420px; width: 90%; position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.quote-modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; font-size: 24px; color: #94a3b8;
+  cursor: pointer; line-height: 1; padding: 4px 8px;
+}
+.quote-modal-close:hover { color: #1e293b; }
+.quote-modal-content h2 {
+  font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 6px;
+}
+.quote-summary {
+  font-size: 13px; color: #64748b; margin-bottom: 18px;
+  background: #f8fafc; border-radius: 8px; padding: 10px 12px;
+  border: 1px solid #e2e8f0; line-height: 1.6;
+}
+.quote-form { display: flex; flex-direction: column; gap: 12px; }
+.quote-field { display: flex; flex-direction: column; gap: 4px; }
+.quote-field label { font-size: 13px; font-weight: 500; color: #475569; }
+.quote-field input, .quote-field textarea {
+  padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
+  font-size: 14px; font-family: inherit; color: #1e293b; outline: none;
+  transition: border-color 0.2s; resize: none;
+}
+.quote-field input:focus, .quote-field textarea:focus { border-color: #f97316; }
+.quote-submit {
+  margin-top: 4px; padding: 13px; border: none; border-radius: 10px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(249,115,22,0.3);
+}
+.quote-submit:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(249,115,22,0.4); }
+.quote-error { color: #ef4444; font-size: 13px; margin: 0; }
+.quote-success { color: #16a34a; font-size: 13px; font-weight: 600; margin: 0; }
+.quote-policy { font-size: 11px; color: #94a3b8; margin-top: 8px; text-align: center; }
+.quote-policy a { color: #64748b; }
+.hidden { display: none !important; }

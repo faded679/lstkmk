@@ -953,6 +953,70 @@ window.__applyVoiceAction = function (action) {
   syncAll(true);
 };
 
+// --- Quote modal ---
+const btnGetQuote = document.getElementById("btn-get-quote");
+const quoteModal = document.getElementById("quote-modal");
+const quoteModalClose = document.getElementById("quote-modal-close");
+const quoteForm = document.getElementById("quote-form");
+const quoteSummary = document.getElementById("quote-summary");
+const quoteError = document.getElementById("quote-error");
+const quoteSuccess = document.getElementById("quote-success");
+
+function buildQuoteSummary() {
+  const parts = [
+    `📐 Размеры: ${state.width} × ${state.length} × ${state.height} м`,
+    `📊 Площадь: ${Math.round(state.width * state.length)} м²`,
+  ];
+  if (state.showGate) parts.push(`🚪 Ворота`);
+  if (state.showFrontDoor) parts.push(`🚪 Дверь у ворот`);
+  if (state.showCraneBeam) parts.push(`🏗️ Кран-балка`);
+  if (state.showMezzanine) parts.push(`📦 Антресоль`);
+  return parts.join("\n");
+}
+
+if (btnGetQuote && quoteModal) {
+  btnGetQuote.addEventListener("click", () => {
+    quoteSummary.textContent = buildQuoteSummary();
+    quoteError.classList.add("hidden");
+    quoteSuccess.classList.add("hidden");
+    quoteForm.reset();
+    quoteModal.classList.remove("hidden");
+  });
+  quoteModalClose.addEventListener("click", () => quoteModal.classList.add("hidden"));
+  quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) quoteModal.classList.add("hidden"); });
+
+  quoteForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const phone = document.getElementById("quote-phone").value.trim();
+    const name = document.getElementById("quote-name").value.trim();
+    const comment = document.getElementById("quote-comment").value.trim();
+    if (!phone) { quoteError.classList.remove("hidden"); return; }
+    quoteError.classList.add("hidden");
+    const submitBtn = quoteForm.querySelector(".quote-submit");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Отправка...";
+    const fullComment = `[3D Конфигуратор]\n${buildQuoteSummary()}${comment ? "\n\n" + comment : ""}`;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, comment: fullComment }),
+      });
+      if (res.ok) {
+        quoteSuccess.classList.remove("hidden");
+        submitBtn.textContent = "Отправлено ✓";
+      } else {
+        throw new Error();
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Отправить заявку";
+      quoteError.textContent = "Ошибка отправки. Позвоните: +7 (960) 632-20-61";
+      quoteError.classList.remove("hidden");
+    }
+  });
+}
+
 // --- Interior camera button ---
 const btnInterior = document.getElementById("btn-interior");
 let interiorMode = false;
