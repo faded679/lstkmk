@@ -1160,13 +1160,14 @@ function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
   box(deckW, 1.0, 0.06, railMat, 0, mezzY + 0.55, innerEdgeZ);
   box(deckW, 0.05, 0.05, railMat, 0, mezzY + 0.28, innerEdgeZ);
 
-  // Stairs going from inner edge inward
+  // Stairs go from floor toward end wall (under the mezzanine)
   const stairW = 0.9;
   const stepRun = 0.28;
   const numSteps = Math.max(6, Math.ceil(mezzY / 0.18));
   const stepRise = mezzY / numSteps;
   const stairX = deckW / 2 - stairW / 2 - 0.1;
-  const stairSign = isFront ? 1 : -1;
+  // stairSign: front→stairs go toward front wall (negative Z), back→positive Z
+  const stairSign = isFront ? -1 : 1;
   const stairStartZ = innerEdgeZ + stairSign * stepRun * 0.4;
 
   for (let s = 0; s < numSteps; s++) {

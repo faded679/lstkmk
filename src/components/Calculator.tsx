@@ -36,7 +36,7 @@ const priceMatrix: Record<BuildingType, number[]> = {
 const typeConfig: Record<BuildingType, { widths: number[]; lengthMin: number; lengthMax: number; lengthStep: number; heights: number[] }> = {
   "small-building": { widths: [4, 6, 8, 10],        lengthMin: 6,  lengthMax: 24,  lengthStep: 6,   heights: [3, 4, 5, 6] },
   warehouse:        { widths: [18, 20, 24, 30, 36],  lengthMin: 30, lengthMax: 120, lengthStep: 6,   heights: [5, 6, 7, 8, 9] },
-  agriculture:      { widths: [32.6],                lengthMin: 48, lengthMax: 120, lengthStep: 4.8, heights: [4] },
+  agriculture:      { widths: [18, 24, 32, 36],       lengthMin: 48, lengthMax: 120, lengthStep: 4.8, heights: [4, 5, 6] },
   service:          { widths: [12, 15, 18],          lengthMin: 18, lengthMax: 120, lengthStep: 6,   heights: [4, 5, 6, 7] },
 };
 
@@ -89,9 +89,45 @@ async function getChatResponse(message: string): Promise<string> {
   }
 }
 
+const CITY_REGIONS: { city: string; wind: number; snow: number }[] = [
+  { city: "Москва", wind: 1, snow: 3 },
+  { city: "Санкт-Петербург", wind: 2, snow: 2 },
+  { city: "Белгород", wind: 2, snow: 2 },
+  { city: "Воронеж", wind: 2, snow: 3 },
+  { city: "Краснодар", wind: 3, snow: 1 },
+  { city: "Ростов-на-Дону", wind: 3, snow: 1 },
+  { city: "Екатеринбург", wind: 1, snow: 4 },
+  { city: "Новосибирск", wind: 2, snow: 4 },
+  { city: "Казань", wind: 2, snow: 3 },
+  { city: "Самара", wind: 2, snow: 3 },
+  { city: "Нижний Новгород", wind: 2, snow: 3 },
+  { city: "Омск", wind: 2, snow: 4 },
+  { city: "Уфа", wind: 2, snow: 4 },
+  { city: "Пермь", wind: 2, snow: 4 },
+  { city: "Челябинск", wind: 2, snow: 4 },
+  { city: "Красноярск", wind: 2, snow: 5 },
+  { city: "Иркутск", wind: 1, snow: 4 },
+  { city: "Хабаровск", wind: 3, snow: 4 },
+  { city: "Владивосток", wind: 5, snow: 3 },
+  { city: "Тюмень", wind: 2, snow: 4 },
+  { city: "Барнаул", wind: 2, snow: 4 },
+  { city: "Ставрополь", wind: 3, snow: 2 },
+  { city: "Тула", wind: 1, snow: 3 },
+  { city: "Курск", wind: 2, snow: 3 },
+  { city: "Орёл", wind: 2, snow: 3 },
+  { city: "Липецк", wind: 2, snow: 3 },
+  { city: "Брянск", wind: 1, snow: 3 },
+  { city: "Саратов", wind: 3, snow: 3 },
+  { city: "Волгоград", wind: 3, snow: 2 },
+  { city: "Астрахань", wind: 4, snow: 1 },
+];
+
 export default function Calculator() {
   const reduce = useReducedMotion();
   const [type, setType] = useState<BuildingType>("warehouse");
+  const [cityInput, setCityInput] = useState("");
+  const [cityRegion, setCityRegion] = useState<{ city: string; wind: number; snow: number } | null>(null);
+  const [citySuggestions, setCitySuggestions] = useState<typeof CITY_REGIONS>([]);
 
   const cfg = typeConfig[type];
 
@@ -132,6 +168,19 @@ export default function Calculator() {
     voiceRef.current = ctrl;
     ctrl.start();
     setChatListening(true);
+  };
+
+  const handleCityInput = (val: string) => {
+    setCityInput(val);
+    if (val.length < 2) { setCitySuggestions([]); return; }
+    const found = CITY_REGIONS.filter(c => c.city.toLowerCase().startsWith(val.toLowerCase()));
+    setCitySuggestions(found.slice(0, 5));
+  };
+
+  const selectCity = (c: typeof CITY_REGIONS[0]) => {
+    setCityInput(c.city);
+    setCityRegion(c);
+    setCitySuggestions([]);
   };
 
   // Reset sliders when type changes + send chat hint
@@ -506,34 +555,56 @@ export default function Calculator() {
           </motion.div>
 
 
-          {/* BOTTOM RIGHT — Почему мы */}
+          {/* BOTTOM RIGHT — Город + нагрузки */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="bg-white border border-border rounded-lg p-5 h-full flex flex-col gap-4">
-              <div className="text-xs text-muted font-mono uppercase tracking-wider">Почему выбирают нас</div>
-              <ul className="space-y-3 flex-1">
-                {[
-                  { icon: "🏗️", text: "Собственное производство — без посредников" },
-                  { icon: "📐", text: "Проект за 3 дня, монтаж от 2 недель" },
-                  { icon: "🔩", text: "Гарантия на конструкции 25 лет" },
-                  { icon: "💳", text: "Рассрочка и лизинг без первого взноса" },
-                  { icon: "📍", text: "Работаем по всей России и СНГ" },
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm">
-                    <span className="text-lg shrink-0 mt-0.5">{item.icon}</span>
-                    <span className="text-foreground leading-snug">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="rounded-lg p-5 h-full flex flex-col gap-4 bg-orange-500 text-white">
+              <div className="text-xs font-mono uppercase tracking-wider opacity-80">Ветровой и снеговой район</div>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={cityInput}
+                  onChange={e => handleCityInput(e.target.value)}
+                  placeholder="Ваш город..."
+                  className="w-full h-10 px-3 rounded-lg text-sm text-foreground bg-white border-0 outline-none placeholder:text-slate-400"
+                />
+                {citySuggestions.length > 0 && (
+                  <ul className="absolute z-10 top-full mt-1 left-0 right-0 bg-white rounded-lg shadow-lg border border-border overflow-hidden text-sm text-foreground">
+                    {citySuggestions.map(c => (
+                      <li key={c.city}
+                        className="px-3 py-2 hover:bg-orange-50 cursor-pointer"
+                        onClick={() => selectCity(c)}
+                      >{c.city}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              {cityRegion ? (
+                <div className="grid grid-cols-2 gap-3 flex-1">
+                  <div className="bg-white/20 rounded-lg p-4 text-center">
+                    <div className="text-3xl font-bold">{cityRegion.wind}</div>
+                    <div className="text-xs opacity-80 mt-1">Ветровой район</div>
+                  </div>
+                  <div className="bg-white/20 rounded-lg p-4 text-center">
+                    <div className="text-3xl font-bold">{cityRegion.snow}</div>
+                    <div className="text-xs opacity-80 mt-1">Снеговой район</div>
+                  </div>
+                  <div className="col-span-2 text-xs opacity-70 text-center">Учитывается при проектировании по СП 20.13330.2017</div>
+                </div>
+              ) : (
+                <div className="flex-1 flex items-center justify-center">
+                  <p className="text-sm opacity-80 text-center">Укажите город, чтобы узнать<br/>ветровой и снеговой районы<br/><span className="opacity-60 text-xs">Используются в расчёте конструкции</span></p>
+                </div>
+              )}
               <a
                 href="#contacts"
-                className="mt-2 w-full inline-flex h-11 items-center justify-center text-sm font-medium text-white bg-accent-blue rounded-lg hover:bg-accent-blue/90 transition-colors"
+                className="w-full inline-flex h-10 items-center justify-center text-sm font-medium rounded-lg bg-white text-orange-600 hover:bg-orange-50 transition-colors"
               >
-                Получить точный расчёт
+                Получить расчёт по вашему городу
               </a>
             </div>
           </motion.div>
