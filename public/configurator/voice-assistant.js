@@ -27,19 +27,29 @@
     ribbon: "Ленточное остекление — это сплошной ряд окон по всей длине стены. Выберите сторону: слева, справа или обе.",
   };
 
-  // --- Speech synthesis ---
+  // --- Speech synthesis (Yandex TTS) ---
+  let currentAudio = null;
+
   function speak(text) {
-    if (muted || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = "ru-RU";
-    utt.rate = 0.95;
-    const voices = window.speechSynthesis.getVoices();
-    const ruVoice = voices.find(v => v.lang.startsWith("ru") && v.name.includes("Google"))
-      || voices.find(v => v.lang.startsWith("ru") && v.name.includes("Yandex"))
-      || voices.find(v => v.lang.startsWith("ru"));
-    if (ruVoice) utt.voice = ruVoice;
-    window.speechSynthesis.speak(utt);
+    if (muted) return;
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("TTS error " + res.status);
+        return res.blob();
+      })
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        currentAudio = audio;
+        audio.play().catch(() => {});
+        audio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; };
+      })
+      .catch(err => console.warn("TTS failed:", err));
   }
 
   function sayOnce(key) {
@@ -117,7 +127,7 @@
     muteBtn.classList.toggle("muted", muted);
     muteBtn.innerHTML = muted ? mutedIcon() : speakerIcon();
     if (muted) {
-      window.speechSynthesis && window.speechSynthesis.cancel();
+      if (currentAudio) { currentAudio.pause(); currentAudio = null; }
       bubble.classList.add("hidden");
     }
   });
@@ -196,11 +206,6 @@
   const roofGrid = document.getElementById("roof-color-grid");
   if (roofGrid) roofGrid.addEventListener("click", () => sayOnce("colorRoof"));
 
-  // Load voices
-  if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-  }
 
   // --- Icons ---
   function speakerIcon() {
