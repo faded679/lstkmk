@@ -1107,55 +1107,54 @@ function buildLeadComment(data) {
   return parts.join("\n");
 }
 
-window.__sendPartialLead = function sendPartialLead(data) {
-  const existingId = sessionStorage.getItem("configurator_lead_id");
-  const comment = `[3D Конфигуратор — частичная заявка]\n${buildLeadComment(data)}`;
+// Promise that resolves to leadId once the lead is created
+let _leadIdPromise = null;
 
-  if (existingId) {
-    // Update existing lead
+function getLeadId() {
+  return _leadIdPromise ? _leadIdPromise : Promise.resolve(sessionStorage.getItem("configurator_lead_id"));
+}
+
+window.__sendPartialLead = function sendPartialLead(data) {
+  // Already have a lead — just update
+  const existingId = sessionStorage.getItem("configurator_lead_id");
+  if (existingId || _leadIdPromise) {
+    window.__updateLeadProgress(data);
+    return;
+  }
+  const comment = `[3D Конфигуратор — частичная заявка]\n${buildLeadComment(data)}`;
+  _leadIdPromise = fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: data.clientName || "Не указано",
+      phone: data.phone || "не указан (частичная заявка)",
+      comment,
+    }),
+  })
+    .then(r => r.json())
+    .then(res => {
+      const id = res.id ? String(res.id) : null;
+      if (id) sessionStorage.setItem("configurator_lead_id", id);
+      return id;
+    })
+    .catch(() => null);
+};
+
+window.__updateLeadProgress = function updateLeadProgress(data) {
+  const comment = `[3D Конфигуратор — обновление]\n${buildLeadComment(data)}`;
+  getLeadId().then(leadId => {
+    if (!leadId) return;
     fetch("/api/lead-update", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        leadId: existingId,
+        leadId,
         name: data.clientName || undefined,
         phone: data.phone || undefined,
         comment,
       }),
     }).catch(() => {});
-  } else {
-    // Create new partial lead
-    fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: data.clientName || "Не указано",
-        phone: data.phone || "не указан (частичная заявка)",
-        comment,
-      }),
-    })
-      .then(r => r.json())
-      .then(res => {
-        if (res.id) sessionStorage.setItem("configurator_lead_id", String(res.id));
-      })
-      .catch(() => {});
-  }
-};
-
-window.__updateLeadProgress = function updateLeadProgress(data) {
-  const existingId = sessionStorage.getItem("configurator_lead_id");
-  if (!existingId) { window.__sendPartialLead(data); return; }
-  const comment = `[3D Конфигуратор — обновление]\n${buildLeadComment(data)}`;
-  fetch("/api/lead-update", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      leadId: existingId,
-      name: data.clientName || undefined,
-      phone: data.phone || undefined,
-      comment,
-    }),
-  }).catch(() => {});
+  });
 };
 
 if (btnGetQuote && quoteModal) {
@@ -1195,15 +1194,15 @@ if (btnGetQuote && quoteModal) {
     submitBtn.textContent = "Отправка...";
     const quizData = window.__quizData || {};
     const fullComment = `[3D Конфигуратор]\n${buildLeadComment({ ...quizData, clientName: name })}${comment ? "\n\nКомментарий: " + comment : ""}`;
-    const existingId = sessionStorage.getItem("configurator_lead_id");
     try {
+      const leadId = await getLeadId();
       let ok = false;
-      if (existingId) {
+      if (leadId) {
         // Update existing lead — no duplicate
         const res = await fetch("/api/lead-update", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ leadId: existingId, name, phone, comment: fullComment }),
+          body: JSON.stringify({ leadId, name, phone, comment: fullComment }),
         });
         ok = res.ok;
       } else {
@@ -1217,6 +1216,7 @@ if (btnGetQuote && quoteModal) {
       }
       if (ok) {
         sessionStorage.removeItem("configurator_lead_id");
+        _leadIdPromise = null;
         quoteSuccess.classList.remove("hidden");
         submitBtn.textContent = "Отправлено ✓";
       } else {
