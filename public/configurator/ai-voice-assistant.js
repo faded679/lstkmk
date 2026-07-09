@@ -229,12 +229,37 @@
     showBubble("Режим", muted ? "Звук выключен" : "Звук включен");
   });
 
-  // The AI quiz handles the first voice greeting, so we avoid duplicating it here.
-  // We only show a hint if the user opens the mic before the quiz appears.
-  function showInitialHint() {
-    if (window.__configuratorQuiz && window.__configuratorQuiz.isActive && window.__configuratorQuiz.isActive()) return;
-    const text = "Нажмите микрофон и скажите, например: «ангар 24 на 48».";
-    showBubble("Помощник", text);
+  // Phase 2: trigger when Equipment accordion opens
+  function setupPhase2Trigger() {
+    const equipmentSection = document.getElementById("equipment-section");
+    if (!equipmentSection) return;
+    const trigger = equipmentSection.querySelector(".accordion-trigger");
+    if (!trigger) return;
+    trigger.addEventListener("click", () => {
+      setTimeout(() => {
+        const isOpen = equipmentSection.classList.contains("is-open");
+        if (isOpen && window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
+          window.__configuratorQuiz.open(2);
+        }
+      }, 200);
+    }, { once: true });
   }
-  setTimeout(showInitialHint, 3000);
+
+  // Phase 3: trigger when "Получить расчёт" is clicked (before quote modal opens)
+  function setupPhase3Trigger() {
+    const btnQuote = document.getElementById("btn-get-quote");
+    if (!btnQuote) return;
+    btnQuote.addEventListener("click", () => {
+      if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
+        if (!window.__configuratorQuiz._phase3Triggered) {
+          window.__configuratorQuiz.open(3);
+        }
+      }
+    }, { capture: true });
+  }
+
+  setTimeout(() => {
+    setupPhase2Trigger();
+    setupPhase3Trigger();
+  }, 1000);
 })();

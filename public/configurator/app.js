@@ -1060,30 +1060,48 @@ function buildQuoteSummary() {
   return parts.join("\n");
 }
 
+function openQuoteModal() {
+  quoteSummary.textContent = buildQuoteSummary();
+  quoteError.classList.add("hidden");
+  quoteSuccess.classList.add("hidden");
+  const quizData = window.__quizData || {};
+  const nameInput = document.getElementById("quote-name");
+  const phoneInput = document.getElementById("quote-phone");
+  const commentInput = document.getElementById("quote-comment");
+  if (nameInput && quizData.clientName) nameInput.value = quizData.clientName;
+  if (phoneInput && quizData.phone) phoneInput.value = quizData.phone;
+  if (commentInput && Object.keys(quizData).length > 0) {
+    const lines = [];
+    if (quizData.clientName) lines.push(`Имя: ${quizData.clientName}`);
+    if (quizData.city) lines.push(`Город: ${quizData.city} (ветр. ${quizData.windRegion}, снег. ${quizData.snowRegion})`);
+    if (quizData.buildingType) lines.push(`Тип здания: ${quizData.buildingType}`);
+    if (quizData.purpose) lines.push(`Назначение: ${quizData.purpose}`);
+    if (quizData.clientType) lines.push(`Для: ${quizData.clientType === "company" ? "компании" : "себя"}`);
+    if (quizData.siteStatus) lines.push(`Участок: ${quizData.siteStatus}`);
+    if (quizData.deadline) lines.push(`Сроки: ${quizData.deadline}`);
+    if (quizData.gateTransport) lines.push(`Транспорт для ворот: ${quizData.gateTransport}`);
+    commentInput.value = lines.join("\n") + (commentInput.value ? "\n\n" + commentInput.value : "");
+  }
+  quoteModal.classList.remove("hidden");
+}
+
 if (btnGetQuote && quoteModal) {
   btnGetQuote.addEventListener("click", () => {
-    quoteSummary.textContent = buildQuoteSummary();
-    quoteError.classList.add("hidden");
-    quoteSuccess.classList.add("hidden");
-    const quizData = window.__quizData || {};
-    const nameInput = document.getElementById("quote-name");
-    const phoneInput = document.getElementById("quote-phone");
-    const commentInput = document.getElementById("quote-comment");
-    if (nameInput && quizData.clientName) nameInput.value = quizData.clientName;
-    if (phoneInput && quizData.phone) phoneInput.value = quizData.phone;
-    if (commentInput && Object.keys(quizData).length > 0) {
-      const lines = [];
-      if (quizData.clientName) lines.push(`Имя: ${quizData.clientName}`);
-      if (quizData.city) lines.push(`Город: ${quizData.city} (ветр. ${quizData.windRegion}, снег. ${quizData.snowRegion})`);
-      if (quizData.buildingType) lines.push(`Тип здания: ${quizData.buildingType}`);
-      if (quizData.purpose) lines.push(`Назначение: ${quizData.purpose}`);
-      if (quizData.clientType) lines.push(`Для: ${quizData.clientType === "company" ? "компании" : "себя"}`);
-      if (quizData.siteStatus) lines.push(`Участок: ${quizData.siteStatus}`);
-      if (quizData.deadline) lines.push(`Сроки: ${quizData.deadline}`);
-      if (quizData.gateTransport) lines.push(`Транспорт для ворот: ${quizData.gateTransport}`);
-      commentInput.value = lines.join("\n") + (commentInput.value ? "\n\n" + commentInput.value : "");
+    const quiz = window.__configuratorQuiz;
+    // If phase 3 already done — open modal directly
+    if (!quiz || quiz._phase3Triggered) {
+      openQuoteModal();
+      return;
     }
-    quoteModal.classList.remove("hidden");
+    // Otherwise quiz opens first (via capture listener in ai-voice-assistant.js)
+    // Set up one-time callback to open modal after quiz finishes
+    const origComplete = quiz.onComplete;
+    quiz.onComplete = (data, skipped) => {
+      window.__quizData = { ...data, skipped };
+      if (origComplete) origComplete(data, skipped);
+      openQuoteModal();
+      quiz.onComplete = origComplete;
+    };
   });
   quoteModalClose.addEventListener("click", () => quoteModal.classList.add("hidden"));
   quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) quoteModal.classList.add("hidden"); });

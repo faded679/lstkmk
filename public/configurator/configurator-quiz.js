@@ -2,17 +2,12 @@
 (function () {
   "use strict";
 
-  const STEPS = [
-    {
-      id: "intro",
-      type: "intro",
-      text: "Меня зовут Помощник Макстил. Я помогу подобрать здание под ваши задачи.",
-      button: "Начать",
-    },
+  // Phase 1: after city selection (name + building type)
+  const STEPS_PHASE1 = [
     {
       id: "name",
       type: "text",
-      question: "А вас как зовут?",
+      question: "Как вас зовут?",
       placeholder: "Иван",
       field: "clientName",
       required: true,
@@ -33,6 +28,10 @@
       ],
       required: true,
     },
+  ];
+
+  // Phase 2: when Equipment accordion opens
+  const STEPS_PHASE2 = [
     {
       id: "purpose",
       type: "text",
@@ -54,7 +53,7 @@
     {
       id: "site",
       type: "choice",
-      question: "Выбрали ли вы местность / участок или только присматриваетесь?",
+      question: "Выбрали ли вы участок или только присматриваетесь?",
       field: "siteStatus",
       options: [
         { value: "have", label: "Участок уже есть" },
@@ -76,29 +75,36 @@
       ],
       required: true,
     },
+  ];
+
+  // Phase 3: when "Получить расчёт" is clicked
+  const STEPS_PHASE3 = [
     {
       id: "gate-transport",
       type: "choice",
-      question: "Какой транспорт будет заезжать в здание? От этого зависят ворота.",
+      question: "Какой транспорт будет заезжать в здание?",
       field: "gateTransport",
       options: [
-        { value: "gazel", label: "Газель / легковой автомобиль" },
+        { value: "gazel", label: "Газель / легковой" },
         { value: "truck", label: "Фура / еврофура" },
         { value: "special", label: "Самосвал / спецтехника" },
         { value: "tractor", label: "Трактор / сельхозтехника" },
-        { value: "consult", label: "Нужна консультация менеджера" },
+        { value: "consult", label: "Нужна консультация" },
       ],
       required: true,
     },
     {
       id: "phone",
       type: "tel",
-      question: "Оставьте номер телефона. Менеджер Макстил перезвонит и поможет с воротами, дверями и расчётом.",
+      question: "Оставьте телефон — менеджер Макстил перезвонит и поможет с расчётом.",
       placeholder: "+7 (___) ___-__-__",
       field: "phone",
       required: true,
     },
   ];
+
+  // Combined for progress display
+  const ALL_STEPS = [...STEPS_PHASE1, ...STEPS_PHASE2, ...STEPS_PHASE3];
 
   const CHOICE_SYNONYMS = {
     angar: ["анг", "ангар", "навес"],
@@ -127,16 +133,20 @@
   class ConfiguratorQuiz {
     constructor() {
       this.currentStep = 0;
+      this.currentPhase = 1; // 1, 2, or 3
       this.data = {};
       this.modal = null;
       this.content = null;
       this.progressCurrent = null;
+      this.progressTotal = null;
       this.questionEl = null;
       this.inputArea = null;
       this.nextBtn = null;
       this.onQuestionCallback = null;
       this.onComplete = null;
       this.isOpen = false;
+      this._phase2Triggered = false;
+      this._phase3Triggered = false;
       this._init();
     }
 
@@ -152,7 +162,7 @@
       modal.innerHTML = `
         <div class="quiz-modal-content">
           <div class="quiz-head">
-            <div class="quiz-progress"><span id="quiz-progress-current">1</span> / <span id="quiz-progress-total">${STEPS.length}</span></div>
+            <div class="quiz-progress"><span id="quiz-progress-current">1</span> / <span id="quiz-progress-total">${ALL_STEPS.length}</span></div>
             <button type="button" class="quiz-skip" id="quiz-skip">Пропустить</button>
           </div>
           <div class="quiz-icon">
@@ -168,6 +178,7 @@
       this.modal = modal;
       this.content = modal.querySelector(".quiz-modal-content");
       this.progressCurrent = modal.querySelector("#quiz-progress-current");
+      this.progressTotal = modal.querySelector("#quiz-progress-total");
       this.questionEl = modal.querySelector("#quiz-question");
       this.inputArea = modal.querySelector("#quiz-input-area");
       this.nextBtn = modal.querySelector("#quiz-next");
@@ -189,9 +200,29 @@
       };
     }
 
-    open() {
+    _stepsForPhase(phase) {
+      if (phase === 1) return STEPS_PHASE1;
+      if (phase === 2) return STEPS_PHASE2;
+      if (phase === 3) return STEPS_PHASE3;
+      return [];
+    }
+
+    _globalStepIndex() {
+      let offset = 0;
+      if (this.currentPhase === 2) offset = STEPS_PHASE1.length;
+      if (this.currentPhase === 3) offset = STEPS_PHASE1.length + STEPS_PHASE2.length;
+      return offset + this.currentStep;
+    }
+
+    open(phase) {
+      const p = phase || 1;
+      // Don't re-trigger already shown phases
+      if (p === 2 && this._phase2Triggered) return;
+      if (p === 3 && this._phase3Triggered) return;
+      if (p === 2) this._phase2Triggered = true;
+      if (p === 3) this._phase3Triggered = true;
+      this.currentPhase = p;
       this.currentStep = 0;
-      this.data = {};
       this.isOpen = true;
       this.modal.classList.remove("hidden");
       this._renderStep();
@@ -212,12 +243,14 @@
     setOnComplete(cb) { this.onComplete = cb; }
 
     _renderStep() {
-      const step = STEPS[this.currentStep];
-      this.progressCurrent.textContent = String(this.currentStep + 1);
+      const steps = this._stepsForPhase(this.currentPhase);
+      const step = steps[this.currentStep];
+      this.progressCurrent.textContent = String(this._globalStepIndex() + 1);
+      this.progressTotal.textContent = String(ALL_STEPS.length);
       this.questionEl.textContent = step.type === "intro" ? step.text : step.question;
       this.inputArea.innerHTML = "";
-      this.nextBtn.textContent = step.type === "intro" ? step.button : "Далее";
-      this.nextBtn.disabled = step.type !== "intro";
+      this.nextBtn.textContent = "Далее";
+      this.nextBtn.disabled = true;
 
       if (step.type === "text" || step.type === "tel") {
         const input = document.createElement("input");
@@ -259,11 +292,8 @@
     }
 
     _validateStep() {
-      const step = STEPS[this.currentStep];
-      if (step.type === "intro") {
-        this.nextBtn.disabled = false;
-        return;
-      }
+      const steps = this._stepsForPhase(this.currentPhase);
+      const step = steps[this.currentStep];
       const val = this.data[step.field];
       let valid = false;
       if (step.type === "choice") valid = !!val;
@@ -274,18 +304,20 @@
 
     next() {
       if (this.nextBtn.disabled) return;
-      if (this.currentStep < STEPS.length - 1) {
+      const steps = this._stepsForPhase(this.currentPhase);
+      if (this.currentStep < steps.length - 1) {
         this.currentStep++;
         this._renderStep();
         this._speakQuestion();
       } else {
-        this._finish();
+        this._finishPhase();
       }
     }
 
     handleVoiceAnswer(text) {
       if (!this.isOpen || !text) return false;
-      const step = STEPS[this.currentStep];
+      const steps = this._stepsForPhase(this.currentPhase);
+      const step = steps[this.currentStep];
       const lower = text.toLowerCase().trim();
 
       if (step.type === "choice") {
@@ -334,15 +366,7 @@
       return false;
     }
 
-    _speakQuestion() {
-      const step = STEPS[this.currentStep];
-      const text = step.type === "intro" ? step.text : step.question;
-      if (window.__aiVoiceSpeak && typeof window.__aiVoiceSpeak === "function") {
-        window.__aiVoiceSpeak(text);
-      }
-    }
-
-    _finish() {
+    _finishPhase() {
       this.isOpen = false;
       this.modal.classList.add("hidden");
       if (window.__cityData) {
@@ -350,7 +374,27 @@
         this.data.windRegion = window.__cityData.wind;
         this.data.snowRegion = window.__cityData.snow;
       }
-      if (this.onComplete) this.onComplete(this.data, false);
+      // Phase 3 = full completion, send data
+      if (this.currentPhase === 3) {
+        if (this.onComplete) this.onComplete(this.data, false);
+      } else {
+        if (window.__aiVoiceShowBubble) {
+          const msg = this.currentPhase === 1
+            ? "Отлично! Теперь настройте размеры здания с помощью ползунков."
+            : "Хорошо! Когда будете готовы — нажмите «Получить расчёт»."
+          window.__aiVoiceShowBubble("Помощник", msg);
+        }
+      }
+    }
+
+    _speakQuestion() {
+      if (this.currentPhase === 1) return;
+      const steps = this._stepsForPhase(this.currentPhase);
+      const step = steps[this.currentStep];
+      const text = step.type === "intro" ? step.text : step.question;
+      if (window.__aiVoiceSpeak && typeof window.__aiVoiceSpeak === "function") {
+        window.__aiVoiceSpeak(text);
+      }
     }
 
     getData() { return { ...this.data }; }
