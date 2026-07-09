@@ -876,9 +876,13 @@ window.__applyVoiceAction = function (action) {
   // --- Colors ---
   if (action.wallColor !== undefined) {
     state.wallColor = action.wallColor;
+    const wallBtn = document.querySelector(`#color-grid .color-btn[data-value="${action.wallColor}"]`);
+    if (wallBtn) wallBtn.click();
   }
   if (action.roofColor !== undefined) {
     state.roofColor = action.roofColor;
+    const roofBtn = document.querySelector(`#roof-color-grid .color-btn[data-value="${action.roofColor}"]`);
+    if (roofBtn) roofBtn.click();
   }
 
   // --- Gates ---
