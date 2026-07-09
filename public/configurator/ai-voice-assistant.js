@@ -71,6 +71,10 @@
     if (close) close.addEventListener("click", () => bubble.classList.add("hidden"));
   }
 
+  window.__aiVoiceShowBubble = showBubble;
+
+  window.__aiVoiceSpeak = speak;
+
   function speak(text) {
     if (muted) return;
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
@@ -122,6 +126,17 @@
 
   async function processCommand(transcript) {
     showBubble("Вы сказали", transcript);
+
+    // If the AI quiz is open, try to use the voice transcript as an answer
+    if (window.__configuratorQuiz && window.__configuratorQuiz.isActive && window.__configuratorQuiz.isActive()) {
+      const handledByQuiz = window.__configuratorQuiz.handleVoiceAnswer(transcript);
+      if (handledByQuiz) return;
+      // If quiz didn't understand, ask to repeat without falling through to command parser
+      showBubble("Помощник", "Не расслышал ответ. Повторите, пожалуйста, или выберите вариант.");
+      speak("Не расслышал ответ. Повторите, пожалуйста, или выберите вариант.");
+      return;
+    }
+
     const state = getState();
     try {
       const res = await fetch("/api/configurator-command", {
@@ -214,20 +229,12 @@
     showBubble("Режим", muted ? "Звук выключен" : "Звук включен");
   });
 
-  // Initial greeting after city modal
-  function waitForCityAndGreet() {
-    const modal = document.getElementById("city-modal");
-    const confirm = document.getElementById("city-confirm");
-    const greet = () => {
-      const text = "Здравствуйте! Я голосовой помощник конфигуратора. Скажите, какое здание хотите спроектировать?";
-      showBubble("Помощник", text);
-      speak(text);
-    };
-    if (!modal || modal.classList.contains("hidden")) {
-      setTimeout(greet, 1200);
-      return;
-    }
-    if (confirm) confirm.addEventListener("click", () => setTimeout(greet, 900), { once: true });
+  // The AI quiz handles the first voice greeting, so we avoid duplicating it here.
+  // We only show a hint if the user opens the mic before the quiz appears.
+  function showInitialHint() {
+    if (window.__configuratorQuiz && window.__configuratorQuiz.isActive && window.__configuratorQuiz.isActive()) return;
+    const text = "Нажмите микрофон и скажите, например: «ангар 24 на 48».";
+    showBubble("Помощник", text);
   }
-  waitForCityAndGreet();
+  setTimeout(showInitialHint, 3000);
 })();

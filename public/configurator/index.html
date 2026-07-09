@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/configurator/configurator.css" />
+    <link rel="stylesheet" href="/configurator/quiz.css" />
     <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.171.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.171.0/examples/jsm/"}}</script>
   </head>
   <body>
@@ -89,20 +90,20 @@
                     <label>Шаг колонн</label>
                     <span class="value-pill"><span id="column-step-val">6</span> м</span>
                   </div>
-                  <div class="step-btns" role="group" aria-label="Шаг колонн">
-                    <button type="button" class="step-btn" data-step="3">3 м</button>
-                    <button type="button" class="step-btn active" data-step="6">6 м</button>
-                    <button type="button" class="step-btn" data-step="9">9 м</button>
-                    <button type="button" class="step-btn" data-step="12">12 м</button>
+                  <div class="step-btns step-btns-wrap" role="group" aria-label="Шаг колонн">
+                    <button type="button" class="step-btn" data-step="3">3</button>
+                    <button type="button" class="step-btn" data-step="3.5">3.5</button>
+                    <button type="button" class="step-btn" data-step="4">4</button>
+                    <button type="button" class="step-btn active" data-step="6">6</button>
                   </div>
                   <div class="step-custom">
                     <label for="column-step-input">Своё значение</label>
                     <div class="step-input-wrap">
-                      <input type="number" id="column-step-input" min="2" max="24" step="0.5" value="6" inputmode="decimal" />
+                      <input type="number" id="column-step-input" min="3" max="6" step="0.5" value="6" inputmode="decimal" />
                       <span class="step-input-unit">м</span>
                     </div>
                   </div>
-                  <p class="step-note">Стандарт для ангаров ЛМК — 6 м; можно задать свой шаг от 2 до 24 м</p>
+                  <p class="step-note">Шаг колонн: от 3 до 6 м с шагом 0.5 м</p>
                 </div>
               </div>
             </div>
@@ -136,11 +137,12 @@
                       <button type="button" class="seg-btn mezz-wall-btn" data-wall="back">Сзади</button>
                     </div>
                     <div class="control-group compact">
-                      <div class="control-top">
-                        <label for="mezz-height">Высота</label>
-                        <span class="value-pill"><span id="mezz-height-val">2.6</span> м</span>
+                      <span class="sub-label">Высота антресоли</span>
+                      <div class="seg-btns" id="mezz-height-btns">
+                        <button type="button" class="seg-btn mezz-height-btn active" data-ratio="1_3">1/3 колонны</button>
+                        <button type="button" class="seg-btn mezz-height-btn" data-ratio="2_3">2/3 колонны</button>
                       </div>
-                      <input type="range" id="mezz-height" min="2" max="7" step="0.1" value="2.6" />
+                      <p class="step-note">Высота: <span id="mezz-height-val">3.3</span> м</p>
                     </div>
                     <div class="control-group compact">
                       <div class="control-top">
@@ -273,6 +275,7 @@
           </section>
 
           <button type="button" id="btn-get-quote" class="btn-get-quote">Получить расчёт</button>
+          <button type="button" id="btn-export-pdf" class="btn-export-pdf">Экспорт в PDF</button>
         </div>
       </aside>
 
@@ -324,9 +327,10 @@
       </main>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
     <script src="/configurator/city-select.js" defer></script>
+    <script src="/configurator/configurator-quiz.js" defer></script>
     <script type="module" src="/configurator/app.js"></script>
-    <script src="/configurator/voice-assistant.js" defer></script>
     <script src="/configurator/ai-voice-assistant.js" defer></script>
   </body>
 </html>

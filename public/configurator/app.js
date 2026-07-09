@@ -43,7 +43,8 @@ const state = {
   showCraneBeam: false,
   showMezzanine: false,
   mezzWall: "front",
-  mezzHeight: 2.6,
+  mezzHeightRatio: "2_3",
+  mezzHeight: (5 * 2) / 3,
   mezzDepthPct: 36,
   mezzLengthPct: 75,
   mezzPosZ: 0,
@@ -90,7 +91,7 @@ const els = {
   crane: $("crane"),
   mezzanine: $("mezzanine"),
   mezzanineTools: $("mezzanine-tools"),
-  mezzHeight: $("mezz-height"),
+  mezzHeightBtns: document.querySelectorAll(".mezz-height-btn"),
   mezzHeightVal: $("mezz-height-val"),
   mezzDepth: $("mezz-depth"),
   mezzDepthVal: $("mezz-depth-val"),
@@ -261,10 +262,14 @@ function getMezzPosBounds() {
   return { min, max };
 }
 
+function getMezzHeightFromRatio() {
+  const ratio = state.mezzHeightRatio === "1_3" ? 1 / 3 : 2 / 3;
+  return Math.round(state.height * ratio * 10) / 10;
+}
+
 function clampMezzanine() {
   if (!state.showMezzanine) return;
-  const heightBounds = getMezzHeightBounds();
-  state.mezzHeight = Math.max(heightBounds.min, Math.min(heightBounds.max, state.mezzHeight ?? 2.6));
+  state.mezzHeight = getMezzHeightFromRatio();
   const posBounds = getMezzPosBounds();
   state.mezzPosZ = Math.max(posBounds.min, Math.min(posBounds.max, state.mezzPosZ ?? 0));
 }
@@ -443,12 +448,12 @@ function updateColorUI() {
   }
 }
 
-const COLUMN_STEP_MIN = 2;
-const COLUMN_STEP_MAX = 24;
+const COLUMN_STEP_MIN = 3;
+const COLUMN_STEP_MAX = 6;
 
 function normalizeColumnStep(value) {
   if (value === "" || value == null) return null;
-  const n = Math.round(Number(value) * 10) / 10;
+  const n = Math.round(Number(value) * 2) / 2; // 0.5 m step
   if (!Number.isFinite(n)) return null;
   return Math.max(COLUMN_STEP_MIN, Math.min(COLUMN_STEP_MAX, n));
 }
@@ -508,17 +513,17 @@ function updateAllSliders() {
   updateSliderFill(els.width);
   updateSliderFill(els.length);
   updateSliderFill(els.height);
-  if (els.mezzHeight) updateSliderFill(els.mezzHeight);
   if (els.mezzDepth) updateSliderFill(els.mezzDepth);
   if (els.mezzLength) updateSliderFill(els.mezzLength);
   if (els.mezzPos) updateSliderFill(els.mezzPos);
 }
 
 function updateDynamicSliders() {
-  if (els.mezzHeight) {
-    const { min, max } = getMezzHeightBounds();
-    updateSliderRange(els.mezzHeight, min, max, state.mezzHeight);
-    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(Math.round(state.mezzHeight * 10) / 10);
+  if (els.mezzHeightVal) {
+    els.mezzHeightVal.textContent = String(Math.round(state.mezzHeight * 10) / 10);
+  }
+  for (const btn of els.mezzHeightBtns) {
+    btn.classList.toggle("active", btn.dataset.ratio === state.mezzHeightRatio);
   }
   if (els.mezzDepth && els.mezzDepthVal) {
     els.mezzDepth.value = String(state.mezzDepthPct);
@@ -660,14 +665,12 @@ els.mezzanine?.addEventListener("change", () => {
   syncAll(true);
 });
 
-if (els.mezzHeight) {
-  els.mezzHeight.addEventListener("input", () => {
-    state.mezzHeight = Number(els.mezzHeight.value);
-    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(state.mezzHeight);
-    updateSliderFill(els.mezzHeight);
-    scheduleRender();
+for (const btn of els.mezzHeightBtns) {
+  btn.addEventListener("click", () => {
+    state.mezzHeightRatio = btn.dataset.ratio;
+    clampMezzanine();
+    syncAll(true);
   });
-  els.mezzHeight.addEventListener("change", () => syncAll(true));
 }
 
 if (els.mezzDepth) {
@@ -855,7 +858,7 @@ window.__applyVoiceAction = function (action) {
 
   // --- Column step ---
   if (action.columnStep !== undefined) {
-    const clamped = Math.min(24, Math.max(2, action.columnStep));
+    const clamped = Math.min(COLUMN_STEP_MAX, Math.max(COLUMN_STEP_MIN, Math.round(Number(action.columnStep) * 2) / 2));
     state.columnStep = clamped;
     if (els.columnStepVal) els.columnStepVal.textContent = String(clamped);
     if (els.columnStepInput) els.columnStepInput.value = clamped;
@@ -935,11 +938,13 @@ window.__applyVoiceAction = function (action) {
       });
     }
   }
-  if (action.mezzHeight !== undefined) {
-    const clamped = Math.min(7, Math.max(2, action.mezzHeight));
-    state.mezzHeight = clamped;
-    if (els.mezzHeight) { els.mezzHeight.value = clamped; }
-    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(clamped);
+  if (action.mezzHeightRatio !== undefined) {
+    state.mezzHeightRatio = action.mezzHeightRatio === "1_3" ? "1_3" : "2_3";
+    clampMezzanine();
+    for (const btn of els.mezzHeightBtns) {
+      btn.classList.toggle("active", btn.dataset.ratio === state.mezzHeightRatio);
+    }
+    if (els.mezzHeightVal) els.mezzHeightVal.textContent = String(Math.round(state.mezzHeight * 10) / 10);
   }
   if (action.mezzDepthPct !== undefined) {
     const clamped = Math.min(50, Math.max(20, action.mezzDepthPct));
@@ -956,6 +961,83 @@ window.__applyVoiceAction = function (action) {
 
   syncAll(true);
 };
+
+// --- PDF export ---
+const btnExportPdf = document.getElementById("btn-export-pdf");
+
+async function exportToPdf() {
+  if (!scene || !scene.sceneRef) {
+    alert("3D-сцена ещё не загружена.");
+    return;
+  }
+  const { camera, controls, renderer } = scene.sceneRef;
+  if (!camera || !controls || !renderer) return;
+
+  // Set a nice isometric-ish angle
+  const halfW = state.width / 2;
+  const halfL = state.length / 2;
+  camera.position.set(halfW * 1.5, state.height * 1.6, halfL * 1.6);
+  controls.target.set(0, state.height * 0.35, 0);
+  controls.update();
+  renderer.render(scene.sceneRef.scene, camera);
+
+  const imgData = renderer.domElement.toDataURL("image/jpeg", 0.92);
+
+  if (typeof window.jspdf === "undefined" || !window.jspdf.jsPDF) {
+    alert("Библиотека PDF ещё загружается. Подождите несколько секунд и попробуйте снова.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+
+  // Header
+  pdf.setFillColor(30, 41, 59);
+  pdf.rect(0, 0, pageW, 22, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(16);
+  pdf.text("MAKSTIL", 14, 13);
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica", "normal");
+  pdf.text("3D-конфигуратор быстровозводимого здания", 14, 18);
+  pdf.text("+7 (960) 632-20-61", pageW - 14, 13, { align: "right" });
+  pdf.text("www.makstil.ru", pageW - 14, 18, { align: "right" });
+
+  // 3D screenshot
+  const margin = 14;
+  const imgW = pageW - margin * 2;
+  const imgH = pageH - 54;
+  pdf.addImage(imgData, "JPEG", margin, 28, imgW, imgH);
+
+  // Parameters
+  const quizData = window.__quizData || {};
+  pdf.setTextColor(30, 41, 59);
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "bold");
+  let y = pageH - 18;
+  const sizeText = `Размеры: ${state.width} × ${state.length} × ${state.height} м  |  Площадь: ${state.width * state.length} м²`;
+  pdf.text(sizeText, margin, y);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(9);
+  y += 5;
+  const extra = [];
+  if (state.showSandwich) extra.push("сэндвич-панели");
+  if (state.showGate) extra.push("ворота");
+  if (state.showFrontDoor) extra.push("дверь у ворот");
+  if (state.showCraneBeam) extra.push("кран-балка");
+  if (state.showMezzanine) extra.push(`антресоль (${state.mezzHeightRatio === "1_3" ? "1/3" : "2/3"} колонны)`);
+  if (state.showWindows) extra.push("окна");
+  if (state.ribbonGlazing) extra.push("ленточное остекление");
+  if (quizData.city) extra.push(`г. ${quizData.city}`);
+  pdf.text(extra.join("  •  "), margin, y);
+
+  pdf.save(`makstil-angar-${state.width}x${state.length}x${state.height}.pdf`);
+}
+
+if (btnExportPdf) btnExportPdf.addEventListener("click", exportToPdf);
 
 // --- Quote modal ---
 const btnGetQuote = document.getElementById("btn-get-quote");
@@ -983,7 +1065,24 @@ if (btnGetQuote && quoteModal) {
     quoteSummary.textContent = buildQuoteSummary();
     quoteError.classList.add("hidden");
     quoteSuccess.classList.add("hidden");
-    quoteForm.reset();
+    const quizData = window.__quizData || {};
+    const nameInput = document.getElementById("quote-name");
+    const phoneInput = document.getElementById("quote-phone");
+    const commentInput = document.getElementById("quote-comment");
+    if (nameInput && quizData.clientName) nameInput.value = quizData.clientName;
+    if (phoneInput && quizData.phone) phoneInput.value = quizData.phone;
+    if (commentInput && Object.keys(quizData).length > 0) {
+      const lines = [];
+      if (quizData.clientName) lines.push(`Имя: ${quizData.clientName}`);
+      if (quizData.city) lines.push(`Город: ${quizData.city} (ветр. ${quizData.windRegion}, снег. ${quizData.snowRegion})`);
+      if (quizData.buildingType) lines.push(`Тип здания: ${quizData.buildingType}`);
+      if (quizData.purpose) lines.push(`Назначение: ${quizData.purpose}`);
+      if (quizData.clientType) lines.push(`Для: ${quizData.clientType === "company" ? "компании" : "себя"}`);
+      if (quizData.siteStatus) lines.push(`Участок: ${quizData.siteStatus}`);
+      if (quizData.deadline) lines.push(`Сроки: ${quizData.deadline}`);
+      if (quizData.gateTransport) lines.push(`Транспорт для ворот: ${quizData.gateTransport}`);
+      commentInput.value = lines.join("\n") + (commentInput.value ? "\n\n" + commentInput.value : "");
+    }
     quoteModal.classList.remove("hidden");
   });
   quoteModalClose.addEventListener("click", () => quoteModal.classList.add("hidden"));

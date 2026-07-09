@@ -1316,6 +1316,9 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     }
 
     box(0.25, 0.25, 0.15, boltMat, 0, apexH, z);
+
+    // Rigel — horizontal beam connecting the tops of both columns
+    box(width, 0.12, 0.12, steelMat, 0, height, z);
   }
 
   const wallPurlinCount = Math.max(2, Math.round(height / 1.5));

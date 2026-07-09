@@ -926,6 +926,16 @@ body {
 .btn-get-quote:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,0.45); }
 .btn-get-quote:active { transform: translateY(0); }
 
+.btn-export-pdf {
+  width: 100%; margin-top: 0.6rem;
+  padding: 12px 20px; border: 1px solid #cbd5e1; border-radius: 12px;
+  background: #fff;
+  color: #334155; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+.btn-export-pdf:hover { border-color: #3b6fd9; color: #3b6fd9; }
+
 /* ===== Quote Modal ===== */
 .quote-modal {
   position: fixed; inset: 0; z-index: 99999;

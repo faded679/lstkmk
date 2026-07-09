@@ -145,6 +145,12 @@
     modal.classList.add("hidden");
     // Store selection globally
     window.__cityData = selectedCity;
+    // Start AI quiz after short delay
+    setTimeout(() => {
+      if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
+        window.__configuratorQuiz.open();
+      }
+    }, 400);
   });
 
   // Focus input on load
