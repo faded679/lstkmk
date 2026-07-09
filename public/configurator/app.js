@@ -1085,25 +1085,71 @@ function openQuoteModal() {
   quoteModal.classList.remove("hidden");
 }
 
-window.__sendPartialLead = function sendPartialLead(data) {
+function buildLeadComment(data) {
   const parts = [];
   if (data.clientName) parts.push(`Имя: ${data.clientName}`);
   if (data.city) parts.push(`Город: ${data.city}`);
   if (data.buildingType) parts.push(`Тип: ${data.buildingType}`);
   if (data.purpose) parts.push(`Назначение: ${data.purpose}`);
+  if (data.clientType) parts.push(`Для: ${data.clientType === "company" ? "компании" : "себя"}`);
+  if (data.siteStatus) parts.push(`Участок: ${data.siteStatus}`);
   if (data.deadline) parts.push(`Срок: ${data.deadline}`);
+  if (data.gateTransport) parts.push(`Транспорт для ворот: ${data.gateTransport}`);
   const dims = `${state.width}×${state.length}×${state.height} м`;
   parts.push(`Размеры: ${dims}`);
-  fetch("/api/contact", {
-    method: "POST",
+  return parts.join("\n");
+}
+
+window.__sendPartialLead = function sendPartialLead(data) {
+  const existingId = sessionStorage.getItem("configurator_lead_id");
+  const comment = `[3D Конфигуратор — частичная заявка]\n${buildLeadComment(data)}`;
+
+  if (existingId) {
+    // Update existing lead
+    fetch("/api/lead-update", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        leadId: existingId,
+        name: data.clientName || undefined,
+        phone: data.phone || undefined,
+        comment,
+      }),
+    }).catch(() => {});
+  } else {
+    // Create new partial lead
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.clientName || "Не указано",
+        phone: data.phone || "не указан (частичная заявка)",
+        comment,
+      }),
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.id) sessionStorage.setItem("configurator_lead_id", String(res.id));
+      })
+      .catch(() => {});
+  }
+};
+
+window.__updateLeadProgress = function updateLeadProgress(data) {
+  const existingId = sessionStorage.getItem("configurator_lead_id");
+  if (!existingId) { window.__sendPartialLead(data); return; }
+  const comment = `[3D Конфигуратор — обновление]\n${buildLeadComment(data)}`;
+  fetch("/api/lead-update", {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      name: data.clientName || "Не указано",
-      phone: data.phone || "не указан (частичная заявка)",
-      comment: `[3D Конфигуратор — частичная заявка]\n${parts.join("\n")}`,
+      leadId: existingId,
+      name: data.clientName || undefined,
+      phone: data.phone || undefined,
+      comment,
     }),
   }).catch(() => {});
-}
+};
 
 if (btnGetQuote && quoteModal) {
   btnGetQuote.addEventListener("click", () => {
@@ -1118,6 +1164,10 @@ if (btnGetQuote && quoteModal) {
     quiz.onComplete = (data, skipped) => {
       window.__quizData = { ...data, skipped };
       if (origComplete) origComplete(data, skipped);
+      // Update lead with phone + full data
+      if (typeof window.__updateLeadProgress === "function") {
+        window.__updateLeadProgress(data);
+      }
       openQuoteModal();
       quiz.onComplete = origComplete;
     };

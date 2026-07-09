@@ -378,9 +378,13 @@
       if (this.currentPhase === 3) {
         if (this.onComplete) this.onComplete(this.data, false);
       } else {
-        // Send partial lead after phase 1 (at least name + building type known)
+        // Phase 1: create initial partial lead
         if (this.currentPhase === 1 && typeof window.__sendPartialLead === "function") {
           window.__sendPartialLead(this.data);
+        }
+        // Phase 2: update lead with more details
+        if (this.currentPhase === 2 && typeof window.__updateLeadProgress === "function") {
+          window.__updateLeadProgress(this.data);
         }
         if (window.__aiVoiceShowBubble) {
           const msg = this.currentPhase === 1

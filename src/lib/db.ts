@@ -56,6 +56,26 @@ export function saveLead(name: string, phone: string, comment: string): Lead {
   };
 }
 
+export function updateLead(id: number, fields: Partial<Pick<Lead, 'name' | 'phone' | 'comment'>>): boolean {
+  const db = getDb();
+  const parts: string[] = [];
+  const vals: unknown[] = [];
+  if (fields.name !== undefined) { parts.push('name = ?'); vals.push(fields.name); }
+  if (fields.phone !== undefined) { parts.push('phone = ?'); vals.push(fields.phone); }
+  if (fields.comment !== undefined) { parts.push('comment = ?'); vals.push(fields.comment); }
+  if (parts.length === 0) return false;
+  vals.push(id);
+  const stmt = db.prepare(`UPDATE leads SET ${parts.join(', ')} WHERE id = ?`);
+  const result = stmt.run(...vals);
+  return result.changes > 0;
+}
+
+export function getLead(id: number): Lead | null {
+  const db = getDb();
+  const stmt = db.prepare('SELECT * FROM leads WHERE id = ?');
+  return (stmt.get(id) as Lead) ?? null;
+}
+
 export function getLeads(limit = 100, offset = 0): Lead[] {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM leads ORDER BY created_at DESC LIMIT ? OFFSET ?');
