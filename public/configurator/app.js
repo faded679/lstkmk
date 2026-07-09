@@ -1085,16 +1085,35 @@ function openQuoteModal() {
   quoteModal.classList.remove("hidden");
 }
 
+window.__sendPartialLead = function sendPartialLead(data) {
+  const parts = [];
+  if (data.clientName) parts.push(`Имя: ${data.clientName}`);
+  if (data.city) parts.push(`Город: ${data.city}`);
+  if (data.buildingType) parts.push(`Тип: ${data.buildingType}`);
+  if (data.purpose) parts.push(`Назначение: ${data.purpose}`);
+  if (data.deadline) parts.push(`Срок: ${data.deadline}`);
+  const dims = `${state.width}×${state.length}×${state.height} м`;
+  parts.push(`Размеры: ${dims}`);
+  fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: data.clientName || "Не указано",
+      phone: data.phone || "не указан (частичная заявка)",
+      comment: `[3D Конфигуратор — частичная заявка]\n${parts.join("\n")}`,
+    }),
+  }).catch(() => {});
+}
+
 if (btnGetQuote && quoteModal) {
   btnGetQuote.addEventListener("click", () => {
     const quiz = window.__configuratorQuiz;
-    // If phase 3 already done — open modal directly
+    // Phase 3 already completed — open modal directly
     if (!quiz || quiz._phase3Triggered) {
       openQuoteModal();
       return;
     }
-    // Otherwise quiz opens first (via capture listener in ai-voice-assistant.js)
-    // Set up one-time callback to open modal after quiz finishes
+    // Open phase 3 quiz first, then show modal on completion
     const origComplete = quiz.onComplete;
     quiz.onComplete = (data, skipped) => {
       window.__quizData = { ...data, skipped };
@@ -1102,6 +1121,7 @@ if (btnGetQuote && quoteModal) {
       openQuoteModal();
       quiz.onComplete = origComplete;
     };
+    quiz.open(3);
   });
   quoteModalClose.addEventListener("click", () => quoteModal.classList.add("hidden"));
   quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) quoteModal.classList.add("hidden"); });

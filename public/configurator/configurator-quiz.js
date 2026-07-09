@@ -378,6 +378,10 @@
       if (this.currentPhase === 3) {
         if (this.onComplete) this.onComplete(this.data, false);
       } else {
+        // Send partial lead after phase 1 (at least name + building type known)
+        if (this.currentPhase === 1 && typeof window.__sendPartialLead === "function") {
+          window.__sendPartialLead(this.data);
+        }
         if (window.__aiVoiceShowBubble) {
           const msg = this.currentPhase === 1
             ? "Отлично! Теперь настройте размеры здания с помощью ползунков."

@@ -245,21 +245,7 @@
     }, { once: true });
   }
 
-  // Phase 3: trigger when "Получить расчёт" is clicked (before quote modal opens)
-  function setupPhase3Trigger() {
-    const btnQuote = document.getElementById("btn-get-quote");
-    if (!btnQuote) return;
-    btnQuote.addEventListener("click", () => {
-      if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
-        if (!window.__configuratorQuiz._phase3Triggered) {
-          window.__configuratorQuiz.open(3);
-        }
-      }
-    }, { capture: true });
-  }
-
   setTimeout(() => {
     setupPhase2Trigger();
-    setupPhase3Trigger();
   }, 1000);
 })();
