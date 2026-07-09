@@ -1129,6 +1129,7 @@ window.__sendPartialLead = function sendPartialLead(data) {
       name: data.clientName || "Не указано",
       phone: data.phone || "не указан (частичная заявка)",
       comment,
+      partial: true,
     }),
   })
     .then(r => r.json())
@@ -1198,15 +1199,15 @@ if (btnGetQuote && quoteModal) {
       const leadId = await getLeadId();
       let ok = false;
       if (leadId) {
-        // Update existing lead — no duplicate
+        // Update existing lead — no duplicate, final=true syncs to mctender
         const res = await fetch("/api/lead-update", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ leadId, name, phone, comment: fullComment }),
+          body: JSON.stringify({ leadId, name, phone, comment: fullComment, final: true }),
         });
         ok = res.ok;
       } else {
-        // No prior lead — create fresh
+        // No prior lead — create fresh (not partial, so mctender gets it)
         const res = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

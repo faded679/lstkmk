@@ -5,7 +5,7 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID!;
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, phone, comment } = await req.json();
+    const { name, phone, comment, partial } = await req.json();
 
     if (!phone) {
       return NextResponse.json({ error: "Phone is required" }, { status: 400 });
@@ -46,18 +46,20 @@ export async function POST(req: NextRequest) {
       }
     ).catch(err => console.error("Telegram error:", err));
 
-    // Дублируем заявку на mctender.ru (FastAPI)
-    try {
-      const mcRes = await fetch("https://www.mctender.ru/api/leads/from-makstal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || "", phone, comment: comment || "" }),
-      });
-      if (!mcRes.ok) {
-        console.error("MCTender responded with:", mcRes.status, await mcRes.text().catch(() => ""));
+    // Дублируем заявку на mctender.ru только если не частичная
+    if (!partial) {
+      try {
+        const mcRes = await fetch("https://www.mctender.ru/api/leads/from-makstal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name || "", phone, comment: comment || "" }),
+        });
+        if (!mcRes.ok) {
+          console.error("MCTender responded with:", mcRes.status, await mcRes.text().catch(() => ""));
+        }
+      } catch (err) {
+        console.error("MCTender error:", err);
       }
-    } catch (err) {
-      console.error("MCTender error:", err);
     }
 
     return NextResponse.json({ ok: true, id: leadId });

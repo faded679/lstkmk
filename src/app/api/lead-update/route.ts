@@ -5,7 +5,7 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID!;
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { leadId, name, phone, comment } = await req.json();
+    const { leadId, name, phone, comment, final } = await req.json();
 
     if (!leadId) {
       return NextResponse.json({ error: "leadId required" }, { status: 400 });
@@ -39,8 +39,8 @@ export async function PATCH(req: NextRequest) {
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: "HTML" }),
       }).catch(() => {});
 
-      // If phone is now known — sync full lead to mctender
-      if (updated?.phone && !updated.phone.includes("частичная")) {
+      // Sync to mctender only on final submission
+      if (final && updated?.phone) {
         fetch("https://www.mctender.ru/api/leads/from-makstal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
