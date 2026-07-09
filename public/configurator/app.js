@@ -1071,31 +1071,38 @@ function openQuoteModal() {
   if (nameInput && quizData.clientName) nameInput.value = quizData.clientName;
   if (phoneInput && quizData.phone) phoneInput.value = quizData.phone;
   if (commentInput && Object.keys(quizData).length > 0) {
-    const lines = [];
-    if (quizData.clientName) lines.push(`Имя: ${quizData.clientName}`);
-    if (quizData.city) lines.push(`Город: ${quizData.city} (ветр. ${quizData.windRegion}, снег. ${quizData.snowRegion})`);
-    if (quizData.buildingType) lines.push(`Тип здания: ${quizData.buildingType}`);
-    if (quizData.purpose) lines.push(`Назначение: ${quizData.purpose}`);
-    if (quizData.clientType) lines.push(`Для: ${quizData.clientType === "company" ? "компании" : "себя"}`);
-    if (quizData.siteStatus) lines.push(`Участок: ${quizData.siteStatus}`);
-    if (quizData.deadline) lines.push(`Сроки: ${quizData.deadline}`);
-    if (quizData.gateTransport) lines.push(`Транспорт для ворот: ${quizData.gateTransport}`);
-    commentInput.value = lines.join("\n") + (commentInput.value ? "\n\n" + commentInput.value : "");
+    commentInput.value = buildLeadComment(quizData);
   }
   quoteModal.classList.remove("hidden");
 }
 
+const BUILDING_TYPE_RU = {
+  angar: "Ангар", sklad: "Склад", ceh: "Производственный цех",
+  sto: "СТО / автосервис", ferma: "Ферма / животноводство",
+  pavilion: "Торговый павильон", other: "Другое",
+};
+const SITE_STATUS_RU = { have: "Участок есть", searching: "Присматриваюсь", later: "Уточню позже" };
+const DEADLINE_RU = {
+  urgent: "Срочно (до месяца)", season: "В этом сезоне (3-6 мес.)",
+  year: "Через год и позже", estimate: "Пока нужна смета / проект",
+};
+const TRANSPORT_RU = {
+  gazel: "Газель / легковой", truck: "Фура / еврофура",
+  special: "Самосвал / спецтехника", tractor: "Трактор / сельхозтехника",
+  consult: "Нужна консультация",
+};
+
 function buildLeadComment(data) {
   const parts = [];
   if (data.clientName) parts.push(`Имя: ${data.clientName}`);
-  if (data.city) parts.push(`Город: ${data.city}`);
-  if (data.buildingType) parts.push(`Тип: ${data.buildingType}`);
+  if (data.city) parts.push(`Город: ${data.city} (ветр. ${data.windRegion || "?"}, снег. ${data.snowRegion || "?"})`);
+  if (data.buildingType) parts.push(`Тип: ${BUILDING_TYPE_RU[data.buildingType] || data.buildingType}`);
   if (data.purpose) parts.push(`Назначение: ${data.purpose}`);
   if (data.clientType) parts.push(`Для: ${data.clientType === "company" ? "компании" : "себя"}`);
-  if (data.siteStatus) parts.push(`Участок: ${data.siteStatus}`);
-  if (data.deadline) parts.push(`Срок: ${data.deadline}`);
-  if (data.gateTransport) parts.push(`Транспорт для ворот: ${data.gateTransport}`);
-  const dims = `${state.width}×${state.length}×${state.height} м`;
+  if (data.siteStatus) parts.push(`Участок: ${SITE_STATUS_RU[data.siteStatus] || data.siteStatus}`);
+  if (data.deadline) parts.push(`Срок: ${DEADLINE_RU[data.deadline] || data.deadline}`);
+  if (data.gateTransport) parts.push(`Транспорт для ворот: ${TRANSPORT_RU[data.gateTransport] || data.gateTransport}`);
+  const dims = `${state.width}×${state.length}×${state.height} м (пл. ${Math.round(state.width * state.length)} м²)`;
   parts.push(`Размеры: ${dims}`);
   return parts.join("\n");
 }
@@ -1186,14 +1193,30 @@ if (btnGetQuote && quoteModal) {
     const submitBtn = quoteForm.querySelector(".quote-submit");
     submitBtn.disabled = true;
     submitBtn.textContent = "Отправка...";
-    const fullComment = `[3D Конфигуратор]\n${buildQuoteSummary()}${comment ? "\n\n" + comment : ""}`;
+    const quizData = window.__quizData || {};
+    const fullComment = `[3D Конфигуратор]\n${buildLeadComment({ ...quizData, clientName: name })}${comment ? "\n\nКомментарий: " + comment : ""}`;
+    const existingId = sessionStorage.getItem("configurator_lead_id");
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, comment: fullComment }),
-      });
-      if (res.ok) {
+      let ok = false;
+      if (existingId) {
+        // Update existing lead — no duplicate
+        const res = await fetch("/api/lead-update", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leadId: existingId, name, phone, comment: fullComment }),
+        });
+        ok = res.ok;
+      } else {
+        // No prior lead — create fresh
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, phone, comment: fullComment }),
+        });
+        ok = res.ok;
+      }
+      if (ok) {
+        sessionStorage.removeItem("configurator_lead_id");
         quoteSuccess.classList.remove("hidden");
         submitBtn.textContent = "Отправлено ✓";
       } else {
