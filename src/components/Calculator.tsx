@@ -58,7 +58,7 @@ const insulationOptions: {
 }[] = [
   { id: "none",     label: "Без утепления",  multiplier: 0.85 },
   { id: "proflist", label: "Профлист",        multiplier: 1 },
-  { id: "sandwich", label: "Сэндвич-панели",  multiplier: 1.25 },
+  { id: "sandwich", label: "Сэндвич-панели",  multiplier: 2.10 },
 ];
 
 const typeHints: Record<BuildingType, string> = {
