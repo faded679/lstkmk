@@ -477,6 +477,13 @@ export default function SnegovyeRajonyRossiiPage() {
           </div>
         </div>
 
+        <p className="text-xs text-muted text-center mt-8">
+          Расчёт снеговых нагрузок и онлайн-инструменты —{" "}
+          <a href="https://vvcode.ru" target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline">
+            техническая поддержка VVCode
+          </a>
+        </p>
+
         {/* CTA */}
         <section className="bg-slate-900 text-white py-16 lg:py-20">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">

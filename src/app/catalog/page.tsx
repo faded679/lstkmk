@@ -298,6 +298,15 @@ export default function CatalogPage() {
             )}
           </div>
         </div>
+
+        <div className="text-center mt-12 pt-8 border-t border-gray-100">
+          <p className="text-sm text-gray-400">
+            Онлайн-калькулятор и подбор проектов —{" "}
+            <a href="https://vvcode.ru" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-600 transition-colors">
+              разработка VVCode
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
