@@ -131,27 +131,6 @@ export default function RootLayout({
         {children}
         <Footer />
         <AiAssistant />
-        {/* Voice greeting on homepage */}
-        <Script id="voice-greeting" strategy="afterInteractive">{`
-          (function() {
-            if (window.location.pathname !== '/' && window.location.pathname !== '') return;
-            if (sessionStorage.getItem('greeted')) return;
-            sessionStorage.setItem('greeted', '1');
-            function greet() {
-              if (!window.speechSynthesis) return;
-              var utt = new SpeechSynthesisUtterance('Здравствуйте, дорогой друг! Добро пожаловать на сайт МАКСТИЛ. Мы строим ангары, склады и цеха из металлоконструкций под ключ. Если вас интересует расчёт стоимости — воспользуйтесь калькулятором на странице или перейдите в 3D конфигуратор.');
-              utt.lang = 'ru-RU';
-              utt.rate = 0.9;
-              var voices = window.speechSynthesis.getVoices();
-              var ru = voices.find(function(v){ return v.lang.startsWith('ru') && v.name.includes('Google'); })
-                    || voices.find(function(v){ return v.lang.startsWith('ru'); });
-              if (ru) utt.voice = ru;
-              window.speechSynthesis.speak(utt);
-            }
-            if (window.speechSynthesis.getVoices().length) { greet(); }
-            else { window.speechSynthesis.onvoiceschanged = greet; }
-          })();
-        `}</Script>
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-KR3X1J843D" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
