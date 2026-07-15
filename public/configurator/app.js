@@ -1003,6 +1003,15 @@ async function exportToPdf() {
   const { camera, controls, renderer } = scene.sceneRef;
   if (!camera || !controls || !renderer) return;
 
+  // Temporarily increase renderer resolution for high-quality capture
+  const origW = renderer.domElement.width;
+  const origH = renderer.domElement.height;
+  const hiResW = 2400;
+  const hiResH = 1400;
+  renderer.setSize(hiResW, hiResH, false);
+  camera.aspect = hiResW / hiResH;
+  camera.updateProjectionMatrix();
+
   // Set a nice isometric-ish angle
   const halfW = state.width / 2;
   const halfL = state.length / 2;
@@ -1011,7 +1020,14 @@ async function exportToPdf() {
   controls.update();
   renderer.render(scene.sceneRef.scene, camera);
 
-  const imgData = renderer.domElement.toDataURL("image/jpeg", 0.92);
+  const imgData = renderer.domElement.toDataURL("image/png");
+
+  // Restore original size
+  renderer.setSize(origW, origH, false);
+  camera.aspect = origW / origH;
+  camera.updateProjectionMatrix();
+  controls.update();
+  renderer.render(scene.sceneRef.scene, camera);
 
   if (typeof window.jspdf === "undefined" || !window.jspdf.jsPDF) {
     alert("Библиотека PDF ещё загружается. Подождите несколько секунд и попробуйте снова.");
@@ -1040,30 +1056,31 @@ async function exportToPdf() {
     return c.toDataURL("image/png");
   }
 
-  // Header as canvas image
-  const hdrScale = 3;
-  const hdrW = Math.round(pageW * hdrScale);
-  const hdrH = Math.round(22 * hdrScale);
   const quizData = window.__quizData || {};
 
+  // Header — scale 4x for sharpness
+  const S = 4;
+  const hdrW = Math.round(pageW * S);
+  const hdrH = Math.round(28 * S);
+
   const headerImg = textToImage([
-    { text: "MAKSTIL", font: `bold ${16 * hdrScale}px Inter, sans-serif`, color: "#fff", x: 14 * hdrScale, y: 15 * hdrScale },
-    { text: "3D-конфигуратор быстровозводимого здания", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#cbd5e1", x: 14 * hdrScale, y: 20 * hdrScale },
-    { text: "+7 (960) 632-20-61", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#fff", x: 14 * hdrScale, y: 15 * hdrScale, align: "right" },
-    { text: "www.makstil.ru", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#cbd5e1", x: 14 * hdrScale, y: 20 * hdrScale, align: "right" },
+    { text: "MAKSTIL", font: `bold ${22 * S}px Inter, sans-serif`, color: "#ffffff", x: 12 * S, y: 20 * S },
+    { text: "3D-конфигуратор", font: `${10 * S}px Inter, sans-serif`, color: "#94a3b8", x: 12 * S, y: 26 * S },
+    { text: "+7 (960) 632-20-61", font: `bold ${11 * S}px Inter, sans-serif`, color: "#ffffff", x: 12 * S, y: 14 * S, align: "right" },
+    { text: "www.makstil.ru", font: `${10 * S}px Inter, sans-serif`, color: "#94a3b8", x: 12 * S, y: 26 * S, align: "right" },
   ], hdrW, hdrH, "#1e293b");
-  pdf.addImage(headerImg, "PNG", 0, 0, pageW, 22);
+  pdf.addImage(headerImg, "PNG", 0, 0, pageW, 28);
 
-  // 3D screenshot
-  const margin = 14;
+  // 3D screenshot — full width, good height
+  const margin = 8;
+  const imgTop = 30;
   const imgW = pageW - margin * 2;
-  const imgH = pageH - 54;
-  pdf.addImage(imgData, "JPEG", margin, 24, imgW, imgH);
+  const imgH = pageH - 62;
+  pdf.addImage(imgData, "PNG", margin, imgTop, imgW, imgH);
 
-  // Footer parameters as canvas image
-  const ftrScale = 3;
-  const ftrW = Math.round(pageW * ftrScale);
-  const ftrH = Math.round(22 * ftrScale);
+  // Footer parameters
+  const ftrW = Math.round(pageW * S);
+  const ftrH = Math.round(26 * S);
   const sizeText = `Размеры: ${state.width} × ${state.length} × ${state.height} м  |  Площадь: ${state.width * state.length} м²`;
   const extra = [];
   if (state.showSandwich) extra.push("сэндвич-панели");
@@ -1076,10 +1093,10 @@ async function exportToPdf() {
   if (quizData.city) extra.push(`г. ${quizData.city}`);
 
   const footerImg = textToImage([
-    { text: sizeText, font: `bold ${10 * ftrScale}px Inter, sans-serif`, color: "#1e293b", x: 14 * ftrScale, y: 10 * ftrScale },
-    { text: extra.join("  •  "), font: `${9 * ftrScale}px Inter, sans-serif`, color: "#475569", x: 14 * ftrScale, y: 19 * ftrScale },
+    { text: sizeText, font: `bold ${12 * S}px Inter, sans-serif`, color: "#1e293b", x: 12 * S, y: 12 * S },
+    { text: extra.join("  •  "), font: `${10 * S}px Inter, sans-serif`, color: "#475569", x: 12 * S, y: 23 * S },
   ], ftrW, ftrH, "#ffffff");
-  pdf.addImage(footerImg, "PNG", 0, pageH - 22, pageW, 22);
+  pdf.addImage(footerImg, "PNG", 0, pageH - 26, pageW, 26);
 
   pdf.save(`makstil-angar-${state.width}x${state.length}x${state.height}.pdf`);
 }
