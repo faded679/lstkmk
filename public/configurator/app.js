@@ -577,6 +577,7 @@ function buildRoofColorGrid() {
     btn.addEventListener("click", () => {
       state.roofColor = c.value;
       syncAll(true);
+      window.__aiVoiceSpeak?.("Кровля перекрашена. Светлый верх — летом прохладнее, тёмный — смотрится строже.");
     });
     els.roofColorGrid.appendChild(btn);
   }
@@ -594,6 +595,7 @@ function buildColorGrid() {
     btn.addEventListener("click", () => {
       state.wallColor = c.value;
       syncAll(true);
+      window.__aiVoiceSpeak?.("Цвет стен сменили. Примеряйте смело — сэндвичи красим в любой РАЛ под заказ.");
     });
     els.colorGrid.appendChild(btn);
   }
@@ -647,6 +649,12 @@ els.sandwich.addEventListener("change", () => {
   state.showSandwich = els.sandwich.checked;
   if (state.showSandwich) setAccordionOpen("cladding", true);
   syncAll(true);
+  const bt = window.__quizData?.buildingType || "";
+  if (state.showSandwich) {
+    window.__aiVoiceSpeak?.("С обшивкой совсем другой вид! Выбирайте цвет стен и кровли — сделайте себе красиво. Любой оттенок из веера РАЛ найдём. Ниже уже открылись проёмы: расставляйте ворота и окна.");
+  } else {
+    window.__aiVoiceSpeak?.("Вернулись к каркасу. Иногда холодный ангар без обшивки — то что надо и по деньгам легче. Не уверены что выгоднее? Давайте посчитаем оба варианта.");
+  }
 });
 
 els.crane?.addEventListener("change", () => {
@@ -655,13 +663,17 @@ els.crane?.addEventListener("change", () => {
     state.selectedWindowId = null;
     state.selectedDoor = null;
     state.gateSelected = false;
+    window.__aiVoiceSpeak?.("Кран-балка на месте. Грузоподъёмность и модель подберём под заказ — ровно под ваши задачи, без переплаты за лишнюю мощность.");
   }
   syncAll(true);
 });
 
 els.mezzanine?.addEventListener("change", () => {
   state.showMezzanine = els.mezzanine.checked;
-  if (state.showMezzanine) setAccordionOpen("equipment", true);
+  if (state.showMezzanine) {
+    setAccordionOpen("equipment", true);
+    window.__aiVoiceSpeak?.("Антресоль — считай второй этаж почти бесплатно. Сторона, высота, глубина — настройте под себя. Впишется в проект с умом.");
+  }
   syncAll(true);
 });
 
@@ -715,6 +727,7 @@ for (const btn of els.mezzWallBtns) {
 els.windows.addEventListener("change", () => {
   state.showWindows = els.windows.checked;
   if (state.showWindows && state.windows.length === 0) {
+    window.__aiVoiceSpeak?.("Окна на фасаде. Жмите кнопки слева и справа — добавляйте и перетаскивайте. Дневной свет — это и комфорт, и экономия на освещении.");
     addWindow("left");
     return;
   }
@@ -731,6 +744,7 @@ els.gate.addEventListener("change", () => {
     if (state.showFrontDoor) {
       state.frontDoorPos = getDefaultFrontDoorPos();
     }
+    window.__aiVoiceSpeak?.("Ворота встали. Зажимайте и тащите мышкой по модели — ставьте где удобно.");
   } else {
     state.gateSelected = false;
   }
@@ -746,6 +760,7 @@ els.doorFront?.addEventListener("change", () => {
     state.selectedDoor = "front";
     state.selectedWindowId = null;
     state.gateSelected = false;
+    window.__aiVoiceSpeak?.("Дверь рядом с воротами — тоже перетаскивается. Обычно ставим для быстрого доступа не открывая основные ворота.");
   } else if (state.selectedDoor === "front") {
     state.selectedDoor = null;
   }
@@ -771,6 +786,9 @@ els.removeWindow.addEventListener("click", () => removeWindow());
 if (els.ribbonGlazing) {
   els.ribbonGlazing.addEventListener("change", () => {
     state.ribbonGlazing = els.ribbonGlazing.checked;
+    if (state.ribbonGlazing) {
+      window.__aiVoiceSpeak?.("Ленточное остекление — сплошная полоса окон на всю длину. Смотрится дорого, света валом. Выбирайте сторону: слева, справа или обе.");
+    }
     syncAll(true);
   });
 }

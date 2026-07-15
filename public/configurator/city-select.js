@@ -153,6 +153,10 @@
     }, 400);
   });
 
-  // Focus input on load
-  setTimeout(() => input.focus(), 500);
+  // Open quiz first (city modal will be shown by quiz after name step)
+  setTimeout(() => {
+    if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
+      window.__configuratorQuiz.open(1);
+    }
+  }, 800);
 })();

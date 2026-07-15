@@ -2,6 +2,11 @@
 (function () {
   "use strict";
 
+  const BUILDING_TYPE_LABELS = {
+    angar: "ангар", sklad: "склад", ceh: "производственный цех",
+    sto: "автосервис", ferma: "сельхозздание", pavilion: "торговый павильон", other: "здание",
+  };
+
   // Phase 1: after city selection (name + building type)
   const STEPS_PHASE1 = [
     {
@@ -11,6 +16,7 @@
       placeholder: "Иван",
       field: "clientName",
       required: true,
+      voiceText: "Привет! Давайте соберём здание под вас. Для начала — как к вам обращаться?",
     },
     {
       id: "building-type",
@@ -27,6 +33,7 @@
         { value: "other", label: "Другое" },
       ],
       required: true,
+      voiceText: (d) => `${d.city || ""} — принято. Теперь главное, ${d.clientName || ""}: что строим? Склад, цех, ангар, сельхоз, автосервис, торговый павильон или что-то своё.`,
     },
   ];
 
@@ -38,6 +45,7 @@
       question: "Что планируете размещать внутри? Например, технику, товары, скот.",
       placeholder: "Сельхозтехника и зерно",
       field: "purpose",
+      voiceText: (d) => `${d.clientName || ""}, расскажите — что планируете размещать внутри? Технику, товары, скот? От этого зависит конфигурация.`,
     },
     {
       id: "client-type",
@@ -49,6 +57,7 @@
         { value: "company", label: "Для компании" },
       ],
       required: true,
+      voiceText: "Строите для себя лично или для компании?",
     },
     {
       id: "site",
@@ -61,6 +70,7 @@
         { value: "later", label: "Уточню позже" },
       ],
       required: true,
+      voiceText: "Участок уже выбрали или только присматриваетесь?",
     },
     {
       id: "deadline",
@@ -74,6 +84,7 @@
         { value: "estimate", label: "Пока нужна смета / проект" },
       ],
       required: true,
+      voiceText: "Когда планируете начать строительство?",
     },
   ];
 
@@ -92,6 +103,7 @@
         { value: "consult", label: "Нужна консультация" },
       ],
       required: true,
+      voiceText: (d) => `${d.clientName || ""}, последние пару вопросов. Какой транспорт будет заезжать в здание? Газель, фура, спецтехника?`,
     },
     {
       id: "phone",
@@ -100,6 +112,7 @@
       placeholder: "+7 (___) ___-__-__",
       field: "phone",
       required: true,
+      voiceText: (d) => `Отлично, ${d.clientName || ""}! Оставьте телефон — менеджер Макстил перезвонит, проверит проект и посчитает точную цену.`,
     },
   ];
 
@@ -221,6 +234,26 @@
       if (p === 3 && this._phase3Triggered) return;
       if (p === 2) this._phase2Triggered = true;
       if (p === 3) this._phase3Triggered = true;
+
+      // Resume after city selection — go to building-type step
+      if (p === 1 && this._pendingCityResume) {
+        this._pendingCityResume = false;
+        if (window.__cityData) {
+          this.data.city = window.__cityData.name;
+          this.data.windRegion = window.__cityData.wind;
+          this.data.snowRegion = window.__cityData.snow;
+        }
+        this.currentPhase = 1;
+        // Find building-type step index
+        const btIdx = STEPS_PHASE1.findIndex(s => s.id === "building-type");
+        this.currentStep = btIdx >= 0 ? btIdx : 1;
+        this.isOpen = true;
+        this.modal.classList.remove("hidden");
+        this._renderStep();
+        this._speakQuestion();
+        return;
+      }
+
       this.currentPhase = p;
       this.currentStep = 0;
       this.isOpen = true;
@@ -305,6 +338,23 @@
     next() {
       if (this.nextBtn.disabled) return;
       const steps = this._stepsForPhase(this.currentPhase);
+      const step = steps[this.currentStep];
+
+      // After name step in phase 1 — pause quiz, open city modal, resume after city selected
+      if (this.currentPhase === 1 && step.id === "name" && !window.__cityData) {
+        this.isOpen = false;
+        this.modal.classList.add("hidden");
+        // Open city modal
+        const cityModal = document.getElementById("city-modal");
+        if (cityModal) cityModal.classList.remove("hidden");
+        // Speak city prompt
+        const cityVoice = `${this.data.clientName || ""}, отлично! Теперь — где строиться будем? Выберите ближайший город. Это важно для расчёта снеговых и ветровых нагрузок — чтобы каркас не был слабым и вы не переплачивали за лишний металл.`;
+        if (window.__aiVoiceSpeak) window.__aiVoiceSpeak(cityVoice);
+        // Wait for city selection — city-select.js will call quiz.open() which resumes at building-type
+        this._pendingCityResume = true;
+        return;
+      }
+
       if (this.currentStep < steps.length - 1) {
         this.currentStep++;
         this._renderStep();
@@ -386,20 +436,30 @@
         if (this.currentPhase === 2 && typeof window.__updateLeadProgress === "function") {
           window.__updateLeadProgress(this.data);
         }
-        if (window.__aiVoiceShowBubble) {
-          const msg = this.currentPhase === 1
-            ? "Отлично! Теперь настройте размеры здания с помощью ползунков."
-            : "Хорошо! Когда будете готовы — нажмите «Получить расчёт»."
-          window.__aiVoiceShowBubble("Помощник", msg);
+        // Voice welcome after phase 1
+        if (this.currentPhase === 1) {
+          const bt = BUILDING_TYPE_LABELS[this.data.buildingType] || "здание";
+          const city = this.data.city || "";
+          const name = this.data.clientName || "";
+          const welcomeText = `Так, ${name}, ${city} — отличное место для стройки, снеговые и ветровые уже учли. Под ${bt} у нас есть готовые проверенные решения. Сейчас соберём ваш будущий объект: размеры, оснащение, внешний вид — всё настраивается за пару минут. Поехали!`;
+          if (window.__aiVoiceSpeak) window.__aiVoiceSpeak(welcomeText);
+          if (window.__aiVoiceShowBubble) window.__aiVoiceShowBubble("Помощник", welcomeText);
+        } else {
+          const msg = "Хорошо! Когда будете готовы — нажмите «Получить расчёт».";
+          if (window.__aiVoiceShowBubble) window.__aiVoiceShowBubble("Помощник", msg);
         }
       }
     }
 
     _speakQuestion() {
-      if (this.currentPhase === 1) return;
       const steps = this._stepsForPhase(this.currentPhase);
       const step = steps[this.currentStep];
-      const text = step.type === "intro" ? step.text : step.question;
+      let text;
+      if (step.voiceText) {
+        text = typeof step.voiceText === "function" ? step.voiceText(this.data) : step.voiceText;
+      } else {
+        text = step.type === "intro" ? step.text : step.question;
+      }
       if (window.__aiVoiceSpeak && typeof window.__aiVoiceSpeak === "function") {
         window.__aiVoiceSpeak(text);
       }
