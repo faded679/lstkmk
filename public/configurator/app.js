@@ -564,6 +564,12 @@ function syncAll(immediate = false) {
   scheduleRender(immediate);
 }
 
+let _colorVoiceTimer = null;
+function _debouncedVoice(text) {
+  clearTimeout(_colorVoiceTimer);
+  _colorVoiceTimer = setTimeout(() => window.__aiVoiceSpeak?.(text), 1200);
+}
+
 function buildRoofColorGrid() {
   if (!els.roofColorGrid) return;
   els.roofColorGrid.innerHTML = "";
@@ -577,7 +583,7 @@ function buildRoofColorGrid() {
     btn.addEventListener("click", () => {
       state.roofColor = c.value;
       syncAll(true);
-      window.__aiVoiceSpeak?.("Кровля перекрашена. Светлый верх — летом прохладнее, тёмный — смотрится строже.");
+      _debouncedVoice("Кровля перекрашена. Светлый верх — летом прохладнее, тёмный — смотрится строже.");
     });
     els.roofColorGrid.appendChild(btn);
   }
@@ -595,12 +601,13 @@ function buildColorGrid() {
     btn.addEventListener("click", () => {
       state.wallColor = c.value;
       syncAll(true);
-      window.__aiVoiceSpeak?.("Цвет стен сменили. Примеряйте смело — сэндвичи красим в любой РАЛ под заказ.");
+      _debouncedVoice("Цвет стен сменили. Примеряйте смело — сэндвичи красим в любой РАЛ под заказ.");
     });
     els.colorGrid.appendChild(btn);
   }
 }
 
+let _sizesVoicePlayed = false;
 function bindSlider(input, key, valEl) {
   input.addEventListener("input", () => {
     state[key] = Number(input.value);
@@ -608,6 +615,10 @@ function bindSlider(input, key, valEl) {
     updateSliderFill(input);
     updateStats();
     scheduleRender();
+    if (!_sizesVoicePlayed && (key === "width" || key === "length" || key === "height")) {
+      _sizesVoicePlayed = true;
+      window.__aiVoiceSpeak?.("Ширина, длина, высота — три слайдера и картинка оживает. Сомневаетесь какие размеры дадут лучшую цену за метр? Наши проектировщики на телефоне — подскажут за минуту.");
+    }
   });
   input.addEventListener("change", () => syncAll(true));
 }
@@ -775,6 +786,7 @@ for (const btn of els.doorWallBtns) {
     state.selectedWindowId = null;
     state.gateSelected = false;
     syncAll(true);
+    window.__aiVoiceSpeak?.("Боковая дверь готова. Тащите вдоль стены и ставьте где логично. Персонал заходит отдельно от ворот — мелочь, а работать комфортнее.");
   });
 }
 

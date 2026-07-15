@@ -238,8 +238,11 @@
     trigger.addEventListener("click", () => {
       setTimeout(() => {
         const isOpen = equipmentSection.classList.contains("is-open");
-        if (isOpen && window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
-          window.__configuratorQuiz.open(2);
+        if (isOpen) {
+          speak("Кран-балка, антресоль — то что превращает просто коробку в полноценный рабочий объект. Включайте, смотрите как встаёт на 3D-модель.");
+          if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
+            window.__configuratorQuiz.open(2);
+          }
         }
       }, 200);
     }, { once: true });
