@@ -73,15 +73,22 @@
 
   window.__aiVoiceShowBubble = showBubble;
 
-  window.__aiVoiceSpeak = speak;
+  let _ttsAbort = null;
+  let _speechQueue = [];
+  let _isSpeaking = false;
 
   function speak(text) {
-    if (muted) return;
+    if (muted || !text) return;
+    // Cancel any in-flight TTS request
+    if (_ttsAbort) { _ttsAbort.abort(); _ttsAbort = null; }
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    _isSpeaking = true;
+    _ttsAbort = new AbortController();
     fetch("/api/tts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
+      signal: _ttsAbort.signal,
     })
       .then(res => {
         if (!res.ok) throw new Error("tts " + res.status);
@@ -92,10 +99,38 @@
         const audio = new Audio(url);
         currentAudio = audio;
         audio.play().catch(() => {});
-        audio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; };
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          currentAudio = null;
+          _isSpeaking = false;
+          _processQueue();
+        };
       })
-      .catch(err => console.warn("TTS failed:", err));
+      .catch(err => {
+        if (err.name !== "AbortError") console.warn("TTS failed:", err);
+        _isSpeaking = false;
+        _processQueue();
+      });
   }
+
+  // Queue: speak text after current speech finishes
+  function speakAfter(text) {
+    if (!text) return;
+    if (!_isSpeaking && !currentAudio) {
+      speak(text);
+    } else {
+      _speechQueue.push(text);
+    }
+  }
+
+  function _processQueue() {
+    if (_speechQueue.length > 0) {
+      speak(_speechQueue.shift());
+    }
+  }
+
+  window.__aiVoiceSpeak = speak;
+  window.__aiVoiceSpeakAfter = speakAfter;
 
   function getState() {
     return window.__configuratorState || {};
@@ -239,10 +274,11 @@
       setTimeout(() => {
         const isOpen = equipmentSection.classList.contains("is-open");
         if (isOpen) {
-          speak("Кран-балка, антресоль — то что превращает просто коробку в полноценный рабочий объект. Включайте, смотрите как встаёт на 3D-модель.");
+          // Quiz speaks first, equipment voice queued after
           if (window.__configuratorQuiz && typeof window.__configuratorQuiz.open === "function") {
             window.__configuratorQuiz.open(2);
           }
+          speakAfter("Кран-балка, антресоль — то что превращает просто коробку в полноценный рабочий объект. Включайте, смотрите как встаёт на 3D-модель.");
         }
       }, 200);
     }, { once: true });

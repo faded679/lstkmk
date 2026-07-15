@@ -567,7 +567,7 @@ function syncAll(immediate = false) {
 let _colorVoiceTimer = null;
 function _debouncedVoice(text) {
   clearTimeout(_colorVoiceTimer);
-  _colorVoiceTimer = setTimeout(() => window.__aiVoiceSpeak?.(text), 1200);
+  _colorVoiceTimer = setTimeout(() => window.__aiVoiceSpeakAfter?.(text), 1200);
 }
 
 function buildRoofColorGrid() {
@@ -617,7 +617,7 @@ function bindSlider(input, key, valEl) {
     scheduleRender();
     if (!_sizesVoicePlayed && (key === "width" || key === "length" || key === "height")) {
       _sizesVoicePlayed = true;
-      window.__aiVoiceSpeak?.("Ширина, длина, высота — три слайдера и картинка оживает. Сомневаетесь какие размеры дадут лучшую цену за метр? Наши проектировщики на телефоне — подскажут за минуту.");
+      window.__aiVoiceSpeakAfter?.("Ширина, длина, высота — три слайдера и картинка оживает. Сомневаетесь какие размеры дадут лучшую цену за метр? Наши проектировщики на телефоне — подскажут за минуту.");
     }
   });
   input.addEventListener("change", () => syncAll(true));
@@ -662,9 +662,9 @@ els.sandwich.addEventListener("change", () => {
   syncAll(true);
   const bt = window.__quizData?.buildingType || "";
   if (state.showSandwich) {
-    window.__aiVoiceSpeak?.("С обшивкой совсем другой вид! Выбирайте цвет стен и кровли — сделайте себе красиво. Любой оттенок из веера РАЛ найдём. Ниже уже открылись проёмы: расставляйте ворота и окна.");
+    window.__aiVoiceSpeakAfter?.("С обшивкой совсем другой вид! Выбирайте цвет стен и кровли — сделайте себе красиво. Любой оттенок из веера РАЛ найдём. Ниже уже открылись проёмы: расставляйте ворота и окна.");
   } else {
-    window.__aiVoiceSpeak?.("Вернулись к каркасу. Иногда холодный ангар без обшивки — то что надо и по деньгам легче. Не уверены что выгоднее? Давайте посчитаем оба варианта.");
+    window.__aiVoiceSpeakAfter?.("Вернулись к каркасу. Иногда холодный ангар без обшивки — то что надо и по деньгам легче. Не уверены что выгоднее? Давайте посчитаем оба варианта.");
   }
 });
 
@@ -674,7 +674,7 @@ els.crane?.addEventListener("change", () => {
     state.selectedWindowId = null;
     state.selectedDoor = null;
     state.gateSelected = false;
-    window.__aiVoiceSpeak?.("Кран-балка на месте. Грузоподъёмность и модель подберём под заказ — ровно под ваши задачи, без переплаты за лишнюю мощность.");
+    window.__aiVoiceSpeakAfter?.("Кран-балка на месте. Грузоподъёмность и модель подберём под заказ — ровно под ваши задачи, без переплаты за лишнюю мощность.");
   }
   syncAll(true);
 });
@@ -683,7 +683,7 @@ els.mezzanine?.addEventListener("change", () => {
   state.showMezzanine = els.mezzanine.checked;
   if (state.showMezzanine) {
     setAccordionOpen("equipment", true);
-    window.__aiVoiceSpeak?.("Антресоль — считай второй этаж почти бесплатно. Сторона, высота, глубина — настройте под себя. Впишется в проект с умом.");
+    window.__aiVoiceSpeakAfter?.("Антресоль — считай второй этаж почти бесплатно. Сторона, высота, глубина — настройте под себя. Впишется в проект с умом.");
   }
   syncAll(true);
 });
@@ -738,7 +738,7 @@ for (const btn of els.mezzWallBtns) {
 els.windows.addEventListener("change", () => {
   state.showWindows = els.windows.checked;
   if (state.showWindows && state.windows.length === 0) {
-    window.__aiVoiceSpeak?.("Окна на фасаде. Жмите кнопки слева и справа — добавляйте и перетаскивайте. Дневной свет — это и комфорт, и экономия на освещении.");
+    window.__aiVoiceSpeakAfter?.("Окна на фасаде. Жмите кнопки слева и справа — добавляйте и перетаскивайте. Дневной свет — это и комфорт, и экономия на освещении.");
     addWindow("left");
     return;
   }
@@ -755,7 +755,7 @@ els.gate.addEventListener("change", () => {
     if (state.showFrontDoor) {
       state.frontDoorPos = getDefaultFrontDoorPos();
     }
-    window.__aiVoiceSpeak?.("Ворота встали. Зажимайте и тащите мышкой по модели — ставьте где удобно. Для длинных зданий часто имеет смысл двое ворот с разных сторон. Высота ворот зависит от транспорта: Газели хватит 3,5 метра, фуре — уже 4,5–5 метров.");
+    window.__aiVoiceSpeakAfter?.("Ворота встали. Зажимайте и тащите мышкой по модели — ставьте где удобно. Для длинных зданий часто имеет смысл двое ворот с разных сторон. Высота ворот зависит от транспорта: Газели хватит 3,5 метра, фуре — уже 4,5–5 метров.");
   } else {
     state.gateSelected = false;
   }
@@ -771,7 +771,7 @@ els.doorFront?.addEventListener("change", () => {
     state.selectedDoor = "front";
     state.selectedWindowId = null;
     state.gateSelected = false;
-    window.__aiVoiceSpeak?.("Дверь рядом с воротами — тоже перетаскивается. Обычно ставим для быстрого доступа не открывая основные ворота.");
+    window.__aiVoiceSpeakAfter?.("Дверь рядом с воротами — тоже перетаскивается. Обычно ставим для быстрого доступа не открывая основные ворота.");
   } else if (state.selectedDoor === "front") {
     state.selectedDoor = null;
   }
@@ -786,7 +786,7 @@ for (const btn of els.doorWallBtns) {
     state.selectedWindowId = null;
     state.gateSelected = false;
     syncAll(true);
-    window.__aiVoiceSpeak?.("Боковая дверь готова. Тащите вдоль стены и ставьте где логично. Персонал заходит отдельно от ворот — мелочь, а работать комфортнее.");
+    window.__aiVoiceSpeakAfter?.("Боковая дверь готова. Тащите вдоль стены и ставьте где логично. Персонал заходит отдельно от ворот — мелочь, а работать комфортнее.");
   });
 }
 
@@ -799,7 +799,7 @@ if (els.ribbonGlazing) {
   els.ribbonGlazing.addEventListener("change", () => {
     state.ribbonGlazing = els.ribbonGlazing.checked;
     if (state.ribbonGlazing) {
-      window.__aiVoiceSpeak?.("Ленточное остекление — сплошная полоса окон на всю длину. Смотрится дорого, света валом. Выбирайте сторону: слева, справа или обе.");
+      window.__aiVoiceSpeakAfter?.("Ленточное остекление — сплошная полоса окон на всю длину. Смотрится дорого, света валом. Выбирайте сторону: слева, справа или обе.");
     }
     syncAll(true);
   });
