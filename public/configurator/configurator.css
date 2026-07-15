@@ -72,6 +72,15 @@ body {
   }
 }
 
+.sidebar-logo {
+  margin-bottom: 1rem;
+}
+.sidebar-logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
 .sidebar-head {
   margin-bottom: 1.35rem;
 }

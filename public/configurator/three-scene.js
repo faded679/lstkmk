@@ -1491,38 +1491,6 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
 
   }
 
-  // Makstal logo — always visible on building
-  {
-    const logoW = Math.min(width * 0.4, 7);
-    const logoH = logoW * 0.28;
-    const logoY = height * 0.72;
-    const thick2 = showSandwich ? 0.12 : 0;
-    if (!window.__makstilLogoTex) {
-      const loader = new THREE.TextureLoader();
-      window.__makstilLogoTex = loader.load("/logo-makstil-new.png");
-      window.__makstilLogoTex.colorSpace = THREE.SRGBColorSpace;
-    }
-    const logoMat = new THREE.MeshBasicMaterial({
-      map: window.__makstilLogoTex,
-      transparent: true,
-      depthWrite: false,
-    });
-
-    // Front wall logo
-    const frontLogoZ = startZ - thick2 / 2 - 0.03;
-    const frontLogo = new THREE.Mesh(new THREE.PlaneGeometry(logoW, logoH), logoMat);
-    frontLogo.position.set(0, logoY, frontLogoZ);
-    group.add(frontLogo);
-
-    // Left side wall logo (visible from default camera)
-    const sideLogoW = Math.min(totalLen * 0.25, 8);
-    const sideLogoH = sideLogoW * 0.28;
-    const sideLogoMat = logoMat.clone();
-    const sideLogo = new THREE.Mesh(new THREE.PlaneGeometry(sideLogoW, sideLogoH), sideLogoMat);
-    sideLogo.rotation.y = Math.PI / 2;
-    sideLogo.position.set(-halfW - thick2 / 2 - 0.03, logoY, 0);
-    group.add(sideLogo);
-  }
 }
 
 function disposeObject3D(obj) {
