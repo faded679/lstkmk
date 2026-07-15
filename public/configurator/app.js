@@ -583,7 +583,7 @@ function buildRoofColorGrid() {
     btn.addEventListener("click", () => {
       state.roofColor = c.value;
       syncAll(true);
-      _debouncedVoice("Кровля перекрашена. Светлый верх — летом прохладнее, тёмный — смотрится строже.");
+      _debouncedVoice("Кровля перекрашена. Светлый верх — летом прохладнее, тёмный — смотрится строже. Нет вашего RAL в списке? Закажем индивидуально.");
     });
     els.roofColorGrid.appendChild(btn);
   }
@@ -601,7 +601,7 @@ function buildColorGrid() {
     btn.addEventListener("click", () => {
       state.wallColor = c.value;
       syncAll(true);
-      _debouncedVoice("Цвет стен сменили. Примеряйте смело — сэндвичи красим в любой РАЛ под заказ.");
+      _debouncedVoice("Цвет стен сменили. Примеряйте смело — это не окончательно. Сэндвичи красим в любой RAL под заказ — даже если вашего оттенка нет в палитре, найдём.");
     });
     els.colorGrid.appendChild(btn);
   }
@@ -755,7 +755,7 @@ els.gate.addEventListener("change", () => {
     if (state.showFrontDoor) {
       state.frontDoorPos = getDefaultFrontDoorPos();
     }
-    window.__aiVoiceSpeak?.("Ворота встали. Зажимайте и тащите мышкой по модели — ставьте где удобно.");
+    window.__aiVoiceSpeak?.("Ворота встали. Зажимайте и тащите мышкой по модели — ставьте где удобно. Для длинных зданий часто имеет смысл двое ворот с разных сторон. Высота ворот зависит от транспорта: Газели хватит 3,5 метра, фуре — уже 4,5–5 метров.");
   } else {
     state.gateSelected = false;
   }
@@ -1023,36 +1023,48 @@ async function exportToPdf() {
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
 
-  // Header
-  pdf.setFillColor(30, 41, 59);
-  pdf.rect(0, 0, pageW, 22, "F");
-  pdf.setTextColor(255, 255, 255);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(16);
-  pdf.text("MAKSTIL", 14, 13);
-  pdf.setFontSize(9);
-  pdf.setFont("helvetica", "normal");
-  pdf.text("3D-конфигуратор быстровозводимого здания", 14, 18);
-  pdf.text("+7 (960) 632-20-61", pageW - 14, 13, { align: "right" });
-  pdf.text("www.makstil.ru", pageW - 14, 18, { align: "right" });
+  // Helper: render text block to canvas image for Cyrillic support
+  function textToImage(texts, canvasW, canvasH, bgColor) {
+    const c = document.createElement("canvas");
+    c.width = canvasW;
+    c.height = canvasH;
+    const ctx = c.getContext("2d");
+    if (bgColor) { ctx.fillStyle = bgColor; ctx.fillRect(0, 0, canvasW, canvasH); }
+    for (const t of texts) {
+      ctx.fillStyle = t.color || "#fff";
+      ctx.font = t.font || "16px Inter, sans-serif";
+      ctx.textAlign = t.align || "left";
+      const x = t.align === "right" ? canvasW - (t.x || 0) : (t.x || 0);
+      ctx.fillText(t.text, x, t.y || 0);
+    }
+    return c.toDataURL("image/png");
+  }
+
+  // Header as canvas image
+  const hdrScale = 3;
+  const hdrW = Math.round(pageW * hdrScale);
+  const hdrH = Math.round(22 * hdrScale);
+  const quizData = window.__quizData || {};
+
+  const headerImg = textToImage([
+    { text: "MAKSTIL", font: `bold ${16 * hdrScale}px Inter, sans-serif`, color: "#fff", x: 14 * hdrScale, y: 15 * hdrScale },
+    { text: "3D-конфигуратор быстровозводимого здания", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#cbd5e1", x: 14 * hdrScale, y: 20 * hdrScale },
+    { text: "+7 (960) 632-20-61", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#fff", x: 14 * hdrScale, y: 15 * hdrScale, align: "right" },
+    { text: "www.makstil.ru", font: `${9 * hdrScale}px Inter, sans-serif`, color: "#cbd5e1", x: 14 * hdrScale, y: 20 * hdrScale, align: "right" },
+  ], hdrW, hdrH, "#1e293b");
+  pdf.addImage(headerImg, "PNG", 0, 0, pageW, 22);
 
   // 3D screenshot
   const margin = 14;
   const imgW = pageW - margin * 2;
   const imgH = pageH - 54;
-  pdf.addImage(imgData, "JPEG", margin, 28, imgW, imgH);
+  pdf.addImage(imgData, "JPEG", margin, 24, imgW, imgH);
 
-  // Parameters
-  const quizData = window.__quizData || {};
-  pdf.setTextColor(30, 41, 59);
-  pdf.setFontSize(10);
-  pdf.setFont("helvetica", "bold");
-  let y = pageH - 18;
+  // Footer parameters as canvas image
+  const ftrScale = 3;
+  const ftrW = Math.round(pageW * ftrScale);
+  const ftrH = Math.round(22 * ftrScale);
   const sizeText = `Размеры: ${state.width} × ${state.length} × ${state.height} м  |  Площадь: ${state.width * state.length} м²`;
-  pdf.text(sizeText, margin, y);
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(9);
-  y += 5;
   const extra = [];
   if (state.showSandwich) extra.push("сэндвич-панели");
   if (state.showGate) extra.push("ворота");
@@ -1062,7 +1074,12 @@ async function exportToPdf() {
   if (state.showWindows) extra.push("окна");
   if (state.ribbonGlazing) extra.push("ленточное остекление");
   if (quizData.city) extra.push(`г. ${quizData.city}`);
-  pdf.text(extra.join("  •  "), margin, y);
+
+  const footerImg = textToImage([
+    { text: sizeText, font: `bold ${10 * ftrScale}px Inter, sans-serif`, color: "#1e293b", x: 14 * ftrScale, y: 10 * ftrScale },
+    { text: extra.join("  •  "), font: `${9 * ftrScale}px Inter, sans-serif`, color: "#475569", x: 14 * ftrScale, y: 19 * ftrScale },
+  ], ftrW, ftrH, "#ffffff");
+  pdf.addImage(footerImg, "PNG", 0, pageH - 22, pageW, 22);
 
   pdf.save(`makstil-angar-${state.width}x${state.length}x${state.height}.pdf`);
 }

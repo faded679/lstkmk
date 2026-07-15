@@ -46,20 +46,24 @@ export async function POST(req: NextRequest) {
       }
     ).catch(err => console.error("Telegram error:", err));
 
-    // Дублируем заявку на mctender.ru только если не частичная
-    if (!partial) {
-      try {
-        const mcRes = await fetch("https://www.mctender.ru/api/leads/from-makstal", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: name || "", phone, comment: comment || "" }),
-        });
-        if (!mcRes.ok) {
-          console.error("MCTender responded with:", mcRes.status, await mcRes.text().catch(() => ""));
-        }
-      } catch (err) {
-        console.error("MCTender error:", err);
+    // Отправляем заявку на mctender.ru (partial или full)
+    try {
+      const mcRes = await fetch("https://www.mctender.ru/api/leads/from-makstal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: leadId,
+          name: name || "",
+          phone: phone || "не указан",
+          comment: comment || "",
+          partial: !!partial,
+        }),
+      });
+      if (!mcRes.ok) {
+        console.error("MCTender responded with:", mcRes.status, await mcRes.text().catch(() => ""));
       }
+    } catch (err) {
+      console.error("MCTender error:", err);
     }
 
     return NextResponse.json({ ok: true, id: leadId });

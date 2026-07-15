@@ -1488,6 +1488,25 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
       fixture.position.set(0, apexH - 0.3, fz);
       group.add(fixture);
     }
+
+    // Makstal logo on front wall
+    const logoW = Math.min(width * 0.35, 6);
+    const logoH = logoW * 0.3;
+    const logoY = height * 0.75;
+    const logoZ = startZ - thick / 2 - 0.02;
+    if (!window.__makstilLogoTex) {
+      const loader = new THREE.TextureLoader();
+      window.__makstilLogoTex = loader.load("/logo-makstil-new.png");
+      window.__makstilLogoTex.colorSpace = THREE.SRGBColorSpace;
+    }
+    const logoMat = new THREE.MeshBasicMaterial({
+      map: window.__makstilLogoTex,
+      transparent: true,
+      depthWrite: false,
+    });
+    const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(logoW, logoH), logoMat);
+    logoPlane.position.set(0, logoY, logoZ);
+    group.add(logoPlane);
   }
 }
 

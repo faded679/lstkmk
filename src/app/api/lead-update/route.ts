@@ -39,15 +39,17 @@ export async function PATCH(req: NextRequest) {
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: "HTML" }),
       }).catch(() => {});
 
-      // Sync to mctender only on final submission
-      if (final && updated?.phone) {
+      // Sync to mctender on every update (progressive lead building)
+      if (updated) {
         fetch("https://www.mctender.ru/api/leads/from-makstal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            id: leadId,
             name: updated.name || "",
-            phone: updated.phone,
+            phone: updated.phone || "не указан",
             comment: updated.comment || "",
+            partial: !final,
           }),
         }).catch(() => {});
       }
