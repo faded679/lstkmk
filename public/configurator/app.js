@@ -66,7 +66,7 @@ const els = {
   heightVal: $("height-val"),
   columnStepVal: $("column-step-val"),
   columnStepInput: $("column-step-input"),
-  stepBtns: document.querySelectorAll(".step-btn"),
+  stepBtns: document.querySelectorAll(".step-btn[data-step]"),
   sandwich: $("sandwich"),
   openingsSection: $("openings-section"),
   windows: $("windows"),

@@ -74,25 +74,30 @@ body {
 
 .sidebar-logo {
   margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 }
 .sidebar-logo img {
   height: 32px;
   width: auto;
   display: block;
 }
-.sidebar-phone {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--accent);
+.canvas-phone {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(30,41,59,0.72);
+  padding: 4px 14px;
+  border-radius: 6px;
   text-decoration: none;
   white-space: nowrap;
+  z-index: 5;
+  backdrop-filter: blur(4px);
 }
-.sidebar-phone:hover {
-  text-decoration: underline;
+.canvas-phone:hover {
+  background: rgba(30,41,59,0.92);
 }
 
 .sidebar-head {
