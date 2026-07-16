@@ -287,4 +287,41 @@
   setTimeout(() => {
     setupPhase2Trigger();
   }, 1000);
+
+  // --- Idle roaming helper: speaks hints when user is inactive ---
+  const _idleHints = [
+    "Попробуйте раздвинуть ширину — увидите как меняется силуэт здания в реальном времени.",
+    "Включите сэндвич-панели — появится цвет, ворота, двери и окна. Совсем другой вид!",
+    "Кран-балка превращает ангар в полноценный производственный цех. Включите и посмотрите.",
+    "Нажмите «Изнутри» внизу сцены — увидите здание глазами того, кто внутри будет работать.",
+    "Двигайте ворота прямо по стене — зажмите и потяните мышкой.",
+    "Ленточное остекление — раз, и фасад выглядит как бизнес-центр. Попробуйте в разделе окна.",
+    "Хотите быстрый расчёт? Нажмите «Получить расчёт» — ответим в течение 15 минут.",
+    "Односкатная крыша — современный стиль. Переключите тип кровли в разделе Размеры.",
+  ];
+  let _idleIndex = 0;
+  let _idleTimer = null;
+  const IDLE_DELAY = 30000;
+
+  function _resetIdle() {
+    clearTimeout(_idleTimer);
+    _idleTimer = setTimeout(_speakIdleHint, IDLE_DELAY);
+  }
+
+  function _speakIdleHint() {
+    if (muted || _isSpeaking || currentAudio) { _resetIdle(); return; }
+    const hint = _idleHints[_idleIndex % _idleHints.length];
+    _idleIndex++;
+    showBubble("Подсказка", hint);
+    speak(hint);
+    // Next hint after longer delay
+    _idleTimer = setTimeout(_speakIdleHint, 60000);
+  }
+
+  // Track user activity to reset idle timer
+  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(evt => {
+    document.addEventListener(evt, _resetIdle, { passive: true });
+  });
+  // Start idle timer after scene loads
+  setTimeout(_resetIdle, 8000);
 })();

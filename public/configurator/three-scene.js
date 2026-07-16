@@ -1292,9 +1292,26 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     return m;
   }
 
-  const foundationMat = new THREE.MeshStandardMaterial({ color: 0xa3a8af, roughness: 0.9, metalness: 0.04 });
-  const foundationH = 0.45;
-  box(width + 1.4, foundationH, totalLen + 1.4, foundationMat, 0, foundationH / 2, 0);
+  // Foundation: columnar footings under each column + beams between them
+  const foundationMat = new THREE.MeshStandardMaterial({ color: 0x8a8e94, roughness: 0.92, metalness: 0.02 });
+  const footingSize = 0.9;
+  const footingH = 0.35;
+  const beamW = 0.35;
+  const beamH = 0.5;
+
+  for (let i = 0; i <= frameCount; i++) {
+    const z = startZ + i * columnStep;
+    // Left footing
+    box(footingSize, footingH, footingSize, foundationMat, -halfW, footingH / 2, z);
+    // Right footing
+    box(footingSize, footingH, footingSize, foundationMat, halfW, footingH / 2, z);
+  }
+  // Foundation beams along left and right walls
+  box(beamW, beamH, totalLen, foundationMat, -halfW, beamH / 2, 0);
+  box(beamW, beamH, totalLen, foundationMat, halfW, beamH / 2, 0);
+  // Foundation beams along front and back end walls
+  box(width, beamH, beamW, foundationMat, 0, beamH / 2, startZ);
+  box(width, beamH, beamW, foundationMat, 0, beamH / 2, startZ + totalLen);
 
   const rightColH = isMono ? apexH : height;
 
