@@ -382,9 +382,9 @@ function getParams() {
 
 function updateStats() {
   const frames = Math.ceil(state.length / state.columnStep);
-  els.statColumns.textContent = String(frames + 1);
-  els.statFrames.textContent = String(frames);
-  els.statArea.textContent = String(state.width * state.length);
+  if (els.statColumns) els.statColumns.textContent = String(frames + 1);
+  if (els.statFrames) els.statFrames.textContent = String(frames);
+  if (els.statArea) els.statArea.textContent = String(state.width * state.length);
 }
 
 function updateConditionalUI() {
