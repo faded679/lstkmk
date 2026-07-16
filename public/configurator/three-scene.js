@@ -1139,13 +1139,17 @@ function buildCraneBeam(group, box, width, height, totalLen, halfW) {
 function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
   const { mezzWall = "front", mezzHeight = 2.6, mezzDepthPct = 36, columnStep = 6 } = opts;
   const mezzY = mezzHeight;
-  const mezzDepth = totalLen * (mezzDepthPct / 100);
   const isFront = mezzWall !== "back";
   const halfLen = totalLen / 2;
 
+  // Mezzanine depth is a multiple of columnStep so its inner edge ends at a building column row
+  const rawDepth = totalLen * (mezzDepthPct / 100);
+  const bayCount = Math.max(1, Math.round(rawDepth / columnStep));
+  const mezzDepth = bayCount * columnStep;
+
   // Mezzanine at building end: spans full width, depth into building along Z
-  const outerZ = isFront ? -halfLen + 0.3 : halfLen - 0.3;
-  const innerZ = isFront ? -halfLen + mezzDepth : halfLen - mezzDepth;
+  const outerZ = isFront ? -halfLen : halfLen;
+  const innerZ = isFront ? outerZ + mezzDepth : outerZ - mezzDepth;
   const mezzCenterZ = (outerZ + innerZ) / 2;
   const deckLen = Math.abs(innerZ - outerZ);
 
@@ -1156,23 +1160,35 @@ function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
   // Floor deck — spans full building width, depth from end wall
   box(width - 0.6, 0.14, deckLen, deckMat, 0, mezzY, mezzCenterZ);
 
-  // Columns every 6m (columnStep) along the width (X axis), on outer and inner Z edges
-  const frameCount = Math.ceil(width / columnStep);
+  const xFrameCount = Math.ceil(width / columnStep);
   const startX = -width / 2;
-  for (let i = 0; i <= frameCount; i++) {
-    const x = startX + i * columnStep;
-    const clampedX = Math.min(x, width / 2);
-    // Inner row of columns (open edge inside building)
-    box(0.16, mezzY, 0.16, postMat, clampedX, mezzY / 2, innerZ);
-    // Outer row of columns (against end wall)
-    box(0.16, mezzY, 0.16, postMat, clampedX, mezzY / 2, outerZ);
-    // Cross beams between columns at mezzanine level
-    box(0.1, 0.12, deckLen, postMat, clampedX, mezzY - 0.08, mezzCenterZ);
+
+  // Complete column grid under mezzanine: X lines every columnStep, Z bays from outerZ to innerZ
+  for (let xi = 0; xi <= xFrameCount; xi++) {
+    const x = Math.min(startX + xi * columnStep, width / 2);
+    for (let zi = 0; zi <= bayCount; zi++) {
+      const z = isFront ? outerZ + zi * columnStep : outerZ - zi * columnStep;
+      box(0.16, mezzY, 0.16, postMat, x, mezzY / 2, z);
+      // Cross beam to the next Z-bay
+      if (zi < bayCount) {
+        const nextZ = isFront ? z + columnStep : z - columnStep;
+        const midZ = (z + nextZ) / 2;
+        box(0.1, 0.12, columnStep, postMat, x, mezzY - 0.08, midZ);
+      }
+    }
   }
 
-  // Longitudinal beams along inner and outer Z edges
-  box(0.18, 0.18, deckLen, postMat, -width / 2 + 0.1, mezzY - 0.1, mezzCenterZ);
-  box(0.18, 0.18, deckLen, postMat, width / 2 - 0.1, mezzY - 0.1, mezzCenterZ);
+  // Longitudinal beams between X column lines
+  for (let zi = 0; zi <= bayCount; zi++) {
+    const z = isFront ? outerZ + zi * columnStep : outerZ - zi * columnStep;
+    for (let xi = 0; xi < xFrameCount; xi++) {
+      const x1 = Math.min(startX + xi * columnStep, width / 2);
+      const x2 = Math.min(startX + (xi + 1) * columnStep, width / 2);
+      const midX = (x1 + x2) / 2;
+      const spanX = Math.min(columnStep, x2 - x1);
+      box(spanX, 0.14, 0.12, postMat, midX, mezzY - 0.1, z);
+    }
+  }
 
   // Railing on the inner (open) edge
   box(width - 0.6, 1.0, 0.06, railMat, 0, mezzY + 0.55, innerZ);
