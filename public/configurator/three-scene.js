@@ -1476,7 +1476,8 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
 
   if (showSandwich) {
     const thick = 0.12;
-    const wallMat = createSandwichMaterial(wallColor, totalLen, height);
+    const wallMatLeft = createSandwichMaterial(wallColor, totalLen, height);
+    const wallMatRight = createSandwichMaterial(wallColor, totalLen, rightColH);
     const endWallMat = createSandwichMaterial(wallColor, width, height);
     const roofMat = createRoofMaterial(roofColor, totalLen, 6);
     const { gateW, gateH } = getGateSize(width, height);
@@ -1502,15 +1503,15 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     } else if ((showWindows && leftWins.length > 0) || leftDoor) {
       buildSideWallWithWindows(group, -halfW - thick / 2, startZ, totalLen, height, thick, wallColor, glassMat, leftWins, pickables, selectedWindowId, true, leftDoor, selectedDoor === "side" && sideDoorWall === "left", "left");
     } else {
-      addSideWallPlane(group, -halfW - thick / 2, height / 2, 0, totalLen, height, wallMat, true);
+      addSideWallPlane(group, -halfW - thick / 2, height / 2, 0, totalLen, height, wallMatLeft, true);
     }
 
     if (ribbonRight) {
-      buildRibbonGlazingWall(group, halfW + thick / 2, startZ, totalLen, height, thick, wallColor, columnStep, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right", pickables);
+      buildRibbonGlazingWall(group, halfW + thick / 2, startZ, totalLen, rightColH, thick, wallColor, columnStep, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right", pickables);
     } else if ((showWindows && rightWins.length > 0) || rightDoor) {
-      buildSideWallWithWindows(group, halfW + thick / 2, startZ, totalLen, height, thick, wallColor, glassMat, rightWins, pickables, selectedWindowId, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right");
+      buildSideWallWithWindows(group, halfW + thick / 2, startZ, totalLen, rightColH, thick, wallColor, glassMat, rightWins, pickables, selectedWindowId, false, rightDoor, selectedDoor === "side" && sideDoorWall === "right", "right");
     } else {
-      addSideWallPlane(group, halfW + thick / 2, height / 2, 0, totalLen, height, wallMat, false);
+      addSideWallPlane(group, halfW + thick / 2, rightColH / 2, 0, totalLen, rightColH, wallMatRight, false);
     }
 
     buildEndWall(
@@ -1554,10 +1555,13 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
 
     const fixtureCount = Math.ceil(totalLen / columnStep);
     const fixtureMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffee, emissiveIntensity: 0.8, roughness: 0.3 });
+    // Roof underside height at x=0: mono roof is a single slope (low at -halfW, high at +halfW),
+    // so the ceiling at the building's center is midway between eave and ridge, not at apexH.
+    const roofYAtCenter = isMono ? height + (apexH - height) * 0.5 : apexH;
     for (let f = 0; f < fixtureCount; f++) {
       const fz = startZ + thick + (f + 0.5) * ((totalLen - thick * 2) / fixtureCount);
       const fixture = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 1.2), fixtureMat);
-      fixture.position.set(0, apexH - 0.3, fz);
+      fixture.position.set(0, roofYAtCenter - 0.3, fz);
       group.add(fixture);
     }
 
