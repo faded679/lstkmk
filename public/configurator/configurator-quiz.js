@@ -73,6 +73,48 @@
       voiceText: "Участок уже выбрали или только присматриваетесь?",
     },
     {
+      id: "slope",
+      type: "choice",
+      question: "Есть ли уклон на участке?",
+      field: "siteSlope",
+      options: [
+        { value: "flat", label: "Ровный участок" },
+        { value: "slope", label: "Есть уклон" },
+        { value: "unknown", label: "Не знаю" },
+      ],
+      required: true,
+      voiceText: "Участок ровный или есть уклон? Это влияет на фундамент и земляные работы.",
+      showIf: (d) => d.siteStatus === "have",
+    },
+    {
+      id: "water-drainage",
+      type: "choice",
+      question: "Нужен ли отвод воды от здания?",
+      field: "waterDrainage",
+      options: [
+        { value: "yes", label: "Да, нужен" },
+        { value: "no", label: "Нет" },
+        { value: "consult", label: "Обсудить со специалистом" },
+      ],
+      required: true,
+      voiceText: "После постройки важно отвести воду от здания. Нужен отвод воды или обсудите со специалистом?",
+      showIf: (d) => d.siteStatus === "have",
+    },
+    {
+      id: "geology",
+      type: "choice",
+      question: "Есть ли данные о геологии участка?",
+      field: "geology",
+      options: [
+        { value: "have", label: "Есть геологический разрез" },
+        { value: "no", label: "Нет данных" },
+        { value: "consult", label: "Нужна помощь" },
+      ],
+      required: true,
+      voiceText: "Для расчёта фундамента нужен геологический разрез. Есть данные о грунтах или нужна помощь?",
+      showIf: (d) => d.siteStatus === "have",
+    },
+    {
       id: "deadline",
       type: "choice",
       question: "Когда планируете построить?",
@@ -357,6 +399,14 @@
 
       if (this.currentStep < steps.length - 1) {
         this.currentStep++;
+        // Skip steps whose showIf condition is not met
+        while (this.currentStep < steps.length && steps[this.currentStep].showIf && !steps[this.currentStep].showIf(this.data)) {
+          this.currentStep++;
+        }
+        if (this.currentStep >= steps.length) {
+          this._finishPhase();
+          return;
+        }
         this._renderStep();
         this._speakQuestion();
       } else {
@@ -444,6 +494,10 @@
           const welcomeText = `Так, ${name}, ${city} — отличное место для стройки, снеговые и ветровые уже учли. Под ${bt} у нас есть готовые проверенные решения. Сейчас соберём ваш будущий объект: размеры, оснащение, внешний вид — всё настраивается за пару минут. Поехали!`;
           if (window.__aiVoiceSpeak) window.__aiVoiceSpeak(welcomeText);
           if (window.__aiVoiceShowBubble) window.__aiVoiceShowBubble("Помощник", welcomeText);
+        } else if (this.currentPhase === 2) {
+          const notIncluded = "Важно: внутренняя лестница, обрамление окон и ворот, земляные работы и фундамент — в конфигуратор не входят. Это считается отдельно. Специалист обсудит с вами все детали и подберёт оптимальное решение. Когда будете готовы — нажмите «Получить расчёт».";
+          if (window.__aiVoiceSpeakAfter) window.__aiVoiceSpeakAfter(notIncluded);
+          if (window.__aiVoiceShowBubble) window.__aiVoiceShowBubble("Помощник", notIncluded);
         } else {
           const msg = "Хорошо! Когда будете готовы — нажмите «Получить расчёт».";
           if (window.__aiVoiceShowBubble) window.__aiVoiceShowBubble("Помощник", msg);

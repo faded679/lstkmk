@@ -52,6 +52,7 @@ const state = {
   selectedWindowId: null,
   ribbonGlazing: false,
   ribbonWall: "left",
+  roofType: "gable",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -656,6 +657,16 @@ els.columnStepInput.addEventListener("blur", () => {
   setColumnStep(els.columnStepInput.value, true);
 });
 
+// Roof type buttons
+const roofBtns = document.querySelectorAll("[data-roof]");
+for (const btn of roofBtns) {
+  btn.addEventListener("click", () => {
+    state.roofType = btn.dataset.roof;
+    for (const b of roofBtns) b.classList.toggle("active", b.dataset.roof === state.roofType);
+    syncAll(true);
+  });
+}
+
 els.sandwich.addEventListener("change", () => {
   state.showSandwich = els.sandwich.checked;
   if (state.showSandwich) setAccordionOpen("cladding", true);
@@ -683,7 +694,7 @@ els.mezzanine?.addEventListener("change", () => {
   state.showMezzanine = els.mezzanine.checked;
   if (state.showMezzanine) {
     setAccordionOpen("equipment", true);
-    window.__aiVoiceSpeakAfter?.("Антресоль — считай второй этаж почти бесплатно. Сторона, высота, глубина — настройте под себя. Впишется в проект с умом.");
+    window.__aiVoiceSpeakAfter?.("Антресоль добавлена. Колонны антресоли ставятся с шагом кратно 6 метров, сетка 6 на 6. Точный расчёт антресоли — отдельная задача, специалист поможет подобрать оптимальный вариант под вашу нагрузку.");
   }
   syncAll(true);
 });

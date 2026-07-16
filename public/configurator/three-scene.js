@@ -684,10 +684,10 @@ export class ConfiguratorScene {
     };
   }
 
-  update({ width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left" }) {
+  update({ width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left", roofType = "gable" }) {
     if (!this.sceneRef) return;
 
-    this._params = { width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall };
+    this._params = { width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall, roofType };
 
     const { buildingGroup, envGroup } = this.sceneRef;
 
@@ -698,7 +698,7 @@ export class ConfiguratorScene {
     }
     this._craneMobileGroup = null;
 
-    createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall);
+    createBuilding(buildingGroup, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows, columnStep, selectedWindowId, gateX, gateSelected, ribbonGlazing, ribbonWall, roofType);
 
     this._craneMobileGroup = buildingGroup.getObjectByName("crane-mobile") ?? null;
     if (this._craneMobileGroup) {
@@ -811,13 +811,21 @@ function isEndWall(wall) {
   return wall === "front" || wall === "back";
 }
 
-function buildSmoothGable(group, width, height, apexH, thick, mat, z) {
+function buildSmoothGable(group, width, height, apexH, thick, mat, z, isMono = false) {
   const halfW = width / 2;
   const shape = new THREE.Shape();
-  shape.moveTo(-halfW, height);
-  shape.lineTo(halfW, height);
-  shape.lineTo(0, apexH);
-  shape.closePath();
+  if (isMono) {
+    // Mono-pitch: triangle from left(height) rising to right(apexH)
+    shape.moveTo(-halfW, height);
+    shape.lineTo(halfW, height);
+    shape.lineTo(halfW, apexH);
+    shape.closePath();
+  } else {
+    shape.moveTo(-halfW, height);
+    shape.lineTo(halfW, height);
+    shape.lineTo(0, apexH);
+    shape.closePath();
+  }
 
   const geo = new THREE.ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false });
   geo.translate(0, 0, -thick / 2);
@@ -928,9 +936,9 @@ function buildSwingDoor(group, box, cx, cz, thick, doorW, doorH, doorSelected, w
   }
 }
 
-function buildEndWall(group, box, width, height, apexH, thick, wallMat, z, showGate, gateX, gateW, gateH, gateSelected, showDoor = false, doorX = 0, doorW = 1, doorH = 2, doorSelected = false, wall = "front") {
+function buildEndWall(group, box, width, height, apexH, thick, wallMat, z, showGate, gateX, gateW, gateH, gateSelected, showDoor = false, doorX = 0, doorW = 1, doorH = 2, doorSelected = false, wall = "front", isMono = false) {
   const halfW = width / 2;
-  buildSmoothGable(group, width, height, apexH, thick, wallMat, z);
+  buildSmoothGable(group, width, height, apexH, thick, wallMat, z, isMono);
 
   if (!showGate && !showDoor) {
     box(width, height, thick, wallMat, 0, height / 2, z);
@@ -1258,9 +1266,10 @@ function buildRibbonGlazingWall(group, wallX, startZ, totalLen, height, thick, w
   }
 }
 
-function createBuilding(group, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left") {
+function createBuilding(group, width, length, height, showSandwich, wallColor, roofColor, showWindows, showGate, showSideDoor, sideDoorWall, sideDoorPos, showFrontDoor, frontDoorPos, selectedDoor, showCraneBeam, showMezzanine, mezzWall, mezzHeight, mezzDepthPct, mezzLengthPct, mezzPosZ, windows = [], columnStep = 6, selectedWindowId = null, gateX = 0, gateSelected = false, ribbonGlazing = false, ribbonWall = "left", roofType = "gable") {
   const roofPitch = Math.tan((6 * Math.PI) / 180);
-  const apexH = height + (width / 2) * roofPitch;
+  const isMono = roofType === "mono";
+  const apexH = isMono ? height + width * roofPitch : height + (width / 2) * roofPitch;
   const halfW = width / 2;
 
   const steelMat = new THREE.MeshStandardMaterial({ color: 0x8b9299, roughness: 0.35, metalness: 0.85 });
@@ -1287,35 +1296,46 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
   const foundationH = 0.45;
   box(width + 1.4, foundationH, totalLen + 1.4, foundationMat, 0, foundationH / 2, 0);
 
+  const rightColH = isMono ? apexH : height;
+
   for (let i = 0; i <= frameCount; i++) {
     const z = startZ + i * columnStep;
 
     box(0.2, height, 0.15, steelMat, -halfW, height / 2, z);
-    box(0.2, height, 0.15, steelMat, halfW, height / 2, z);
+    box(0.2, rightColH, 0.15, steelMat, halfW, rightColH / 2, z);
 
     box(0.4, 0.06, 0.3, boltMat, -halfW, 0.03, z);
     box(0.4, 0.06, 0.3, boltMat, halfW, 0.03, z);
 
-    {
-      const dx = halfW;
+    if (isMono) {
+      // Mono-pitch: single rafter from left (height) to right (apexH)
+      const dx = width;
       const dy = apexH - height;
       const rafLen = Math.sqrt(dx * dx + dy * dy);
       const angle = Math.atan2(dy, dx);
-      const midX = -halfW + dx / 2;
-      const midY = height + dy / 2;
-      box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, angle);
+      box(rafLen, 0.18, 0.12, steelMat, 0, height + dy / 2, z, 0, 0, angle);
+    } else {
+      // Gable: two symmetric rafters
+      {
+        const dx = halfW;
+        const dy = apexH - height;
+        const rafLen = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        const midX = -halfW + dx / 2;
+        const midY = height + dy / 2;
+        box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, angle);
+      }
+      {
+        const dx = halfW;
+        const dy = apexH - height;
+        const rafLen = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        const midX = halfW - dx / 2;
+        const midY = height + dy / 2;
+        box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, -angle);
+      }
+      box(0.25, 0.25, 0.15, boltMat, 0, apexH, z);
     }
-    {
-      const dx = halfW;
-      const dy = apexH - height;
-      const rafLen = Math.sqrt(dx * dx + dy * dy);
-      const angle = Math.atan2(dy, dx);
-      const midX = halfW - dx / 2;
-      const midY = height + dy / 2;
-      box(rafLen, 0.18, 0.12, steelMat, midX, midY, z, 0, 0, -angle);
-    }
-
-    box(0.25, 0.25, 0.15, boltMat, 0, apexH, z);
 
     // Rigel — horizontal beam connecting the tops of both columns
     box(width, 0.12, 0.12, steelMat, 0, height, z);
@@ -1329,7 +1349,19 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
   }
 
   const roofPurlinCount = 4;
-  {
+  if (isMono) {
+    const dx = width;
+    const dy = apexH - height;
+    const angle = Math.atan2(dy, dx);
+    for (let p = 1; p <= roofPurlinCount; p++) {
+      const t = p / (roofPurlinCount + 1);
+      const lx = -halfW + dx * t;
+      const ly = height + dy * t;
+      box(0.06, 0.06, totalLen, purlinMat, lx, ly, 0, 0, 0, angle);
+    }
+    // Ridge at top (right side)
+    box(0.1, 0.1, totalLen, steelMat, halfW, apexH, 0);
+  } else {
     const dx = halfW;
     const dy = apexH - height;
     const angle = Math.atan2(dy, dx);
@@ -1340,9 +1372,8 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
       box(0.06, 0.06, totalLen, purlinMat, lx, ly, 0, 0, 0, angle);
       box(0.06, 0.06, totalLen, purlinMat, -lx, ly, 0, 0, 0, -angle);
     }
+    box(0.1, 0.1, totalLen, steelMat, 0, apexH, 0);
   }
-
-  box(0.1, 0.1, totalLen, steelMat, 0, apexH, 0);
 
   for (const span of [0, frameCount - 1]) {
     const z0 = startZ + span * columnStep;
@@ -1359,7 +1390,9 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
   for (const endZ of [startZ, startZ + totalLen]) {
     for (let c = 1; c <= endColCount; c++) {
       const cx = -halfW + c * (width / (endColCount + 1));
-      const colHeight = height + (halfW - Math.abs(cx)) * roofPitch;
+      const colHeight = isMono
+        ? height + (cx + halfW) * roofPitch
+        : height + (halfW - Math.abs(cx)) * roofPitch;
       box(0.15, colHeight, 0.15, steelMat, cx, colHeight / 2, endZ);
       box(0.3, 0.05, 0.3, boltMat, cx, 0.025, endZ);
     }
@@ -1370,24 +1403,40 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
       box(width, 0.06, 0.08, purlinMat, 0, y, endZ);
     }
 
-    const dx = halfW;
-    const dy = apexH - height;
-    const rafAngle = Math.atan2(dy, dx);
-    const rafLen = Math.sqrt(dx * dx + dy * dy);
-    box(rafLen, 0.12, 0.1, steelMat, -dx / 2, height + dy / 2, endZ, 0, 0, rafAngle);
-    box(rafLen, 0.12, 0.1, steelMat, dx / 2, height + dy / 2, endZ, 0, 0, -rafAngle);
+    if (isMono) {
+      const dx = width;
+      const dy = apexH - height;
+      const rafAngle = Math.atan2(dy, dx);
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      box(rafLen, 0.12, 0.1, steelMat, 0, height + dy / 2, endZ, 0, 0, rafAngle);
 
-    const frontPurlinCount = 3;
-    for (let p = 1; p <= frontPurlinCount; p++) {
-      const t = p / (frontPurlinCount + 1);
-      const lx = -halfW + dx * t;
-      const ly = height + dy * t;
-      box(0.08, 0.06, 0.08, purlinMat, lx, ly, endZ);
-      box(0.08, 0.06, 0.08, purlinMat, -lx, ly, endZ);
+      const frontPurlinCount = 3;
+      for (let p = 1; p <= frontPurlinCount; p++) {
+        const t = p / (frontPurlinCount + 1);
+        const lx = -halfW + dx * t;
+        const ly = height + dy * t;
+        box(0.08, 0.06, 0.08, purlinMat, lx, ly, endZ);
+      }
+      addDiag(group, -halfW, 0, endZ, halfW, apexH, endZ, 0.05, steelMat);
+    } else {
+      const dx = halfW;
+      const dy = apexH - height;
+      const rafAngle = Math.atan2(dy, dx);
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      box(rafLen, 0.12, 0.1, steelMat, -dx / 2, height + dy / 2, endZ, 0, 0, rafAngle);
+      box(rafLen, 0.12, 0.1, steelMat, dx / 2, height + dy / 2, endZ, 0, 0, -rafAngle);
+
+      const frontPurlinCount = 3;
+      for (let p = 1; p <= frontPurlinCount; p++) {
+        const t = p / (frontPurlinCount + 1);
+        const lx = -halfW + dx * t;
+        const ly = height + dy * t;
+        box(0.08, 0.06, 0.08, purlinMat, lx, ly, endZ);
+        box(0.08, 0.06, 0.08, purlinMat, -lx, ly, endZ);
+      }
+      addDiag(group, -halfW, 0, endZ, 0, apexH, endZ, 0.05, steelMat);
+      addDiag(group, halfW, 0, endZ, 0, apexH, endZ, 0.05, steelMat);
     }
-
-    addDiag(group, -halfW, 0, endZ, 0, apexH, endZ, 0.05, steelMat);
-    addDiag(group, halfW, 0, endZ, 0, apexH, endZ, 0.05, steelMat);
   }
 
   box(0.1, 0.08, totalLen, steelMat, -halfW, 0.12, 0);
@@ -1450,9 +1499,9 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     buildEndWall(
       group, box, width, height, apexH, thick, endWallMat, frontZ,
       showGate, clampedGateX, gateW, gateH, gateSelected,
-      showFrontDoor, clampedFrontDoorPos, doorW, doorH, selectedDoor === "front", "front"
+      showFrontDoor, clampedFrontDoorPos, doorW, doorH, selectedDoor === "front", "front", isMono
     );
-    buildEndWall(group, box, width, height, apexH, thick, endWallMat, backZ, false, 0, gateW, gateH, false, false, 0, doorW, doorH, false, "back");
+    buildEndWall(group, box, width, height, apexH, thick, endWallMat, backZ, false, 0, gateW, gateH, false, false, 0, doorW, doorH, false, "back", isMono);
 
     const trimT = 0.07;
     for (const z of [frontZ, backZ]) {
@@ -1462,16 +1511,22 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
     box(width + thick * 2 + trimT * 2, trimT, trimT, trimMat, 0, height + trimT / 2, frontZ);
     box(width + thick * 2 + trimT * 2, trimT, trimT, trimMat, 0, height + trimT / 2, backZ);
 
-    {
+    if (isMono) {
+      const dx = width;
+      const dy = apexH - height;
+      const rafLen = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx);
+      box(rafLen, thick, totalLen, roofMat, 0, height + dy / 2, 0, 0, 0, angle);
+      box(0.2, 0.15, totalLen, steelMat, halfW, apexH + thick / 2, 0);
+    } else {
       const dx = halfW;
       const dy = apexH - height;
       const rafLen = Math.sqrt(dx * dx + dy * dy);
       const angle = Math.atan2(dy, dx);
       box(rafLen, thick, totalLen, roofMat, -dx / 2, height + dy / 2, 0, 0, 0, angle);
       box(rafLen, thick, totalLen, roofMat, dx / 2, height + dy / 2, 0, 0, 0, -angle);
+      box(0.2, 0.15, totalLen, steelMat, 0, apexH + thick / 2, 0);
     }
-
-    box(0.2, 0.15, totalLen, steelMat, 0, apexH + thick / 2, 0);
 
     const floorMat = new THREE.MeshStandardMaterial({ color: 0xc8c4b8, roughness: 0.85, metalness: 0 });
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(width - thick * 2, totalLen - thick * 2), floorMat);
