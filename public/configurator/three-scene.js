@@ -1137,53 +1137,52 @@ function buildCraneBeam(group, box, width, height, totalLen, halfW) {
 }
 
 function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
-  const { mezzWall = "front", mezzHeight = 2.6, mezzDepthPct = 36, mezzLengthPct = 100, columnStep = 6 } = opts;
+  const { mezzWall = "front", mezzHeight = 2.6, mezzDepthPct = 36, columnStep = 6 } = opts;
   const mezzY = mezzHeight;
-  const mezzLen = totalLen * (mezzLengthPct / 100);
-  const mezzDepth = width * (mezzDepthPct / 100);
+  const mezzDepth = totalLen * (mezzDepthPct / 100);
   const isFront = mezzWall !== "back";
   const halfLen = totalLen / 2;
 
-  // Mezzanine edge positions (along X — depth into building from wall)
-  const outerX = isFront ? -halfW + 0.3 : halfW - 0.3;
-  const innerX = isFront ? -halfW + mezzDepth : halfW - mezzDepth;
-  const mezzCenterX = (outerX + innerX) / 2;
-  const deckW = Math.abs(innerX - outerX);
+  // Mezzanine at building end: spans full width, depth into building along Z
+  const outerZ = isFront ? -halfLen + 0.3 : halfLen - 0.3;
+  const innerZ = isFront ? -halfLen + mezzDepth : halfLen - mezzDepth;
+  const mezzCenterZ = (outerZ + innerZ) / 2;
+  const deckLen = Math.abs(innerZ - outerZ);
 
   const deckMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.68, metalness: 0.42 });
   const railMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.38, metalness: 0.72 });
   const postMat = new THREE.MeshStandardMaterial({ color: 0x8b9299, roughness: 0.36, metalness: 0.84 });
 
-  // Floor deck — full length of building
-  box(deckW, 0.14, mezzLen, deckMat, mezzCenterX, mezzY, 0);
+  // Floor deck — spans full building width, depth from end wall
+  box(width - 0.6, 0.14, deckLen, deckMat, 0, mezzY, mezzCenterZ);
 
-  // Columns every 6m (columnStep) along the full length, on both outer and inner edges
-  const frameCount = Math.ceil(mezzLen / columnStep);
-  const startZ = -mezzLen / 2;
+  // Columns every 6m (columnStep) along the width (X axis), on outer and inner Z edges
+  const frameCount = Math.ceil(width / columnStep);
+  const startX = -width / 2;
   for (let i = 0; i <= frameCount; i++) {
-    const z = startZ + i * columnStep;
-    const clampedZ = Math.min(z, mezzLen / 2);
-    // Inner row of columns
-    box(0.16, mezzY, 0.16, postMat, innerX, mezzY / 2, clampedZ);
-    // Outer row of columns (against wall)
-    box(0.16, mezzY, 0.16, postMat, outerX, mezzY / 2, clampedZ);
-    // Cross beams between inner and outer columns at mezzanine level
-    box(deckW, 0.12, 0.1, postMat, mezzCenterX, mezzY - 0.08, clampedZ);
+    const x = startX + i * columnStep;
+    const clampedX = Math.min(x, width / 2);
+    // Inner row of columns (open edge inside building)
+    box(0.16, mezzY, 0.16, postMat, clampedX, mezzY / 2, innerZ);
+    // Outer row of columns (against end wall)
+    box(0.16, mezzY, 0.16, postMat, clampedX, mezzY / 2, outerZ);
+    // Cross beams between columns at mezzanine level
+    box(0.1, 0.12, deckLen, postMat, clampedX, mezzY - 0.08, mezzCenterZ);
   }
 
-  // Longitudinal beams along inner and outer edges
-  box(0.12, 0.18, mezzLen, postMat, innerX, mezzY - 0.1, 0);
-  box(0.12, 0.18, mezzLen, postMat, outerX, mezzY - 0.1, 0);
+  // Longitudinal beams along inner and outer Z edges
+  box(0.18, 0.18, deckLen, postMat, -width / 2 + 0.1, mezzY - 0.1, mezzCenterZ);
+  box(0.18, 0.18, deckLen, postMat, width / 2 - 0.1, mezzY - 0.1, mezzCenterZ);
 
   // Railing on the inner (open) edge
-  box(0.05, 1.0, mezzLen, railMat, innerX, mezzY + 0.55, 0);
-  box(0.04, 0.04, mezzLen, railMat, innerX, mezzY + 0.28, 0);
+  box(width - 0.6, 1.0, 0.06, railMat, 0, mezzY + 0.55, innerZ);
+  box(width - 0.6, 0.05, 0.05, railMat, 0, mezzY + 0.28, innerZ);
 
   // Railing posts every 2m
-  const railPostCount = Math.ceil(mezzLen / 2);
+  const railPostCount = Math.ceil(width / 2);
   for (let i = 0; i <= railPostCount; i++) {
-    const z = -mezzLen / 2 + (mezzLen / railPostCount) * i;
-    box(0.04, 1.0, 0.04, railMat, innerX, mezzY + 0.55, z);
+    const x = -width / 2 + (width / railPostCount) * i;
+    box(0.04, 1.0, 0.04, railMat, x, mezzY + 0.55, innerZ);
   }
 }
 
@@ -1465,8 +1464,6 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
       mezzWall,
       mezzHeight,
       mezzDepthPct,
-      mezzLengthPct,
-      mezzPosZ,
       columnStep,
     });
   }
