@@ -1137,58 +1137,54 @@ function buildCraneBeam(group, box, width, height, totalLen, halfW) {
 }
 
 function buildMezzanine(group, box, width, height, totalLen, halfW, opts) {
-  const { mezzWall = "front", mezzHeight = 2.6, mezzDepthPct = 36, mezzLengthPct = 75 } = opts;
+  const { mezzWall = "front", mezzHeight = 2.6, mezzDepthPct = 36, mezzLengthPct = 100, columnStep = 6 } = opts;
   const mezzY = mezzHeight;
-  // Mezzanine spans the full width, depth into building along Z axis
-  const mezzDepth = totalLen * (mezzDepthPct / 100);
+  const mezzLen = totalLen * (mezzLengthPct / 100);
+  const mezzDepth = width * (mezzDepthPct / 100);
   const isFront = mezzWall !== "back";
   const halfLen = totalLen / 2;
-  // Outer edge at the end wall, inner edge further in
-  const outerEdgeZ = isFront ? -halfLen : halfLen;
-  const innerEdgeZ = isFront ? -halfLen + mezzDepth : halfLen - mezzDepth;
-  const mezzMidZ = (outerEdgeZ + innerEdgeZ) / 2;
-  const deckW = width - 0.6;
+
+  // Mezzanine edge positions (along X — depth into building from wall)
+  const outerX = isFront ? -halfW + 0.3 : halfW - 0.3;
+  const innerX = isFront ? -halfW + mezzDepth : halfW - mezzDepth;
+  const mezzCenterX = (outerX + innerX) / 2;
+  const deckW = Math.abs(innerX - outerX);
 
   const deckMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.68, metalness: 0.42 });
   const railMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.38, metalness: 0.72 });
   const postMat = new THREE.MeshStandardMaterial({ color: 0x8b9299, roughness: 0.36, metalness: 0.84 });
 
-  // Floor deck
-  box(deckW, 0.14, mezzDepth, deckMat, 0, mezzY, mezzMidZ);
+  // Floor deck — full length of building
+  box(deckW, 0.14, mezzLen, deckMat, mezzCenterX, mezzY, 0);
 
-  // Support posts along width and at inner edge
-  const postCols = Math.max(2, Math.round(deckW / 4));
-  for (let i = 0; i <= postCols; i++) {
-    const x = -deckW / 2 + (deckW / postCols) * i;
-    box(0.16, mezzY, 0.16, postMat, x, mezzY / 2, innerEdgeZ);
-    box(0.16, mezzY, 0.16, postMat, x, mezzY / 2, outerEdgeZ);
+  // Columns every 6m (columnStep) along the full length, on both outer and inner edges
+  const frameCount = Math.ceil(mezzLen / columnStep);
+  const startZ = -mezzLen / 2;
+  for (let i = 0; i <= frameCount; i++) {
+    const z = startZ + i * columnStep;
+    const clampedZ = Math.min(z, mezzLen / 2);
+    // Inner row of columns
+    box(0.16, mezzY, 0.16, postMat, innerX, mezzY / 2, clampedZ);
+    // Outer row of columns (against wall)
+    box(0.16, mezzY, 0.16, postMat, outerX, mezzY / 2, clampedZ);
+    // Cross beams between inner and outer columns at mezzanine level
+    box(deckW, 0.12, 0.1, postMat, mezzCenterX, mezzY - 0.08, clampedZ);
   }
+
+  // Longitudinal beams along inner and outer edges
+  box(0.12, 0.18, mezzLen, postMat, innerX, mezzY - 0.1, 0);
+  box(0.12, 0.18, mezzLen, postMat, outerX, mezzY - 0.1, 0);
 
   // Railing on the inner (open) edge
-  box(deckW, 1.0, 0.06, railMat, 0, mezzY + 0.55, innerEdgeZ);
-  box(deckW, 0.05, 0.05, railMat, 0, mezzY + 0.28, innerEdgeZ);
+  box(0.05, 1.0, mezzLen, railMat, innerX, mezzY + 0.55, 0);
+  box(0.04, 0.04, mezzLen, railMat, innerX, mezzY + 0.28, 0);
 
-  // Stairs go from floor toward end wall (under the mezzanine)
-  const stairW = 0.9;
-  const stepRun = 0.28;
-  const numSteps = Math.max(6, Math.ceil(mezzY / 0.18));
-  const stepRise = mezzY / numSteps;
-  const stairX = deckW / 2 - stairW / 2 - 0.1;
-  // stairSign: front→stairs go toward front wall (negative Z), back→positive Z
-  const stairSign = isFront ? -1 : 1;
-  const stairStartZ = innerEdgeZ + stairSign * stepRun * 0.4;
-
-  for (let s = 0; s < numSteps; s++) {
-    const stepBottom = stepRise * s;
-    const stepCenterY = stepBottom + stepRise * 0.45;
-    const stepZ = stairStartZ + stairSign * s * stepRun;
-    box(stairW, stepRise * 0.9, stepRun, deckMat, stairX, stepCenterY, stepZ);
+  // Railing posts every 2m
+  const railPostCount = Math.ceil(mezzLen / 2);
+  for (let i = 0; i <= railPostCount; i++) {
+    const z = -mezzLen / 2 + (mezzLen / railPostCount) * i;
+    box(0.04, 1.0, 0.04, railMat, innerX, mezzY + 0.55, z);
   }
-
-  const stairLen = numSteps * stepRun;
-  const stairMidZ = stairStartZ + stairSign * stairLen / 2;
-  box(0.05, mezzY, 0.05, railMat, stairX + stairW / 2 + 0.04, mezzY / 2, stairMidZ);
-  box(0.04, 0.04, stairLen, railMat, stairX + stairW / 2 + 0.04, mezzY - 0.05, stairMidZ);
 }
 
 function buildRibbonGlazingWall(group, wallX, startZ, totalLen, height, thick, wallColor, columnStep, facingLeft, door, doorSelected, wallSide, pickables) {
@@ -1471,6 +1467,7 @@ function createBuilding(group, width, length, height, showSandwich, wallColor, r
       mezzDepthPct,
       mezzLengthPct,
       mezzPosZ,
+      columnStep,
     });
   }
 

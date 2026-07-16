@@ -46,7 +46,7 @@ const state = {
   mezzHeightRatio: "2_3",
   mezzHeight: (5 * 2) / 3,
   mezzDepthPct: 36,
-  mezzLengthPct: 75,
+  mezzLengthPct: 100,
   mezzPosZ: 0,
   windows: [],
   selectedWindowId: null,
@@ -717,27 +717,9 @@ if (els.mezzDepth) {
   els.mezzDepth.addEventListener("change", () => syncAll(true));
 }
 
-if (els.mezzLength) {
-  els.mezzLength.addEventListener("input", () => {
-    state.mezzLengthPct = Number(els.mezzLength.value);
-    if (els.mezzLengthVal) els.mezzLengthVal.textContent = String(state.mezzLengthPct);
-    updateSliderFill(els.mezzLength);
-    clampMezzanine();
-    updateDynamicSliders();
-    scheduleRender();
-  });
-  els.mezzLength.addEventListener("change", () => syncAll(true));
-}
-
-if (els.mezzPos) {
-  els.mezzPos.addEventListener("input", () => {
-    state.mezzPosZ = Number(els.mezzPos.value);
-    if (els.mezzPosVal) els.mezzPosVal.textContent = String(state.mezzPosZ);
-    updateSliderFill(els.mezzPos);
-    scheduleRender();
-  });
-  els.mezzPos.addEventListener("change", () => syncAll(true));
-}
+// Mezzanine length/pos are fixed (full length, no offset)
+state.mezzLengthPct = 100;
+state.mezzPosZ = 0;
 
 for (const btn of els.mezzWallBtns) {
   btn.addEventListener("click", () => {
